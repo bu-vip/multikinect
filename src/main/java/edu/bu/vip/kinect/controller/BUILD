@@ -1,0 +1,30 @@
+java_binary(
+    name = "controller",
+    srcs = glob(["**/*.java"]),
+    main_class = "edu.bu.vip.kinect.controller.Main",
+    resources = [
+        "//src/main/resources:log4jprops",
+    ],
+    runtime_deps = [
+        "@org_pubref_rules_protobuf//java:netty_runtime_deps",
+    ],
+    deps = [
+        "@org_pubref_rules_protobuf//java:grpc_compiletime_deps",
+        "//:com_fasterxml_jackson_core_jackson_annotations",
+        "//:com_google_guava_guava",
+        "//:com_google_inject_guice",
+        "//:io_ratpack_ratpack_guice",
+        "//:org_ejml_all",
+        "//:org_slf4j_slf4j_api",
+        "//:org_slf4j_slf4j_log4j12",
+        "//src/main/java/edu/bu/vip/kinect/sync:calibration",
+        "//src/main/java/edu/bu/vip/kinect/sync:coordinatetransform",
+        "//src/main/java/edu/bu/vip/kinect/sync:framereader",
+        "//src/main/java/edu/bu/vip/kinect/sync:protoutils",
+        "//src/main/proto:calibration",
+        "//src/main/proto:camera",
+        "//src/main/proto:camera_manager",
+        "//src/main/proto:frame",
+        "//src/main/proto:skeletonfeed",
+    ],
+)

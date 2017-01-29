@@ -1,0 +1,29 @@
+# WORKSPACE_END - beginning
+
+# proto build rules
+git_repository(
+  name = "org_pubref_rules_protobuf",
+  remote = "https://github.com/pubref/rules_protobuf",
+  tag = "v0.7.1",
+)
+
+# TODO(doug) - sha1 hashes
+
+load("@org_pubref_rules_protobuf//java:rules.bzl", "java_proto_repositories")
+java_proto_repositories(
+  excludes = [
+    "com_google_guava_guava",
+    "io_netty_netty_codec_http",
+    "io_netty_netty_buffer",
+    "io_netty_netty_codec",
+    "io_netty_netty_common",
+    "io_netty_netty_resolver",
+    "io_netty_netty_transport",
+    "io_netty_netty_handler",
+    "io_netty_netty_transport_native_epoll",
+    "com_google_protobuf_protobuf_java",
+])
+
+# TODO(doug) - csharp protos
+
+# WORKSPACE_END - end

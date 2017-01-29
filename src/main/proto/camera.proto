@@ -1,0 +1,16 @@
+syntax = 'proto3';
+
+import 'src/main/proto/frame.proto';
+
+package roeper.bu.kinect.camera;
+
+option java_package = "com.roeper.bu.kinect.camera";
+option java_outer_classname = "Grpc";
+
+service Camera {
+	rpc record(stream RecordOptions) returns (stream roeper.bu.kinect.Frame) {}
+}
+
+message RecordOptions {
+
+}

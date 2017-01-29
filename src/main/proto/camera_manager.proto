@@ -1,0 +1,24 @@
+syntax = 'proto3';
+
+package roeper.bu.kinect.master.camera;
+
+option java_package = "com.roeper.bu.kinect.master.camera";
+option java_outer_classname = "Grpc";
+
+service CameraManager {
+	rpc registerCamera(RegistrationRequest) returns (RegistrationResponse) {}
+}
+
+message RegistrationRequest {
+	CameraProps props = 1;
+}
+
+message RegistrationResponse {
+	CameraProps props = 1;
+}
+
+message CameraProps {
+	string id = 1;
+	string host = 2;
+	int32 port = 3;
+}

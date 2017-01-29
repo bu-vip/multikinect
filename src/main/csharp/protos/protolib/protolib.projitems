@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>21891f4b-e268-4ec3-8fcd-58379da8f645</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>protolib</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Camera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CameraGrpc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CameraManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CameraManagerGrpc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Frame.cs" />
+  </ItemGroup>
+</Project>

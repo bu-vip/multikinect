@@ -1,0 +1,5 @@
+def rootDir = buildscript.sourceFile.parentFile.parentFile.parentFile
+apply from: "${rootDir}/gradle/import_local_projects.gradle"
+	
+localImport([
+])
