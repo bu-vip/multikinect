@@ -13,6 +13,9 @@ import reducers from './reducers/reducers';
 import ConsolePage from './components/ConsolePage';
 import FeedPage from './components/FeedPage';
 
+import HomePage from './components/pagesv2/HomePage';
+import NewCalibrationPage from './components/pagesv2/NewCalibrationPage';
+
 const middleware = routerMiddleware(browserHistory);
 const store = createStore(
     reducers,
@@ -27,7 +30,8 @@ render(
   <Provider store={store}>
     <Router history={history}>
       <Route path="/" component={App}>
-          <IndexRoute component={ConsolePage} />
+          <IndexRoute component={HomePage} />
+          <Route path={NewCalibrationPage.route} component={NewCalibrationPage} />
           <Route path={FeedPage.route} component={FeedPage} />
       </Route>
     </Router>

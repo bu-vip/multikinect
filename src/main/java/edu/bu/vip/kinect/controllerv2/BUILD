@@ -1,7 +1,7 @@
 java_binary(
     name = "controller",
     srcs = glob(["**/*.java"]),
-    main_class = "edu.bu.vip.kinect.controller.Main",
+    main_class = "edu.bu.vip.kinect.controllerv2.Controllerv2",
     resources = [
         "//src/main/resources:log4jprops",
     ],
@@ -17,6 +17,7 @@ java_binary(
         "//:org_ejml_all",
         "//:org_slf4j_slf4j_api",
         "//:org_slf4j_slf4j_log4j12",
+        "//src/main/java/edu/bu/vip/kinect/controller:ratpackdevhandler",
         "//src/main/java/edu/bu/vip/kinect/sync:calibration",
         "//src/main/java/edu/bu/vip/kinect/sync:coordinatetransform",
         "//src/main/java/edu/bu/vip/kinect/sync:framereader",
@@ -26,16 +27,5 @@ java_binary(
         "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
         "//src/main/proto:skeletonfeed",
-    ],
-)
-
-java_library(
-    name = "ratpackdevhandler",
-    srcs = [
-        "webconsole/DevRedirectHandler.java",
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//:io_ratpack_ratpack_guice",
     ],
 )
