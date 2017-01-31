@@ -1,14 +1,14 @@
-package edu.bu.vip.kinect.controllerv2;
+package edu.bu.vip.kinect.controllerv2.webconsole.api.state;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ControllerState {
 
   public enum State {
-    IDLE,
-    NEW_CALIBRATION_SESSION,
-    RECORDING_CALIBRATION_FRAME,
-    REALTIME_IDLE,
+    SELECT_CALIBRATION,
+    NEW_CALIBRATION,
+    SELECT_SESSION,
+    SESSION_IDLE,
     RECORDING_DATA
   }
 

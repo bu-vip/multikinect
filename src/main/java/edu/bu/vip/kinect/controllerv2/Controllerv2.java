@@ -2,6 +2,8 @@ package edu.bu.vip.kinect.controllerv2;
 
 import com.google.inject.AbstractModule;
 import edu.bu.vip.kinect.controller.webconsole.DevRedirectHandler;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.state.ControllerState;
+import edu.bu.vip.kinect.controllerv2.webconsole.StateHandler;
 import java.util.Scanner;
 import ratpack.guice.Guice;
 import ratpack.server.RatpackServer;
@@ -23,6 +25,7 @@ public class Controllerv2 {
         });
       }));
       s.handlers(chain -> {
+        chain.get(StateHandler.URL_PATH, StateHandler.class);
         chain.get("::.*", DevRedirectHandler.class);
       });
     });
@@ -33,5 +36,9 @@ public class Controllerv2 {
     scanner.close();
 
     server.stop();
+  }
+
+  public ControllerState getState() {
+    return null;
   }
 }
