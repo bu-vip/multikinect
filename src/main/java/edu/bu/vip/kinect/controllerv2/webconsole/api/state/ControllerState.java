@@ -1,17 +1,9 @@
 package edu.bu.vip.kinect.controllerv2.webconsole.api.state;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.bu.vip.kinect.controllerv2.Controllerv2.State;
 
 public class ControllerState {
-
-  public enum State {
-    SELECT_CALIBRATION,
-    NEW_CALIBRATION,
-    SELECT_SESSION,
-    SESSION_IDLE,
-    RECORDING_DATA
-  }
-
   private State state;
 
   protected ControllerState() {

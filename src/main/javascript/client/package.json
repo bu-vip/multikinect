@@ -14,6 +14,7 @@
   "dependencies": {
     "chart.js": "^2.3.0",
     "immutable": "^3.8.1",
+    "js-joda": "^1.2.0",
     "material-color-hash": "^0.1.3",
     "protobufjs": "^5.0.1",
     "radium": "^0.18.1",

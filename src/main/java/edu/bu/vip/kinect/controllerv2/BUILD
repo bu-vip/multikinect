@@ -22,6 +22,7 @@ java_binary(
         "//src/main/java/edu/bu/vip/kinect/sync:coordinatetransform",
         "//src/main/java/edu/bu/vip/kinect/sync:framereader",
         "//src/main/java/edu/bu/vip/kinect/sync:protoutils",
+        "//src/main/java/edu/bu/vip/kinect/util:timestamputils",
         "//src/main/proto:calibration",
         "//src/main/proto:camera",
         "//src/main/proto:camera_manager",

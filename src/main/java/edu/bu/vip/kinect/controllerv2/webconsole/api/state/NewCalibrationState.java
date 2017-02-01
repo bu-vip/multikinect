@@ -2,24 +2,20 @@ package edu.bu.vip.kinect.controllerv2.webconsole.api.state;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.Timestamp;
+import edu.bu.vip.kinect.controllerv2.Controllerv2.State;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
+import java.time.Instant;
 
 public class NewCalibrationState extends ControllerState {
-  private String name;
-  private Timestamp dateCreated;
+  private Calibration newCalibration;
 
-  public NewCalibrationState(String name, Timestamp dateCreated) {
+  public NewCalibrationState(Calibration newCalibration) {
     super(State.NEW_CALIBRATION);
-    this.name = name;
-    this.dateCreated = dateCreated;
+    this.newCalibration = newCalibration;
   }
 
   @JsonProperty
-  public String getName() {
-    return name;
-  }
-
-  @JsonProperty
-  public Timestamp getDateCreated() {
-    return dateCreated;
+  public Calibration getNewCalibration() {
+    return newCalibration;
   }
 }

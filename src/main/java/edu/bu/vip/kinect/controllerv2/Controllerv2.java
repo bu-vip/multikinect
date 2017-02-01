@@ -9,6 +9,16 @@ import ratpack.guice.Guice;
 import ratpack.server.RatpackServer;
 
 public class Controllerv2 {
+  public enum State {
+    SELECT_CALIBRATION,
+    NEW_CALIBRATION,
+    NEW_CALIBRATION_FRAME,
+    SELECT_SESSION,
+    SESSION_IDLE,
+    RECORDING_DATA
+  }
+
+  private State state = State.SELECT_CALIBRATION;
 
   public static void main(String[] args) throws Exception {
     RatpackServer server = RatpackServer.start(s -> {
@@ -38,7 +48,33 @@ public class Controllerv2 {
     server.stop();
   }
 
-  public ControllerState getState() {
-    return null;
+  public State getState() {
+    return this.state;
+  }
+
+
+
+  public void newCalibration() {
+
+  }
+
+  public void selectCalibration(long calibrationId) {
+
+  }
+
+  public void selectSession(long sessionId) {
+
+  }
+
+  public void deleteSession(long sessionId) {
+
+  }
+
+  public void newRecording() {
+
+  }
+
+  public void deleteRecording(long sessionId, long recordingId) {
+
   }
 }

@@ -13,7 +13,7 @@ import reducers from './reducers/reducers';
 import ConsolePage from './components/ConsolePage';
 import FeedPage from './components/FeedPage';
 
-import HomePage from './components/pagesv2/HomePage';
+import SelectCalibrationPage from './components/pagesv2/SelectCalibrationPage';
 import NewCalibrationPage from './components/pagesv2/NewCalibrationPage';
 
 const middleware = routerMiddleware(browserHistory);
@@ -30,7 +30,7 @@ render(
   <Provider store={store}>
     <Router history={history}>
       <Route path="/" component={App}>
-          <IndexRoute component={HomePage} />
+          <IndexRoute component={SelectCalibrationPage} />
           <Route path={NewCalibrationPage.route} component={NewCalibrationPage} />
           <Route path={FeedPage.route} component={FeedPage} />
       </Route>
