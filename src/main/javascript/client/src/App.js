@@ -68,7 +68,7 @@ class AppView extends Component {
   render() {
     return (<div style={[styles.base]}>
         <div style={[styles.topBar]}>
-            <div style={[styles.topBarTitle]}>Web Console</div>
+            <div style={[styles.topBarTitle]}>multikinect</div>
             <div style={[styles.linkBar]}>
                 <span style={[styles.linkButton]} key={'linkConsole'} onClick={this.props.handleConsoleLink}>
                     <div style={[styles.link]}>Console</div>

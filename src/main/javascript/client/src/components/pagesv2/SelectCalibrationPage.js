@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
 import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
+import Table from './Table';
+import IconButton from './IconButton';
 
 let styles = {
   base: {
@@ -20,7 +22,7 @@ let styles = {
   button: {
     width: 120,
     height: 20
-  }
+  },
 };
 
 @Radium
@@ -54,42 +56,48 @@ class SelectCalibrationView extends Component {
       let calibrations;
       if (controllerState.calibrations && controllerState.calibrations.length
           > 0) {
-        let formatter = DateTimeFormatter.ofPattern("hh:mm:ss MM-d-yyyy");
-        calibrations = controllerState.calibrations.map((calibration) => {
 
-          let dateCreated = Instant.ofEpochSecond(
-              calibration.dateCreated.epochSecond,
-              calibration.dateCreated.nano);
-          let localTime = ZonedDateTime.ofInstant2(dateCreated, ZoneId.SYSTEM);
+        // Convert calibrations into table content
+        const formatter = DateTimeFormatter.ofPattern("hh:mm:ss MM-d-yyyy");
+        const calibrationTableContent = controllerState.calibrations.map(
+            (calibration) => {
+              // Get the local date created
+              const dateCreated = Instant.ofEpochSecond(
+                  calibration.dateCreated.epochSecond,
+                  calibration.dateCreated.nano);
+              const localTime = ZonedDateTime.ofInstant2(dateCreated,
+                  ZoneId.SYSTEM);
+              const calibrationDate = localTime.format(formatter);
 
-          return (<div
-              key={calibration.id}
-              onClick={(event) => {
-                this.handleSelectCalibration(event, calibration.id)
-              }}>
-            Name: {calibration.name}
-            Error: {calibration.error}
-            Date: {localTime.format(formatter)}
-            <button onClick={(event) => {
+              return [calibration.name, calibration.error, calibrationDate];
+            });
+
+        // Create calibration table
+        const header = ["Name", "Error", "Date Created", ""];
+        calibrations = (<Table
+            header={header}
+            content={calibrationTableContent}
+            onRowClick={(event, rowIndex) => {
+              // TODO(doug)
+            }}
+            rightIcon="delete"
+            onRightIconClick={(event, rowIndex) => {
               this.handleDeleteCalibration(event, calibration.id)
-            }}>
-              Delete
-            </button>
-          </div>)
-        });
+            }}
+        />);
       } else {
+        // Display a no calibrations message
         calibrations = (<div>No calibrations available</div>)
       }
 
       return (<div style={[styles.base]}>
         <div style={[styles.titleContainer]}>
           <h1 style={[styles.title]}>Select Calibration</h1>
-          <button onClick={this.handleNewCalibrationClick}>New Calibration
-          </button>
+          <IconButton
+              icon="add"
+              onClick={this.handleNewCalibrationClick} />
         </div>
-        <div>
-          {calibrations}
-        </div>
+        {calibrations}
       </div>);
     }
     else {

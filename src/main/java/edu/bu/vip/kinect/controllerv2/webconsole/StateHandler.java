@@ -45,6 +45,8 @@ public class StateHandler implements Handler {
         // TODO(doug) - implement
         List<Calibration> calibrations = new LinkedList<>();
         calibrations.add(new Calibration(1, "Calibration 1", Instant.now(), null, 0.1));
+        calibrations.add(new Calibration(2, "My Calibration is cooler than yours", Instant.now(), null, 0.2));
+        calibrations.add(new Calibration(3, "I'm yours", Instant.now(), null, 0.2));
         state = new SelectCalibrationState(calibrations);
         break;
       }
