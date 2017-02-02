@@ -4,11 +4,32 @@ import GlobalStyles from './GlobalStyles';
 import IconButton from './IconButton';
 
 let styles = {
-  row: {},
-  th: {
-    textAlign: 'left'
+  table: {
+    width: '100%',
+    border: 'none',
+    borderCollapse: 'collapse',
+    borderSpacing: 0
   },
-  td: {}
+  titleRow: {},
+  dataRow: {
+    ':hover': {
+      background: GlobalStyles.hoverColor
+    }
+  },
+  allCells: {
+    padding: 8,
+    borderTop: 'none',
+    borderLeft: 'none',
+    borderRight: 'none',
+    borderBottom: '1px solid rgba(100, 100, 100, 0.2)'
+  },
+  th: {
+    textAlign: 'left',
+  },
+  td: {},
+  iconTd: {
+    textAlign: 'right'
+  }
 };
 
 @Radium
@@ -17,14 +38,31 @@ class Table extends Component {
     super(props);
   }
 
+  handleRowClick = (event, rowIndex) => {
+    if (this.props.onRowClick) {
+      this.props.onRowClick(rowIndex);
+    }
+  };
+
+  handleRightIconClick = (event, rowIndex) => {
+    // Stop propagation to row click
+    event.stopPropagation();
+    if (this.props.onRightIconClick) {
+      this.props.onRightIconClick(rowIndex);
+    }
+  };
+
   render() {
     // Process header
     let header = <tr/>
     if (this.props.header) {
-      header = (<tr>
+      header = (<tr style={[styles.titleRow]}>
         {this.props.header.map((rowData, columnIndex) => {
           const item = (rowData ? rowData.toString() : "");
-          return (<th key={columnIndex} style={[styles.th]}>{item}</th>);
+          return (<th key={columnIndex}
+                      style={[styles.allCells, styles.th]}>
+            {item}
+          </th>);
         })}
       </tr>);
     }
@@ -34,27 +72,38 @@ class Table extends Component {
       // Convert the data array into table elements
       const row = rowContent.map((rowData, columnIndex) => {
         const item = (rowData ? rowData.toString() : "");
-        return (<td key={columnIndex} style={[styles.td]}>{item}</td>);
+        return (<td key={columnIndex}
+                    style={[styles.allCells, styles.td]}>
+          {item}
+        </td>);
       });
 
       // Add right icon if needed
       let rightIcon = <div/>;
       if (this.props.rightIcon) {
-        rightIcon = (<td>
+        rightIcon = (<td style={[styles.allCells, styles.iconTd]}>
           <IconButton
               icon={this.props.rightIcon}
-              onClick={this.props.onRightIconClick}
-          /></td>);
+              onClick={(event) => {
+                this.handleRightIconClick(event, rowIndex)
+              }}
+          />
+        </td>);
       }
 
-      return (<tr key={rowIndex}>
+      return (<tr key={rowIndex}
+                  style={[styles.dataRow]}
+                  onClick={(event) => {
+                    this.handleRowClick(event, rowIndex)
+                  }}>
         {row}
         {rightIcon}
       </tr>);
     });
 
     return (
-        <table>
+        <table
+            style={[styles.table]}>
           <thead>
           {header}
           </thead>

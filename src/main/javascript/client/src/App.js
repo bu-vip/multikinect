@@ -30,7 +30,7 @@ let styles = {
     },
     linkBar: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'dataRow',
         height: 32
     },
     linkButton: {

@@ -14,7 +14,7 @@ let styles = {
   },
   titleContainer: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'dataRow'
   },
   title: {
     flexGrow: 1
@@ -36,12 +36,12 @@ class SelectCalibrationView extends Component {
     console.log("New calibration...");
   };
 
-  handleSelectCalibration = (event, id) => {
+  handleSelectCalibration = (id) => {
     // TODO(doug) - implement
     console.log("Select calibration: " + id);
   };
 
-  handleDeleteCalibration = (event, id) => {
+  handleDeleteCalibration = (id) => {
     // TODO(doug) - implement
     console.log("Delete calibration: " + id);
 
@@ -59,6 +59,7 @@ class SelectCalibrationView extends Component {
 
         // Convert calibrations into table content
         const formatter = DateTimeFormatter.ofPattern("hh:mm:ss MM-d-yyyy");
+        let rowIds = [];
         const calibrationTableContent = controllerState.calibrations.map(
             (calibration) => {
               // Get the local date created
@@ -69,20 +70,21 @@ class SelectCalibrationView extends Component {
                   ZoneId.SYSTEM);
               const calibrationDate = localTime.format(formatter);
 
-              return [calibration.name, calibration.error, calibrationDate];
+              rowIds.push(calibration.id);
+              return [calibration.name, calibration.id, calibration.error, calibrationDate];
             });
 
         // Create calibration table
-        const header = ["Name", "Error", "Date Created", ""];
+        const header = ["Name", "ID", "Error", "Date Created", ""];
         calibrations = (<Table
             header={header}
             content={calibrationTableContent}
-            onRowClick={(event, rowIndex) => {
-              // TODO(doug)
+            onRowClick={(rowIndex) => {
+              this.handleSelectCalibration(rowIds[rowIndex]);
             }}
             rightIcon="delete"
-            onRightIconClick={(event, rowIndex) => {
-              this.handleDeleteCalibration(event, calibration.id)
+            onRightIconClick={(rowIndex) => {
+              this.handleDeleteCalibration(rowIds[rowIndex]);
             }}
         />);
       } else {
@@ -92,7 +94,10 @@ class SelectCalibrationView extends Component {
 
       return (<div style={[styles.base]}>
         <div style={[styles.titleContainer]}>
-          <h1 style={[styles.title]}>Select Calibration</h1>
+          <div style={[styles.title]}>
+            <h1>Select Calibration</h1>
+            <p>Select a calibration from the list below or create a new one by clicking on the '+' button on the right:</p>
+          </div>
           <IconButton
               icon="add"
               onClick={this.handleNewCalibrationClick} />
