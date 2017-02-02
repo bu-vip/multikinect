@@ -4,16 +4,22 @@ import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
 import {push} from 'react-router-redux';
 import EditCalibrationInfoView from './EditCalibrationInfoView';
+import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
+import Table from './Table';
+import IconButton from './IconButton';
 
 let styles = {
-  base : {
+  base: {
     padding: 16,
     display: 'flex',
     flexDirection: 'column'
   },
-  button: {
-    width: 120,
-    height: 20
+  titleContainer: {
+    display: 'flex',
+    flexDirection: 'dataRow'
+  },
+  title: {
+    flexGrow: 1
   }
 };
 
@@ -29,7 +35,8 @@ class NewCalibrationView extends Component {
     };
   }
 
-  onEditInfo = () => {
+  handleEditInfoClick = () => {
+    console.log("Edit info");
     this.setState({
       editingInfo: true
     });
@@ -37,89 +44,121 @@ class NewCalibrationView extends Component {
 
   onSaveInfo = (info) => {
     // TODO(doug) - send info to server
+    console.log("Edit info save");
     this.setState({
       editingInfo: false
     });
   };
 
   onCancelEditInfo = (info) => {
+    console.log("Edit info cancelled");
     this.setState({
       editingInfo: false
     });
   };
 
-  onNewFrame = () => {
+  handleNewFrameClick = () => {
     // TODO(doug) - implement
+    console.log("New Frame clicked");
   };
 
-  onDeleteFrame = (id) => {
+  handleDeleteFrame = (id) => {
     console.log("Delete frame: " + id);
     // TODO(doug) - implement
   };
 
-  onFinishClick = () => {
+  handleFinishClicked = () => {
     // TODO(doug) - implement
+    console.log("Finished clicked");
   };
 
   render() {
+    const controllerState = this.props.controllerState;
 
-    if (this.state.editingInfo) {
+    if (controllerState) {
+      const calibration = controllerState.newCalibration;
+      if (this.state.editingInfo) {
 
-      return (<div style={styles.base}>
-        NewCalibration Page
+        return (<div style={styles.base}>
           <EditCalibrationInfoView
-              initialInfo={this.props.calibrationSessionInfo}
+              initialInfo={calibration}
               onSaveClick={this.onSaveInfo}
               onCancelClick={this.onCancelEditInfo}/>
-      </div>);
+        </div>);
 
-    } else {
+      } else {
+        let frames = <div>No frames</div>;
+        if (calibration.frames && calibration.frames.length > 0) {
+          // Convert frame data into table content
+          const formatter = DateTimeFormatter.ofPattern("hh:mm:ss MM-d-yyyy");
+          let frameIds = [];
+          const framesTableContent = calibration.frames.map((frame) => {
+            // Get the local date created
+            const dateCreated = Instant.ofEpochSecond(
+                frame.dateCreated.epochSecond,
+                frame.dateCreated.nano);
+            const localTime = ZonedDateTime.ofInstant2(dateCreated,
+                ZoneId.SYSTEM);
+            const frameDate = localTime.format(formatter);
 
-      console.log(this.props);
+            frameIds.push(frame.id);
+            return [frame.id, frame.error, frameDate];
+          });
 
-      const listItems = this.props.calibrationSessionInfo.frames.map((frame) => {
-        return (<li key={frame.id}>
-          Id: {frame.id}
-          Error: {frame.error}
-          <button onClick={() => {this.onDeleteFrame(frame.id)}}>Delete</button>
-        </li>)
-      });
+          // Create frames table
+          const header = ["ID", "Error", "Date Created", ""];
+          frames = (<Table
+              header={header}
+              content={framesTableContent}
+              onRowClick={(rowIndex) => {
+              }}
+              rightIcon="delete"
+              onRightIconClick={(rowIndex) => {
+                this.handleDeleteFrame(frameIds[rowIndex]);
+              }}
+          />);
+        }
 
-
-      return (<div style={styles.base}>
-        <h2>New Calibration Page</h2>
-        <button onClick={this.onEditInfo}>Edit</button>
-        <button onClick={this.onNewFrame}>New Frame</button>
-        <ul>{listItems}</ul>
-        <button onClick={this.onFinishClick}>Finish</button>
-      </div>);
+        return (<div style={[styles.base]}>
+          <div style={[styles.titleContainer]}>
+            <div style={[styles.title]}>
+              <h1>{calibration.name}
+              <IconButton
+                  icon="edit"
+                  onClick={this.handleEditInfoClick}/>
+              </h1>
+              <p>Error: {calibration.error}</p>
+              <p>TODO(doug)</p>
+            </div>
+            <IconButton
+                icon="add"
+                onClick={this.handleNewFrameClick}/>
+            <IconButton
+                icon="done"
+                onClick={this.handleFinishClicked}/>
+          </div>
+          <h2>Frames</h2>
+          {frames}
+        </div>);
+      }
+    }
+    else {
+      return (<div>Loading...</div>);
     }
   }
 }
 
 NewCalibrationView.contextTypes = {
-  router : PropTypes.object
+  router: PropTypes.object
 };
 
 NewCalibrationView.propTypes = {
-  controllerState : PropTypes.object
+  controllerState: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    calibrationSessionInfo: {
-      name: "Session XXX",
-      frames: [
-        {
-          id: 123,
-          error: 0.4
-        },
-        {
-          id: 456,
-          error: 0.6
-        }
-      ]
-    }
+    controllerState: state.controllerState
   };
 };
 
@@ -131,7 +170,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const NewCalibrationPage = connect(mapStateToProps, mapDispatchToProps)(NewCalibrationView);
+const NewCalibrationPage = connect(mapStateToProps, mapDispatchToProps)(
+    NewCalibrationView);
 
 const baseUrl = '/newCalibration';
 NewCalibrationPage.route = baseUrl;

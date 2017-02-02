@@ -41,7 +41,7 @@ class EditCalibrationInfoView extends Component {
 
   render() {
     return (<div style={[styles.base]}>
-      Edit Calibration Info View
+      <h1>Edit Calibration</h1>
       <form>
         <label>
           Name:

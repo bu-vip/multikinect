@@ -18,11 +18,7 @@ let styles = {
   },
   title: {
     flexGrow: 1
-  },
-  button: {
-    width: 120,
-    height: 20
-  },
+  }
 };
 
 @Radium

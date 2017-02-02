@@ -18,7 +18,7 @@ public class Controllerv2 {
     RECORDING_DATA
   }
 
-  private State state = State.SELECT_CALIBRATION;
+  private State state = State.NEW_CALIBRATION;
 
   public static void main(String[] args) throws Exception {
     RatpackServer server = RatpackServer.start(s -> {

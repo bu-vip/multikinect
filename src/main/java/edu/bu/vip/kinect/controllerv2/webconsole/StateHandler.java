@@ -54,9 +54,9 @@ public class StateHandler implements Handler {
       case NEW_CALIBRATION: {
         // TODO(doug) - implement
         List<CalibrationFrame> frames = new LinkedList<>();
-        frames.add(new CalibrationFrame(1, 0.1, Instant.now()));
-        frames.add(new CalibrationFrame(2, 0.3, Instant.now()));
-        Calibration calibration = new Calibration(1, "Calibration 1", Instant.now(), null, 0.2);
+        frames.add(new CalibrationFrame(11, 0.1, Instant.now()));
+        frames.add(new CalibrationFrame(21, 0.3, Instant.now()));
+        Calibration calibration = new Calibration(1, "Calibration 1", Instant.now(), frames, 0.2);
         state = new NewCalibrationState(calibration);
         break;
       }
