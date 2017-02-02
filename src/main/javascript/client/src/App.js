@@ -13,6 +13,7 @@ import {sendGetStateRequest} from './api/api';
 import SelectCalibrationPage from './components/pagesv2/SelectCalibrationPage';
 import NewCalibrationPage from './components/pagesv2/NewCalibrationPage';
 import SelectSessionPage from './components/pagesv2/SelectSessionPage';
+import RecordingHomePage from './components/pagesv2/RecordingHomePage';
 
 const PADDING = 16;
 let styles = {
@@ -89,6 +90,9 @@ class AppView extends Component {
             break;
           case 'SELECT_SESSION':
             newLocation = SelectSessionPage.url();
+            break;
+          case 'SESSION_IDLE':
+            newLocation = RecordingHomePage.url();
             break;
           default:
             console.log("Unknown state: " + json.state);

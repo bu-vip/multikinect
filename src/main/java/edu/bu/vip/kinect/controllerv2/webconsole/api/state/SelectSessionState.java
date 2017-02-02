@@ -7,19 +7,19 @@ import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
 import java.util.List;
 
 public class SelectSessionState extends ControllerState {
-  private Calibration currentCalibration;
+  private Calibration calibration;
   private List<Session> sessions;
 
-  public SelectSessionState(Calibration currentCalibration,
+  public SelectSessionState(Calibration calibration,
       List<Session> sessions) {
     super(State.SELECT_SESSION);
-    this.currentCalibration = currentCalibration;
+    this.calibration = calibration;
     this.sessions = sessions;
   }
 
   @JsonProperty
-  public Calibration getCurrentCalibration() {
-    return currentCalibration;
+  public Calibration getCalibration() {
+    return calibration;
   }
 
   @JsonProperty

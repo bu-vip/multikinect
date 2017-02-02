@@ -7,10 +7,11 @@ import EditCalibrationInfoView from './EditCalibrationInfoView';
 import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
 import DataTable from './DataTable';
 import IconButton from './IconButton';
+import GlobalStyles from './GlobalStyles';
 
 let styles = {
   base: {
-    padding: 16,
+    padding: GlobalStyles.pagePadding,
     display: 'flex',
     flexDirection: 'column'
   },

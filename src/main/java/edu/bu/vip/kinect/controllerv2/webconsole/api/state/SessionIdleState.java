@@ -3,29 +3,27 @@ package edu.bu.vip.kinect.controllerv2.webconsole.api.state;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.bu.vip.kinect.controllerv2.Controllerv2.State;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
-import java.util.List;
 
 public class SessionIdleState extends ControllerState {
-  private Calibration currentCalibration;
-  private Session currentSession;
+  private Calibration calibration;
+  private Session session;
 
   public SessionIdleState(
-      Calibration currentCalibration,
-      Session currentSession) {
+      Calibration calibration,
+      Session session) {
     super(State.SESSION_IDLE);
-    this.currentCalibration = currentCalibration;
-    this.currentSession = currentSession;
+    this.calibration = calibration;
+    this.session = session;
   }
 
   @JsonProperty
-  public Calibration getCurrentCalibration() {
-    return currentCalibration;
+  public Calibration getCalibration() {
+    return calibration;
   }
 
   @JsonProperty
-  public Session getCurrentSession() {
-    return currentSession;
+  public Session getSession() {
+    return session;
   }
 }

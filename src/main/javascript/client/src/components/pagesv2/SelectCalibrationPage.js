@@ -4,10 +4,11 @@ import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
 import DataTable from './DataTable';
 import IconButton from './IconButton';
+import GlobalStyles from './GlobalStyles';
 
 let styles = {
   base: {
-    padding: 16,
+    padding: GlobalStyles.pagePadding,
     display: 'flex',
     flexDirection: 'column'
   },

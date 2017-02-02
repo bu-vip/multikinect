@@ -7,27 +7,27 @@ import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
 
 public class RecordingDataState extends ControllerState {
-  private Calibration currentCalibration;
-  private Session currentSession;
+  private Calibration calibration;
+  private Session session;
   private Recording recordingData;
 
   public RecordingDataState(
-      Calibration currentCalibration,
-      Session currentSession, Recording recordingData) {
+      Calibration calibration,
+      Session session, Recording recordingData) {
     super(State.RECORDING_DATA);
-    this.currentCalibration = currentCalibration;
-    this.currentSession = currentSession;
+    this.calibration = calibration;
+    this.session = session;
     this.recordingData = recordingData;
   }
 
   @JsonProperty
-  public Calibration getCurrentCalibration() {
-    return currentCalibration;
+  public Calibration getCalibration() {
+    return calibration;
   }
 
   @JsonProperty
-  public Session getCurrentSession() {
-    return currentSession;
+  public Session getSession() {
+    return session;
   }
 
   @JsonProperty
