@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 
 import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
-import DataTable from './DataTable';
+import DateTable from './DataTable';
 import IconButton from './IconButton';
 
 let styles = {
@@ -21,24 +21,24 @@ let styles = {
 };
 
 @Radium
-class SelectCalibrationView extends Component {
+class SelectSessionView extends Component {
   constructor(props) {
     super(props);
   }
 
-  handleNewCalibrationClick = (event) => {
+  handleNewSessionClick = (event) => {
     // TODO(doug) - implement
-    console.log("New calibration...");
+    console.log("New session...");
   };
 
-  handleSelectCalibration = (id) => {
+  handleSelectSession = (id) => {
     // TODO(doug) - implement
-    console.log("Select calibration: " + id);
+    console.log("Select session: " + id);
   };
 
-  handleDeleteCalibration = (id) => {
+  handleDeleteSession = (id) => {
     // TODO(doug) - implement
-    console.log("Delete calibration: " + id);
+    console.log("Delete session: " + id);
 
     // Stop propagation so select is not called
     event.stopPropagation();
@@ -48,31 +48,32 @@ class SelectCalibrationView extends Component {
     const controllerState = this.props.controllerState;
 
     if (controllerState) {
-      // Create calibration table
-      const header = ["Name", "ID", "Error", "Date Created", ""];
-      const tableKeys = ['name', 'id', 'error', 'dateCreated'];
-      const calibrationTable = (<DataTable
+      // Create session table
+      const header = ["Name", "ID", "Date Created", ""];
+      const tableKeys = ['name', 'id', 'dateCreated'];
+      const sessions = (<DateTable
           header={header}
           idKey="id"
-          content={controllerState.calibrations}
+          content={controllerState.sessions}
           contentKeys={tableKeys}
-          onRowClick={this.handleSelectCalibration}
+          onRowClick={this.handleSelectSession}
           rightIcon="delete"
-          onRightIconClick={this.handleDeleteCalibration}
-          emptyMessage="No calibrations"
+          onRightIconClick={this.handleDeleteSession}
+          emptyMessage="No sessions"
       />);
 
       return (<div style={[styles.base]}>
         <div style={[styles.titleContainer]}>
           <div style={[styles.title]}>
-            <h1>Select Calibration</h1>
-            <p>Select a calibration from the list below or create a new one by clicking on the '+' button on the right:</p>
+            <h1>Select Session</h1>
+            <p>Select a session from the list below or create a new one by
+              clicking on the '+' button on the right:</p>
           </div>
           <IconButton
               icon="add"
-              onClick={this.handleNewCalibrationClick} />
+              onClick={this.handleNewSessionClick}/>
         </div>
-        {calibrationTable}
+        {sessions}
       </div>);
     }
     else {
@@ -81,11 +82,11 @@ class SelectCalibrationView extends Component {
   }
 }
 
-SelectCalibrationView.contextTypes = {
+SelectSessionView.contextTypes = {
   router: PropTypes.object
 };
 
-SelectCalibrationView.propTypes = {
+SelectSessionView.propTypes = {
   controllerState: PropTypes.object.isRequired
 };
 
@@ -99,11 +100,11 @@ const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-const SelectCalibrationPage = connect(mapStateToProps, mapDispatchToProps)(
-    SelectCalibrationView);
+const SelectSessionPage = connect(mapStateToProps, mapDispatchToProps)(
+    SelectSessionView);
 
-const baseUrl = '/';
-SelectCalibrationPage.route = baseUrl;
-SelectCalibrationPage.url = () => baseUrl;
+const baseUrl = '/selectSession';
+SelectSessionPage.route = baseUrl;
+SelectSessionPage.url = () => baseUrl;
 
-export default SelectCalibrationPage;
+export default SelectSessionPage;

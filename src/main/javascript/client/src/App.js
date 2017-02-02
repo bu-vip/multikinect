@@ -12,6 +12,7 @@ import {sendGetStateRequest} from './api/api';
 
 import SelectCalibrationPage from './components/pagesv2/SelectCalibrationPage';
 import NewCalibrationPage from './components/pagesv2/NewCalibrationPage';
+import SelectSessionPage from './components/pagesv2/SelectSessionPage';
 
 const PADDING = 16;
 let styles = {
@@ -85,6 +86,9 @@ class AppView extends Component {
             break;
           case 'NEW_CALIBRATION':
             newLocation = NewCalibrationPage.url();
+            break;
+          case 'SELECT_SESSION':
+            newLocation = SelectSessionPage.url();
             break;
           default:
             console.log("Unknown state: " + json.state);

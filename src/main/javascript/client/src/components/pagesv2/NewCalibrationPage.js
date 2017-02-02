@@ -5,7 +5,7 @@ import React, {Component, PropTypes} from 'react';
 import {push} from 'react-router-redux';
 import EditCalibrationInfoView from './EditCalibrationInfoView';
 import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
-import Table from './Table';
+import DataTable from './DataTable';
 import IconButton from './IconButton';
 
 let styles = {
@@ -87,37 +87,18 @@ class NewCalibrationView extends Component {
         </div>);
 
       } else {
-        let frames = <div>No frames</div>;
-        if (calibration.frames && calibration.frames.length > 0) {
-          // Convert frame data into table content
-          const formatter = DateTimeFormatter.ofPattern("hh:mm:ss MM-d-yyyy");
-          let frameIds = [];
-          const framesTableContent = calibration.frames.map((frame) => {
-            // Get the local date created
-            const dateCreated = Instant.ofEpochSecond(
-                frame.dateCreated.epochSecond,
-                frame.dateCreated.nano);
-            const localTime = ZonedDateTime.ofInstant2(dateCreated,
-                ZoneId.SYSTEM);
-            const frameDate = localTime.format(formatter);
-
-            frameIds.push(frame.id);
-            return [frame.id, frame.error, frameDate];
-          });
-
-          // Create frames table
-          const header = ["ID", "Error", "Date Created", ""];
-          frames = (<Table
-              header={header}
-              content={framesTableContent}
-              onRowClick={(rowIndex) => {
-              }}
-              rightIcon="delete"
-              onRightIconClick={(rowIndex) => {
-                this.handleDeleteFrame(frameIds[rowIndex]);
-              }}
-          />);
-        }
+        // Create frames table
+        const header = ["ID", "Error", "Date Created", ""];
+        const tableKeys = ['id', 'error', 'dateCreated'];
+        const framesTable = (<DataTable
+            header={header}
+            idKey="id"
+            content={calibration.frames}
+            contentKeys={tableKeys}
+            rightIcon="delete"
+            onRightIconClick={this.handleDeleteFrame}
+            emptyMessage="No frames"
+        />);
 
         return (<div style={[styles.base]}>
           <div style={[styles.titleContainer]}>
@@ -138,7 +119,7 @@ class NewCalibrationView extends Component {
                 onClick={this.handleFinishClicked}/>
           </div>
           <h2>Frames</h2>
-          {frames}
+          {framesTable}
         </div>);
       }
     }
