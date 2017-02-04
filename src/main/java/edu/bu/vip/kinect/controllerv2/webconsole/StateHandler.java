@@ -96,7 +96,7 @@ public class StateHandler implements Handler {
         recordings.add(new Recording(1, 3, "recording2", Instant.now()));
         Session session = new Session(1, "Session 1", Instant.now(), recordings);
         state = new RecordingDataState(null, session,
-            new Recording(1, 4, "newRecording", Instant.now()));
+            new Recording(1, 4, "newRecording", Instant.ofEpochSecond(100000000)));
         break;
       }
 

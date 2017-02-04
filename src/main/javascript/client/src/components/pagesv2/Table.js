@@ -79,7 +79,7 @@ class Table extends Component {
       });
 
       // Add right icon if needed
-      let rightIcon = <div/>;
+      let rightIcon = <td/>;
       if (this.props.rightIcon) {
         rightIcon = (<td style={[styles.allCells, styles.iconTd]}>
           <IconButton

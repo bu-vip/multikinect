@@ -2,12 +2,11 @@ import {connect} from 'react-redux';
 
 import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
-import {push} from 'react-router-redux';
-import EditCalibrationInfoView from './EditCalibrationInfoView';
 import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
-import DataTable from './DataTable';
-import IconButton from './IconButton';
-import GlobalStyles from './GlobalStyles';
+import DataTable from '../DataTable';
+import IconButton from '../IconButton';
+import GlobalStyles from '../GlobalStyles';
+import DataForm from './DataForm';
 
 let styles = {
   base: {
@@ -51,7 +50,8 @@ class RecordingHomeView extends Component {
     this.state = {
       // Start as editing info because you are creating a new session
       // TODO(doug) - Check if session info is default values, set false if not
-      editingInfo: true
+      editingInfo: true,
+      newRecording: false
     };
   }
 
@@ -77,9 +77,24 @@ class RecordingHomeView extends Component {
     });
   };
 
+  onNewRecording = (info) => {
+    console.log("new recording");
+    // todo(doug) - send
+  };
+
+  onCancelNewRecording = (info) => {
+    console.log("cancel new recording");
+    this.setState({
+      newRecording: false
+    });
+  };
+
   handleNewRecording = () => {
     // TODO(doug) - implement
     console.log("New recording clicked");
+    this.setState({
+      newRecording: true
+    });
   };
 
   handleDeleteRecording = (id) => {
@@ -93,14 +108,33 @@ class RecordingHomeView extends Component {
     if (controllerState) {
       const session = controllerState.session;
       if (this.state.editingInfo) {
-
         return (<div style={styles.base}>
-          <EditCalibrationInfoView
-              initialInfo={session}
+          <DataForm
+              title="Edit Session"
+              initialValues={session}
+              fields={[{
+                key: "name",
+                title: "Name",
+                type: "text"
+              }]}
               onSaveClick={this.onSaveInfo}
               onCancelClick={this.onCancelEditInfo}/>
         </div>);
-
+      } else if (this.state.newRecording) {
+        return (<div style={styles.base}>
+          <DataForm
+              title="New Recording"
+              fields={[
+                {
+                  key: "name",
+                  title: "Name",
+                  type: "text"
+                }
+              ]
+              }
+              onSaveClick={this.onNewRecording}
+              onCancelClick={this.onCancelNewRecording}/>
+        </div>);
       } else {
         // Create frames table
         const header = ["Name", "Id", "Date Created", ""];

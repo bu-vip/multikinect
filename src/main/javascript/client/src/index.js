@@ -13,7 +13,7 @@ import reducers from './reducers/reducers';
 import ConsolePage from './components/ConsolePage';
 import FeedPage from './components/FeedPage';
 
-import ControlPage from './components/pagesv2/ControlPage';
+import ControlPage from './components/pagesv2/control/ControlPage';
 
 const middleware = routerMiddleware(browserHistory);
 const store = createStore(

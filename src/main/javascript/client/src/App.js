@@ -10,7 +10,8 @@ import {
 } from './actions/actions';
 import {sendGetStateRequest} from './api/api';
 
-import ControlPage from './components/pagesv2/ControlPage';
+import {push} from 'react-router-redux';
+import ControlPage from './components/pagesv2/control/ControlPage';
 
 const PADDING = 16;
 let styles = {
@@ -118,9 +119,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     handleControlLink: (event) => {
       dispatch(push(ControlPage.url()));
-    },
-    handleFeedLink: (event) => {
-      dispatch(push(FeedPage.url()));
     }
   };
 };

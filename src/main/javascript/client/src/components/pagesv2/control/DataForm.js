@@ -2,24 +2,26 @@ import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
 
 let styles = {
-  base : {
-  },
+  base: {},
 };
 
 @Radium
-class EditCalibrationInfoView extends Component {
+class DataForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      name: props.initialInfo.name
+      ...this.props.initialValues
     };
   }
 
   getFormState = () => {
-    return {
-      name: this.state.name
-    };
+    let formState = {};
+    this.props.fields.forEach((fieldInfo) => {
+      formState[fieldInfo.key] = this.state[fieldInfo.key];
+    });
+
+    return formState;
   };
 
   handleSaveClick = () => {
@@ -40,17 +42,27 @@ class EditCalibrationInfoView extends Component {
   };
 
   render() {
+    let title = <div/>;
+    if (this.props.title) {
+      title = <h1>{this.props.title}</h1>;
+    }
+
+    const fields = this.props.fields.map((fieldInfo) => {
+      return (
+          <label key={fieldInfo.key}>
+            {fieldInfo.title}
+            <input
+                name={fieldInfo.key}
+                type={fieldInfo.type}
+                value={this.state[fieldInfo.key]}
+                onChange={this.handleInputChange}/>
+          </label>);
+    });
+
     return (<div style={[styles.base]}>
-      <h1>Edit Calibration</h1>
+      {title}
       <form>
-        <label>
-          Name:
-          <input
-              name="name"
-              type="text"
-              value={this.state.name}
-              onChange={this.handleInputChange} />
-        </label>
+        {fields}
       </form>
       <button onClick={this.handleSaveClick}>Save</button>
       <button onClick={this.handleCancelClick}>Cancel</button>
@@ -58,10 +70,12 @@ class EditCalibrationInfoView extends Component {
   }
 }
 
-EditCalibrationInfoView.propTypes = {
-  initialInfo: PropTypes.object.isRequired,
+DataForm.propTypes = {
+  title: PropTypes.string,
+  initialValues: PropTypes.object,
+  fields: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSaveClick: PropTypes.func.isRequired,
   onCancelClick: PropTypes.func.isRequired
 };
 
-export default EditCalibrationInfoView;
+export default DataForm;

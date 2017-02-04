@@ -18,7 +18,7 @@ public class Controllerv2 {
     RECORDING_DATA
   }
 
-  private State state = State.SESSION_IDLE;
+  private State state = State.RECORDING_DATA;
 
   public static void main(String[] args) throws Exception {
     RatpackServer server = RatpackServer.start(s -> {

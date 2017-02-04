@@ -2,9 +2,10 @@ import {connect} from 'react-redux';
 
 import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
-import DateTable from './DataTable';
-import IconButton from './IconButton';
-import GlobalStyles from './GlobalStyles';
+import DateTable from '../DataTable';
+import DataForm from './DataForm';
+import IconButton from '../IconButton';
+import GlobalStyles from '../GlobalStyles';
 
 let styles = {
   base: {
@@ -25,11 +26,28 @@ let styles = {
 class SelectSessionView extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      newSession: false
+    };
   }
 
   handleNewSessionClick = (event) => {
-    // TODO(doug) - implement
-    console.log("New session...");
+    this.setState({
+      newSession: true
+    });
+  };
+
+  handleSaveNewSession = (info) => {
+    //  TODO(doug) implement
+    console.log("Create new session");
+  };
+
+  handleCancelNewSession = (info) => {
+    console.log("Cancel new session");
+    this.setState({
+      newSession: false
+    });
   };
 
   handleSelectSession = (id) => {
@@ -46,16 +64,27 @@ class SelectSessionView extends Component {
   };
 
   render() {
-    const controllerState = this.props.controllerState;
-
-    if (controllerState) {
+    if (this.state.newSession) {
+      return (<div style={[styles.base]}>
+        <DataForm
+            title="New Session"
+            fields={[{
+              key: "name",
+              title: "Name",
+              type: "text"
+            }]}
+            onSaveClick={this.handleSaveNewSession}
+            onCancelClick={this.handleCancelNewSession}
+        />
+      </div>);
+    } else {
       // Create session table
       const header = ["Name", "ID", "Date Created", ""];
       const tableKeys = ['name', 'id', 'dateCreated'];
       const sessions = (<DateTable
           header={header}
           idKey="id"
-          content={controllerState.sessions}
+          content={this.props.controllerState.sessions}
           contentKeys={tableKeys}
           onRowClick={this.handleSelectSession}
           rightIcon="delete"
@@ -76,9 +105,6 @@ class SelectSessionView extends Component {
         </div>
         {sessions}
       </div>);
-    }
-    else {
-      return (<div>Loading...</div>);
     }
   }
 }

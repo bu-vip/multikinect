@@ -3,11 +3,11 @@ import {connect} from 'react-redux';
 import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
 import {push} from 'react-router-redux';
-import EditCalibrationInfoView from './EditCalibrationInfoView';
+import DataForm from './DataForm';
 import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
-import DataTable from './DataTable';
-import IconButton from './IconButton';
-import GlobalStyles from './GlobalStyles';
+import DataTable from '../DataTable';
+import IconButton from '../IconButton';
+import GlobalStyles from '../GlobalStyles';
 
 let styles = {
   base: {
@@ -81,8 +81,13 @@ class NewCalibrationView extends Component {
       if (this.state.editingInfo) {
 
         return (<div style={styles.base}>
-          <EditCalibrationInfoView
-              initialInfo={calibration}
+          <DataForm
+              initialValues={calibration}
+              fields={[{
+                key: "name",
+                title: "Name",
+                type: "text"
+              }]}
               onSaveClick={this.onSaveInfo}
               onCancelClick={this.onCancelEditInfo}/>
         </div>);

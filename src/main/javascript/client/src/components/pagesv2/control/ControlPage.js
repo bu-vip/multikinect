@@ -7,6 +7,7 @@ import SelectCalibrationView from './SelectCalibrationView';
 import NewCalibrationView from './NewCalibrationView';
 import SelectSessionView from './SelectSessionView';
 import RecordingHomeView from './RecordingHomeView';
+import RecordingPage from './RecordingPage';
 
 let styles = {
   base: {}
@@ -36,6 +37,9 @@ class ControlView extends Component {
           break;
         case 'SESSION_IDLE':
           view = (<RecordingHomeView controllerState={this.props.controllerState}/>);
+          break;
+        case 'RECORDING_DATA':
+          view = (<RecordingPage controllerState={this.props.controllerState}/>);
           break;
         default:
           console.log("Unknown state: " + this.props.controllerState.state);
@@ -69,9 +73,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleClick: (event) => {
-      dispatch(push(ConsolePage.url()));
-    },
   };
 };
 
