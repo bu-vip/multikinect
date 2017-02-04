@@ -10,10 +10,7 @@ import {
 } from './actions/actions';
 import {sendGetStateRequest} from './api/api';
 
-import SelectCalibrationPage from './components/pagesv2/SelectCalibrationPage';
-import NewCalibrationPage from './components/pagesv2/NewCalibrationPage';
-import SelectSessionPage from './components/pagesv2/SelectSessionPage';
-import RecordingHomePage from './components/pagesv2/RecordingHomePage';
+import ControlPage from './components/pagesv2/ControlPage';
 
 const PADDING = 16;
 let styles = {
@@ -74,35 +71,7 @@ class AppView extends Component {
   tick = () => {
     sendGetStateRequest()
     .then(json => {
-      const oldState = this.props.controllerState;
       this.props.handleControllerStateUpdate(json);
-
-      // TODO(doug) - This seems a little hacky, perhaps there is a better way?
-      // Route to correct page
-      if (!oldState || oldState.state != json.state) {
-        let newLocation;
-        switch (json.state) {
-          case 'SELECT_CALIBRATION':
-            newLocation = SelectCalibrationPage.url();
-            break;
-          case 'NEW_CALIBRATION':
-            newLocation = NewCalibrationPage.url();
-            break;
-          case 'SELECT_SESSION':
-            newLocation = SelectSessionPage.url();
-            break;
-          case 'SESSION_IDLE':
-            newLocation = RecordingHomePage.url();
-            break;
-          default:
-            console.log("Unknown state: " + json.state);
-            newLocation = '/';
-            break;
-        }
-
-        console.log("Routing to: " + newLocation);
-        this.props.handleStateChange(newLocation);
-      }
     })
     .catch(error => {
       this.props.handleErrorGettingControllerState(error);
@@ -114,14 +83,11 @@ class AppView extends Component {
       <div style={[styles.topBar]}>
         <div style={[styles.topBarTitle]}>multikinect</div>
         <div style={[styles.linkBar]}>
-                <span style={[styles.linkButton]} key={'linkConsole'}
-                      onClick={this.props.handleConsoleLink}>
-                    <div style={[styles.link]}>Console</div>
-                </span>
-          <span style={[styles.linkButton]} key={'linkFeed'}
-                onClick={this.props.handleFeedLink}>
-                    <div style={[styles.link]}>Feed</div>
-                </span>
+          <span style={[styles.linkButton]}
+                key={'linkConsole'}
+                onClick={this.props.handleControlLink}>
+            <div style={[styles.link]}>Control</div>
+          </span>
         </div>
         <ErrorBar errors={this.props.error.toArray()}/>
       </div>
@@ -147,14 +113,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     handleControllerStateUpdate: (state) => {
       dispatch(receivedControllerState(state));
     },
-    handleStateChange: (newLocation) => {
-      dispatch(replace(newLocation));
-    },
     handleErrorGettingControllerState: (error) => {
       dispatch(errorGettingControllerState(error));
     },
-    handleConsoleLink: (event) => {
-      dispatch(push(ConsolePage.url()));
+    handleControlLink: (event) => {
+      dispatch(push(ControlPage.url()));
     },
     handleFeedLink: (event) => {
       dispatch(push(FeedPage.url()));

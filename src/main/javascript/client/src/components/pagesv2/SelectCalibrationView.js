@@ -90,21 +90,5 @@ SelectCalibrationView.propTypes = {
   controllerState: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    controllerState: state.controllerState
-  };
-};
+export default SelectCalibrationView;
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-const SelectCalibrationPage = connect(mapStateToProps, mapDispatchToProps)(
-    SelectCalibrationView);
-
-const baseUrl = '/';
-SelectCalibrationPage.route = baseUrl;
-SelectCalibrationPage.url = () => baseUrl;
-
-export default SelectCalibrationPage;

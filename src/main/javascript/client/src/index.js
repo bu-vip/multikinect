@@ -13,10 +13,7 @@ import reducers from './reducers/reducers';
 import ConsolePage from './components/ConsolePage';
 import FeedPage from './components/FeedPage';
 
-import SelectCalibrationPage from './components/pagesv2/SelectCalibrationPage';
-import NewCalibrationPage from './components/pagesv2/NewCalibrationPage';
-import SelectSessionPage from './components/pagesv2/SelectSessionPage';
-import RecordingHomePage from './components/pagesv2/RecordingHomePage';
+import ControlPage from './components/pagesv2/ControlPage';
 
 const middleware = routerMiddleware(browserHistory);
 const store = createStore(
@@ -32,11 +29,7 @@ render(
     <Provider store={store}>
       <Router history={history}>
         <Route path="/" component={App}>
-          <IndexRoute component={SelectCalibrationPage}/>
-          <Route path={NewCalibrationPage.route}
-                 component={NewCalibrationPage}/>
-          <Route path={SelectSessionPage.route} component={SelectSessionPage}/>
-          <Route path={RecordingHomePage.route} component={RecordingHomePage}/>
+          <IndexRoute component={ControlPage}/>
           <Route path={FeedPage.route} component={FeedPage}/>
         </Route>
       </Router>

@@ -138,25 +138,5 @@ NewCalibrationView.propTypes = {
   controllerState: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    controllerState: state.controllerState
-  };
-};
+export default NewCalibrationView;
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    handleClick: (event) => {
-      dispatch(push(ConsolePage.url()));
-    },
-  };
-};
-
-const NewCalibrationPage = connect(mapStateToProps, mapDispatchToProps)(
-    NewCalibrationView);
-
-const baseUrl = '/newCalibration';
-NewCalibrationPage.route = baseUrl;
-NewCalibrationPage.url = () => baseUrl;
-
-export default NewCalibrationPage;

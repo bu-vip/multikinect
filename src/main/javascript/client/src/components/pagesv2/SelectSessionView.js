@@ -91,21 +91,4 @@ SelectSessionView.propTypes = {
   controllerState: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    controllerState: state.controllerState
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-const SelectSessionPage = connect(mapStateToProps, mapDispatchToProps)(
-    SelectSessionView);
-
-const baseUrl = '/selectSession';
-SelectSessionPage.route = baseUrl;
-SelectSessionPage.url = () => baseUrl;
-
-export default SelectSessionPage;
+export default SelectSessionView;

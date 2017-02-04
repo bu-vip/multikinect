@@ -159,25 +159,4 @@ RecordingHomeView.propTypes = {
   controllerState: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    controllerState: state.controllerState
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    handleClick: (event) => {
-      dispatch(push(ConsolePage.url()));
-    },
-  };
-};
-
-const RecordingHomePage = connect(mapStateToProps, mapDispatchToProps)(
-    RecordingHomeView);
-
-const baseUrl = '/recordingHome';
-RecordingHomePage.route = baseUrl;
-RecordingHomePage.url = () => baseUrl;
-
-export default RecordingHomePage;
+export default RecordingHomeView;
