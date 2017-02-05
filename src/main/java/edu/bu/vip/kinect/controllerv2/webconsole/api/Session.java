@@ -10,6 +10,10 @@ public class Session {
   private Instant dateCreated;
   private List<Recording> recordings;
 
+  protected Session() {
+    // Jackson
+  }
+
   public Session(long id, String name, Instant dateCreated, List<Recording> recordings) {
     this.id = id;
     this.name = name;

@@ -7,6 +7,7 @@ import DataTable from '../DataTable';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
 import DataForm from './DataForm';
+import {createRecordingRequest, deleteRecordingRequest, finishSessionRequest} from '../../../api/api';
 
 let styles = {
   base: {
@@ -50,7 +51,7 @@ class RecordingHomeView extends Component {
     this.state = {
       // Start as editing info because you are creating a new session
       // TODO(doug) - Check if session info is default values, set false if not
-      editingInfo: true,
+      editingInfo: false,
       newRecording: false
     };
   }
@@ -79,7 +80,7 @@ class RecordingHomeView extends Component {
 
   onNewRecording = (info) => {
     console.log("new recording");
-    // todo(doug) - send
+    createRecordingRequest(info);
   };
 
   onCancelNewRecording = (info) => {
@@ -99,7 +100,12 @@ class RecordingHomeView extends Component {
 
   handleDeleteRecording = (id) => {
     console.log("Delete recording: " + id);
-    // TODO(doug) - implement
+    deleteRecordingRequest(id);
+  };
+
+  handleBackNavigation = () => {
+    // TODO(doug) - use
+    finishSessionRequest();
   };
 
   render() {

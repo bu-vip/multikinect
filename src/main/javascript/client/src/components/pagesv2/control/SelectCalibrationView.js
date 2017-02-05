@@ -5,6 +5,8 @@ import React, {Component, PropTypes} from 'react';
 import DataTable from '../DataTable';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
+import DataForm from './DataForm';
+import {newCalibration, selectCalibration, deleteCalibration} from '../../../api/api';
 
 let styles = {
   base: {
@@ -25,37 +27,67 @@ let styles = {
 class SelectCalibrationView extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      newCalibration: false
+    }
   }
 
   handleNewCalibrationClick = (event) => {
     // TODO(doug) - implement
     console.log("New calibration...");
+    this.setState({
+      newCalibration: true
+    });
   };
 
   handleSelectCalibration = (id) => {
-    // TODO(doug) - implement
-    console.log("Select calibration: " + id);
+    selectCalibration(id);
   };
 
   handleDeleteCalibration = (id) => {
-    // TODO(doug) - implement
     console.log("Delete calibration: " + id);
+    deleteCalibration(id);
 
     // Stop propagation so select is not called
     event.stopPropagation();
   };
 
-  render() {
-    const controllerState = this.props.controllerState;
+  handleSaveNewCalibration = (info) => {
+    //  TODO(doug) implement
+    console.log("Create new calibration");
+    newCalibration(info);
+  };
 
-    if (controllerState) {
+  handleCancelNewCalibration = (info) => {
+    console.log("Cancel new calibration");
+    this.setState({
+      newCalibration: false
+    });
+  };
+
+  render() {
+    if (this.state.newCalibration) {
+      return (<div style={[styles.base]}>
+        <DataForm
+            title="New Calibration"
+            fields={[{
+              key: "name",
+              title: "Name",
+              type: "text"
+            }]}
+            onSaveClick={this.handleSaveNewCalibration}
+            onCancelClick={this.handleCancelNewCalibration}
+        />
+      </div>);
+    } else {
       // Create calibration table
       const header = ["Name", "ID", "Error", "Date Created", ""];
       const tableKeys = ['name', 'id', 'error', 'dateCreated'];
       const calibrationTable = (<DataTable
           header={header}
           idKey="id"
-          content={controllerState.calibrations}
+          content={this.props.controllerState.calibrations}
           contentKeys={tableKeys}
           onRowClick={this.handleSelectCalibration}
           rightIcon="delete"
@@ -75,9 +107,6 @@ class SelectCalibrationView extends Component {
         </div>
         {calibrationTable}
       </div>);
-    }
-    else {
-      return (<div>Loading...</div>);
     }
   }
 }

@@ -9,6 +9,10 @@ public class Recording {
   private String name;
   private Instant dateCreated;
 
+  protected Recording() {
+    // Jackson
+  }
+
   public Recording(long sessionId, long id, String name, Instant dateCreated) {
     this.sessionId = sessionId;
     this.id = id;

@@ -8,6 +8,7 @@ import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
 import DataTable from '../DataTable';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
+import {newFrameRequest, finishCalibrationRequest, deleteFrameRequest} from '../../../api/api';
 
 let styles = {
   base: {
@@ -32,7 +33,7 @@ class NewCalibrationView extends Component {
     this.state = {
       // Start as editing info because you are creating a new session
       // TODO(doug) - Check if session info is default values, set false if not
-      editingInfo: true
+      editingInfo: false
     };
   }
 
@@ -61,16 +62,19 @@ class NewCalibrationView extends Component {
   handleNewFrameClick = () => {
     // TODO(doug) - implement
     console.log("New Frame clicked");
+    newFrameRequest();
   };
 
   handleDeleteFrame = (id) => {
     console.log("Delete frame: " + id);
     // TODO(doug) - implement
+    deleteFrameRequest(id);
   };
 
   handleFinishClicked = () => {
     // TODO(doug) - implement
     console.log("Finished clicked");
+    finishCalibrationRequest();
   };
 
   render() {

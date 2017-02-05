@@ -43,60 +43,40 @@ public class StateHandler implements Handler {
     switch (controller.getState()) {
       case SELECT_CALIBRATION: {
         // TODO(doug) - implement
-        List<Calibration> calibrations = new LinkedList<>();
-        calibrations.add(new Calibration(11, "Calibration 1", Instant.now(), null, 0.1));
-        calibrations.add(new Calibration(12, "My Calibration is cooler than yours", Instant.now(), null, 0.2));
-        calibrations.add(new Calibration(13, "I'm yours", Instant.now(), null, 0.2));
-        state = new SelectCalibrationState(calibrations);
+        state = new SelectCalibrationState(controller.getCalibrations());
         break;
       }
 
       case NEW_CALIBRATION: {
         // TODO(doug) - implement
-        List<CalibrationFrame> frames = new LinkedList<>();
-        frames.add(new CalibrationFrame(11, 0.1, Instant.now()));
-        frames.add(new CalibrationFrame(21, 0.3, Instant.now()));
-        Calibration calibration = new Calibration(1, "Calibration 1", Instant.now(), frames, 0.2);
-        state = new NewCalibrationState(calibration);
+        state = new NewCalibrationState(controller.getCurrentCalibration());
         break;
       }
 
       case NEW_CALIBRATION_FRAME: {
         // TODO(doug) - implement
-        Calibration calibration = new Calibration(1, "Calibration 1", Instant.now(), null, 0.3);
-        state = new NewCalibrationFrameState(calibration);
+        state = new NewCalibrationFrameState(controller.getCurrentCalibration());
         break;
       }
 
       case SELECT_SESSION: {
         // TODO(doug) - implement
-        List<Session> sessions = new LinkedList<>();
-        List<Recording> recordings = new LinkedList<>();
-        recordings.add(new Recording(1, 2, "myRecording", Instant.now()));
-        recordings.add(new Recording(1, 3, "recording2", Instant.now()));
-        sessions.add(new Session(1, "Session 1", Instant.now(), recordings));
-        state = new SelectSessionState(null, sessions);
+        state = new SelectSessionState(controller.getCurrentCalibration(),
+            controller.getSessions());
         break;
       }
 
       case SESSION_IDLE: {
         // TODO(doug) - implement
-        List<Recording> recordings = new LinkedList<>();
-        recordings.add(new Recording(1, 2, "myRecording", Instant.now()));
-        recordings.add(new Recording(1, 3, "recording2", Instant.now()));
-        Session session = new Session(1, "Session 1", Instant.now(), recordings);
-        state = new SessionIdleState(null, session);
+        state = new SessionIdleState(controller.getCurrentCalibration(),
+            controller.getCurrentSession());
         break;
       }
 
       case RECORDING_DATA: {
         // TODO(doug) - implement
-        List<Recording> recordings = new LinkedList<>();
-        recordings.add(new Recording(1, 2, "myRecording", Instant.now()));
-        recordings.add(new Recording(1, 3, "recording2", Instant.now()));
-        Session session = new Session(1, "Session 1", Instant.now(), recordings);
-        state = new RecordingDataState(null, session,
-            new Recording(1, 4, "newRecording", Instant.ofEpochSecond(100000000)));
+        state = new RecordingDataState(controller.getCurrentCalibration(),
+            controller.getCurrentSession(), controller.getCurrentRecording());
         break;
       }
 

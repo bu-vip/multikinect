@@ -12,6 +12,10 @@ public class Calibration {
   private List<CalibrationFrame> frames;
   private double error;
 
+  protected Calibration() {
+    // Jackson
+  }
+
   public Calibration(long id, String name, Instant dateCreated, List<CalibrationFrame> frames, double error) {
     this.id = id;
     this.name = name;

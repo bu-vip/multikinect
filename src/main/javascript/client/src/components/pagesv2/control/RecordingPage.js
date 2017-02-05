@@ -13,6 +13,7 @@ import {
 import DataTable from '../DataTable';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
+import {stopRecordingRequest} from '../../../api/api';
 
 let styles = {
   base: {
@@ -57,6 +58,7 @@ class RecordingView extends Component {
   stopRecording = () => {
     console.log("stop recording");
     // TODO(doug) - implement
+    stopRecordingRequest();
   };
 
   // Taken from: http://stackoverflow.com/a/19700358/7384501
@@ -70,7 +72,7 @@ class RecordingView extends Component {
     minutes = (minutes < 10) ? "0" + minutes : minutes;
     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-    return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+    return hours + ":" + minutes + ":" + seconds;
   }
 
   render() {

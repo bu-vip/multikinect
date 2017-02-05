@@ -8,6 +8,10 @@ public class CalibrationFrame {
   private double error;
   private Instant dateCreated;
 
+  protected CalibrationFrame() {
+    // Jackson
+  }
+
   public CalibrationFrame(long id, double error, Instant dateCreated) {
     this.id = id;
     this.error = error;

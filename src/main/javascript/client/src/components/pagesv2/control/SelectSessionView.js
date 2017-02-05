@@ -6,6 +6,7 @@ import DateTable from '../DataTable';
 import DataForm from './DataForm';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
+import {createSessionRequest, selectSessionRequest, deleteSessionRequest, cancelSelectSessionRequest} from '../../../api/api';
 
 let styles = {
   base: {
@@ -41,6 +42,10 @@ class SelectSessionView extends Component {
   handleSaveNewSession = (info) => {
     //  TODO(doug) implement
     console.log("Create new session");
+    createSessionRequest(info);
+    this.setState({
+      newSession: false
+    });
   };
 
   handleCancelNewSession = (info) => {
@@ -53,14 +58,22 @@ class SelectSessionView extends Component {
   handleSelectSession = (id) => {
     // TODO(doug) - implement
     console.log("Select session: " + id);
+    selectSessionRequest(id);
   };
 
   handleDeleteSession = (id) => {
     // TODO(doug) - implement
     console.log("Delete session: " + id);
 
+    deleteSessionRequest(id);
+
     // Stop propagation so select is not called
     event.stopPropagation();
+  };
+
+  handleBackNavigation = () => {
+    // TODO(doug) - use
+    cancelSelectSessionRequest();
   };
 
   render() {

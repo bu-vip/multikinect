@@ -1,5 +1,5 @@
 {
-  "name": "webconsole",
+  "name": "multikinect",
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -34,5 +34,5 @@
     "nwb": "0.12.x"
   },
   "author": "Doug Roeper",
-  "repository": ""
+  "repository": "https://github.com/bu-vip/multikinect"
 }
