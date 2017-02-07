@@ -27,8 +27,8 @@ import com.roeper.bu.kinect.Protos.Frame;
 
 import edu.bu.vip.kinect.controller.ConfigManager;
 import edu.bu.vip.kinect.controller.calibration.Protos.CalibrationFrame;
-import edu.bu.vip.kinect.controller.camera.CameraManager;
-import edu.bu.vip.kinect.controller.camera.MessageWriter;
+import edu.bu.vip.kinect.controllerv2.camera.CameraManager;
+import edu.bu.vip.kinect.controllerv2.camera.MessageWriter;
 import edu.bu.vip.kinect.sync.CoordinateTransform.Transform;
 import edu.bu.vip.kinect.sync.FrameReader;
 

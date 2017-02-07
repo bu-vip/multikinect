@@ -1,13 +1,12 @@
-package edu.bu.vip.kinect.controller.camera;
+package edu.bu.vip.kinect.controllerv2.camera;
 
+import edu.bu.vip.kinect.controllerv2.camera.CameraChangeEvent.Type;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -20,7 +19,6 @@ import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
 import com.roeper.bu.kinect.master.camera.Grpc.RegistrationRequest;
 import com.roeper.bu.kinect.master.camera.Grpc.RegistrationResponse;
 
-import edu.bu.vip.kinect.controller.camera.CameraChangeEvent.Type;
 import io.grpc.Channel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;

@@ -2,15 +2,13 @@ package edu.bu.vip.kinect.controllerv2.webconsole;
 
 import static ratpack.jackson.Jackson.json;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.protobuf.Timestamp;
-import edu.bu.vip.kinect.controllerv2.Controllerv2;
-import edu.bu.vip.kinect.controllerv2.Controllerv2.State;
+import edu.bu.vip.kinect.controller.calibration.Protos;
+import edu.bu.vip.kinect.controllerv2.Controller;
+import edu.bu.vip.kinect.controllerv2.calibration.CalibrationLoader;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationFrame;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.ControllerState;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.NewCalibrationFrameState;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.NewCalibrationState;
@@ -18,10 +16,6 @@ import edu.bu.vip.kinect.controllerv2.webconsole.api.state.RecordingDataState;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.SelectCalibrationState;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.SelectSessionState;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.SessionIdleState;
-import edu.bu.vip.kinect.util.TimestampUtils;
-import java.time.Instant;
-import java.util.LinkedList;
-import java.util.List;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 
@@ -30,11 +24,13 @@ public class StateHandler implements Handler {
 
   public static final String URL_PATH = "_/state";
 
-  private Controllerv2 controller;
+  private Controller controller;
+  private CalibrationLoader calibrationLoader;
 
   @Inject
-  protected StateHandler(Controllerv2 controller) {
+  protected StateHandler(Controller controller, CalibrationLoader calibrationLoader) {
     this.controller = controller;
+    this.calibrationLoader = calibrationLoader;
   }
 
   @Override
@@ -42,8 +38,12 @@ public class StateHandler implements Handler {
     ControllerState state = null;
     switch (controller.getState()) {
       case SELECT_CALIBRATION: {
-        // TODO(doug) - implement
-        state = new SelectCalibrationState(controller.getCalibrations());
+        // NOTE(doug) - Could do some caching here, if needed
+        ImmutableList.Builder<Calibration> builder = ImmutableList.builder();
+        for (Protos.Calibration calibration : calibrationLoader.loadCalibrations()) {
+          builder.add(new Calibration(calibration));
+        }
+        state = new SelectCalibrationState(builder.build());
         break;
       }
 

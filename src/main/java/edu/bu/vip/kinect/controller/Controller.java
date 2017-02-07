@@ -4,13 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.roeper.bu.kinect.camera.Grpc.RecordOptions;
 
 import edu.bu.vip.kinect.controller.calibration.CalibrationManager;
-import edu.bu.vip.kinect.controller.camera.CameraManager;
+import edu.bu.vip.kinect.controllerv2.camera.CameraManager;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 
-import edu.bu.vip.kinect.controller.camera.FrameReceivedEvent;
+import edu.bu.vip.kinect.controllerv2.camera.FrameReceivedEvent;
 import edu.bu.vip.kinect.controller.realtime.RealtimeManager;
 import edu.bu.vip.kinect.controller.webconsole.Protos.FeedMessage;
 import io.netty.buffer.ByteBuf;

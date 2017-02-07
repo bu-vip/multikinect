@@ -1,4 +1,4 @@
-package edu.bu.vip.kinect.controller.camera;
+package edu.bu.vip.kinect.controllerv2.camera;
 
 import java.io.IOException;
 import java.io.OutputStream;

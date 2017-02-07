@@ -3,32 +3,27 @@ package edu.bu.vip.kinect.controllerv2;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.sun.org.apache.bcel.internal.generic.Select;
 import edu.bu.vip.kinect.controller.webconsole.DevRedirectHandler;
-import edu.bu.vip.kinect.controllerv2.webconsole.SelectCalibrationHandler;
+import edu.bu.vip.kinect.controllerv2.calibration.CalibrationDataLocation;
+import edu.bu.vip.kinect.controllerv2.webconsole.ApiHandler;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationFrame;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.state.ControllerState;
 import edu.bu.vip.kinect.controllerv2.webconsole.StateHandler;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Phaser;
-import javassist.NotFoundException;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.guice.Guice;
 import ratpack.server.RatpackServer;
 
 @Singleton
-public class Controllerv2 {
+public class Controller {
 
   public enum State {
     SELECT_CALIBRATION,
@@ -59,14 +54,17 @@ public class Controllerv2 {
         b.module(new AbstractModule() {
           @Override
           protected void configure() {
-            bind(SelectCalibrationHandler.class);
+            bind(ApiHandler.class);
             bind(StateHandler.class);
             bind(DevRedirectHandler.class);
+            // TODO(doug) - Make a command line arg
+            bindConstant().annotatedWith(CalibrationDataLocation.class)
+                .to("/home/doug/Desktop/multikinect/calibration");
           }
         });
       }));
       s.handlers(chain -> {
-        chain.insert(SelectCalibrationHandler.class);
+        chain.insert(ApiHandler.class);
         chain.get(StateHandler.URL_PATH, StateHandler.class);
         chain.get("::.*", DevRedirectHandler.class);
       });
@@ -101,7 +99,7 @@ public class Controllerv2 {
   }
 
   public Session getCurrentSession() {
-      return sessions.get(currentSession);
+    return sessions.get(currentSession);
   }
 
   public Recording getCurrentRecording() {

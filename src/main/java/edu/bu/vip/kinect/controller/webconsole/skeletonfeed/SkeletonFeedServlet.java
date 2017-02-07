@@ -4,9 +4,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import edu.bu.vip.kinect.controller.Controller;
-import edu.bu.vip.kinect.controller.camera.CameraBus;
-import edu.bu.vip.kinect.controller.camera.FrameBus;
+import edu.bu.vip.kinect.controllerv2.camera.CameraBus;
+import edu.bu.vip.kinect.controllerv2.camera.FrameBus;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 import ratpack.websocket.WebSockets;

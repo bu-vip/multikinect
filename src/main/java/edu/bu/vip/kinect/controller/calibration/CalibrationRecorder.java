@@ -20,8 +20,8 @@ import com.roeper.bu.kinect.Protos.Frame;
 import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
 
 import edu.bu.vip.kinect.controller.calibration.Protos.CalibrationFrame;
-import edu.bu.vip.kinect.controller.camera.FrameReceivedEvent;
-import edu.bu.vip.kinect.controller.camera.MessageWriter;
+import edu.bu.vip.kinect.controllerv2.camera.FrameReceivedEvent;
+import edu.bu.vip.kinect.controllerv2.camera.MessageWriter;
 
 public class CalibrationRecorder {
 

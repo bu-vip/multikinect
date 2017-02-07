@@ -1,4 +1,4 @@
-package edu.bu.vip.kinect.controller.camera;
+package edu.bu.vip.kinect.controllerv2.camera;
 
 import com.google.inject.BindingAnnotation;
 import java.lang.annotation.Target;

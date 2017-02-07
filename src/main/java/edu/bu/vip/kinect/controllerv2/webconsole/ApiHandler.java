@@ -4,7 +4,7 @@ import static ratpack.jackson.Jackson.json;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import edu.bu.vip.kinect.controllerv2.Controllerv2;
+import edu.bu.vip.kinect.controllerv2.Controller;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
@@ -13,7 +13,7 @@ import ratpack.handling.Chain;
 import ratpack.http.Status;
 
 @Singleton
-public class SelectCalibrationHandler implements Action<Chain> {
+public class ApiHandler implements Action<Chain> {
   // TODO(doug) - Consistent CRUD naming style
   private static final String BASE_URL = "_";
   private static final String NEW_CALIBRATION_URL = BASE_URL + "/newCalibration";
@@ -32,11 +32,11 @@ public class SelectCalibrationHandler implements Action<Chain> {
   private static final String FINISH_SESSION_URL = BASE_URL + "/finishSession";
   private static final String STOP_RECORDING_URL = BASE_URL + "/stopRecording";
 
-  private Controllerv2 controllerv2;
+  private Controller controller;
 
   @Inject
-  protected SelectCalibrationHandler(Controllerv2 controllerv2) {
-    this.controllerv2 = controllerv2;
+  protected ApiHandler(Controller controller) {
+    this.controller = controller;
   }
 
   @Override
@@ -44,7 +44,7 @@ public class SelectCalibrationHandler implements Action<Chain> {
     chain.post(NEW_CALIBRATION_URL, (context) -> {
       // TODO(doug) - implement
       context.parse(Calibration.class).then(calibration -> {
-        controllerv2.newCalibration(calibration.getName());
+        controller.newCalibration(calibration.getName());
         context.getResponse().status(Status.OK).send();
       });
     });
@@ -52,21 +52,21 @@ public class SelectCalibrationHandler implements Action<Chain> {
     chain.get(SELECT_CALIBRATION_URL, (context) -> {
       // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
-      controllerv2.selectCalibration(id);
+      controller.selectCalibration(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.get(DELETE_CALIBRATION_URL, (context) -> {
       // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
-      controllerv2.deleteCalibration(id);
+      controller.deleteCalibration(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(NEW_FRAME_URL, context -> {
       // TODO(doug) - implement
 
-      controllerv2.newCalibrationFrame();
+      controller.newCalibrationFrame();
       context.getResponse().status(Status.OK).send();
     });
 
@@ -80,20 +80,20 @@ public class SelectCalibrationHandler implements Action<Chain> {
     chain.post(FINISH_CALIBRATION_URL, context -> {
       // TODO(doug) - implement
 
-      controllerv2.finishNewCalibration();
+      controller.finishNewCalibration();
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(FINISH_FRAME_URL, context -> {
       // TODO(doug) - implement
-      controllerv2.finishNewCalibrationFrame();
+      controller.finishNewCalibrationFrame();
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(CREATE_SESSION_URL, context -> {
       // TODO(doug) - implement
       context.parse(Session.class).then(session -> {
-        controllerv2.createSession(session.getName());
+        controller.createSession(session.getName());
         context.getResponse().status(Status.OK).send();
       });
     });
@@ -101,26 +101,26 @@ public class SelectCalibrationHandler implements Action<Chain> {
     chain.get(SELECT_SESSION_URL, context -> {
       // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
-      controllerv2.selectSession(id);
+      controller.selectSession(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.get(DELETE_SESSION_URL, context -> {
       // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
-      controllerv2.deleteSession(id);
+      controller.deleteSession(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(CANCEL_SELECT_SESSION_URL, context -> {
       // TODO(doug) - implement
-      controllerv2.finishSelectSession();
+      controller.finishSelectSession();
     });
 
     chain.post(NEW_RECORDING_URL, context -> {
       // TODO(doug) - implement
       context.parse(Recording.class).then(recording -> {
-        controllerv2.newRecording(recording.getName());
+        controller.newRecording(recording.getName());
         context.getResponse().status(Status.OK).send();
       });
     });
@@ -128,19 +128,19 @@ public class SelectCalibrationHandler implements Action<Chain> {
     chain.get(DELETE_RECORDING_URL, context -> {
       // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
-      controllerv2.deleteRecording(id);
+      controller.deleteRecording(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(FINISH_SESSION_URL, context -> {
       // TODO(doug) - implement
-      controllerv2.finishSession();
+      controller.finishSession();
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(STOP_RECORDING_URL, context -> {
       // TODO(doug) - implement
-      controllerv2.stopRecording();
+      controller.stopRecording();
       context.getResponse().status(Status.OK).send();
     });
   }

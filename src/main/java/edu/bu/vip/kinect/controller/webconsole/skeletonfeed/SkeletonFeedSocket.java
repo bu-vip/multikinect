@@ -1,10 +1,13 @@
 package edu.bu.vip.kinect.controller.webconsole.skeletonfeed;
 
+import edu.bu.vip.kinect.controllerv2.camera.CameraBus;
+import edu.bu.vip.kinect.controllerv2.camera.CameraChangeEvent;
+import edu.bu.vip.kinect.controllerv2.camera.FrameBus;
+import edu.bu.vip.kinect.controllerv2.camera.FrameReceivedEvent;
 import java.nio.ByteBuffer;
 import java.util.Base64;
 
 import com.google.common.eventbus.EventBus;
-import edu.bu.vip.kinect.controller.camera.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

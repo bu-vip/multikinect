@@ -1,4 +1,4 @@
-package edu.bu.vip.kinect.controller.camera;
+package edu.bu.vip.kinect.controllerv2.camera;
 
 import java.util.concurrent.Executors;
 

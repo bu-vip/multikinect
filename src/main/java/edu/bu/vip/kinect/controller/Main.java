@@ -1,6 +1,6 @@
 package edu.bu.vip.kinect.controller;
 
-import edu.bu.vip.kinect.controller.camera.CameraModule;
+import edu.bu.vip.kinect.controllerv2.camera.CameraModule;
 import java.util.Scanner;
 
 import edu.bu.vip.kinect.controller.webconsole.DevRedirectHandler;
