@@ -38,7 +38,6 @@ java_library(
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
         "//:org_slf4j_slf4j_api",
-        "//:org_slf4j_slf4j_log4j12",
         "//src/main/java/edu/bu/vip/kinect/sync:calibration",
         "//src/main/java/edu/bu/vip/kinect/sync:coordinatetransform",
         "//src/main/java/edu/bu/vip/kinect/sync:framereader",
@@ -48,5 +47,31 @@ java_library(
         "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
         "//src/main/proto:skeletonfeed",
+    ],
+)
+
+java_library(
+    name = "framereader",
+    srcs = [
+        "FrameReader.java",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:com_google_guava_guava",
+        "//src/main/proto:frame",
+    ],
+)
+
+java_library(
+    name = "fileframepublisher",
+    srcs = ["FileFramePublisher.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":framebus",
+        ":framereader",
+        "//:com_google_guava_guava",
+        "//:org_slf4j_slf4j_api",
+        "//src/main/proto:camera_manager",
+        "//src/main/proto:frame",
     ],
 )

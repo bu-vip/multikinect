@@ -15,8 +15,10 @@ java_test(
         "//src/main/java/edu/bu/vip/kinect/controllerv2/calibration:calibrationdatadb",
         "//src/main/java/edu/bu/vip/kinect/controllerv2/calibration:fragmenter",
         "//src/main/java/edu/bu/vip/kinect/controllerv2/calibration:inmemorycalibrationdatadb",
+        "//src/main/java/edu/bu/vip/kinect/controllerv2/camera:fileframepublisher",
         "//src/main/java/edu/bu/vip/kinect/controllerv2/camera:framebus",
         "//src/main/proto:calibration",
+        "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
     ],
 )
