@@ -1,10 +1,11 @@
-package edu.bu.vip.kinect.controller.calibration;
+package edu.bu.vip.kinect.controllerv2.calibration;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,7 @@ import edu.bu.vip.kinect.controllerv2.camera.FrameBus;
 import edu.bu.vip.kinect.controllerv2.camera.FrameReceivedEvent;
 
 public class Fragmenter {
+
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   // Counter for assigning fragment IDs
@@ -30,21 +32,24 @@ public class Fragmenter {
   private final Map<Long, Long> fragmentLastTime = new HashMap<>();
   // Maps a pair of fragment IDs to a calibration frame.
   private final Map<ImmutableSet<Long>, CalibrationFrame> calibrationFrames = new HashMap<>();
-  private EventBus calibrationFrameBus;
   private final EventBus frameBus;
+  private final CalibrationDataDB calibrationDataDB;
+  private Consumer<CalibrationFrame> frameConsumer;
 
   @Inject
-  protected Fragmenter(@FrameBus EventBus frameBus, @CalibrationFrameBus EventBus calibrationFrameBus) {
+  protected Fragmenter(@FrameBus EventBus frameBus, CalibrationDataDB calibrationDataDB) {
     this.frameBus = frameBus;
-    this.calibrationFrameBus = calibrationFrameBus;
+    this.calibrationDataDB = calibrationDataDB;
   }
 
-  public void start() {
+  public void start(Consumer<CalibrationFrame> frameConsumer) {
     // Reset
     this.cameraFragmentIds.clear();
     this.fragmentLastTime.clear();
     this.calibrationFrames.clear();
-    
+
+    this.frameConsumer = frameConsumer;
+
     // Subscribe to frame received events
     this.frameBus.register(this);
   }
@@ -57,6 +62,9 @@ public class Fragmenter {
   public void onFrameReceivedEvent(FrameReceivedEvent event) {
     final CameraProps props = event.getProps();
     final Frame frame = event.getFrame();
+
+    // Save the camera frame
+    calibrationDataDB.storeFrame(props.getId(), frame);
 
     // Check if the frame has at least 1 skeleton
     if (frame.getSkeletonsCount() > 0) {
@@ -122,8 +130,8 @@ public class Fragmenter {
         builder.setEndTimeA(fragmentLastTime.get(started.getFragmentA()));
         builder.setEndTimeB(fragmentLastTime.get(started.getFragmentB()));
 
-        // Post the new frame
-        calibrationFrameBus.post(builder.build());
+        // Send the new frame
+        frameConsumer.accept(builder.build());
         it.remove();
       }
     }

@@ -1,32 +1,31 @@
-package edu.bu.vip.kinect.controller.calibration;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import org.ejml.data.DenseMatrix64F;
+package edu.bu.vip.kinect.controllerv2.calibration;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Doubles;
 import com.roeper.bu.kinect.Protos.Frame;
-
+import edu.bu.vip.kinect.controller.calibration.Protos.CalibrationFrame;
+import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
 import edu.bu.vip.kinect.sync.CoordinateTransform;
-import edu.bu.vip.kinect.sync.FrameUtils;
 import edu.bu.vip.kinect.sync.CoordinateTransform.Transform;
+import edu.bu.vip.kinect.sync.FrameUtils;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Callable;
+import org.ejml.data.DenseMatrix64F;
 
 
-public class CameraTransform implements Callable<Transform> {
+public class CameraTransform implements Callable<CameraPairCalibration> {
 
   private final String cameraA;
   private final String cameraB;
+  private final CalibrationDataDB calibrationDataDB;
+  private final List<CalibrationFrame> frames = new ArrayList<>();
 
-  public List<ImmutableList<List<Frame>>> framePairs = new ArrayList<>();
-
-  public CameraTransform(String cameraA, String cameraB) {
+  public CameraTransform(String cameraA, String cameraB, CalibrationDataDB calibrationDataDB) {
     this.cameraA = cameraA;
     this.cameraB = cameraB;
+    this.calibrationDataDB = calibrationDataDB;
   }
 
   private static double[] concatList(List<double[]> list) {
@@ -44,24 +43,30 @@ public class CameraTransform implements Callable<Transform> {
     return cameraB;
   }
 
-  public void addFramePair(List<Frame> framesA, List<Frame> framesB) {
-    framePairs.add(ImmutableList.of(framesA, framesB));
+  public void addFrame(CalibrationFrame frame) {
+    frames.add(frame);
   }
 
   @Override
-  public Transform call() throws Exception {
+  public CameraPairCalibration call() throws Exception {
 
     List<double[]> dataX = new ArrayList<>();
     List<double[]> dataY = new ArrayList<>();
 
     // Iterate over all frames
-    framePairs.forEach((pair) -> {
+    frames.forEach((frame) -> {
 
       // TODO(doug) - handle shifts in time
       int offset = 0;
 
-      Iterator<Frame> itA = pair.get(0).iterator();
-      Iterator<Frame> itB = pair.get(1).iterator();
+      // Get the frame data
+      ImmutableList<Frame> framesA = calibrationDataDB
+          .getAllFramesInInterval(frame.getCameraA(), frame.getStartTimeA(), frame.getEndTimeA());
+      ImmutableList<Frame> framesB = calibrationDataDB
+          .getAllFramesInInterval(frame.getCameraB(), frame.getStartTimeB(), frame.getEndTimeB());
+
+      Iterator<Frame> itA = framesA.iterator();
+      Iterator<Frame> itB = framesB.iterator();
 
       int globalFrameIndex = 0;
       while (globalFrameIndex + offset < 0) {
@@ -99,7 +104,13 @@ public class CameraTransform implements Callable<Transform> {
 
     // Calculate transform
     Transform transform = CoordinateTransform.calculateTransform(matX, matY);
-    System.out.println("all err: " + transform.getError());
-    return transform;
+
+    // Build the result
+    CameraPairCalibration.Builder builder = CameraPairCalibration.newBuilder();
+    builder.setCameraA(cameraA);
+    builder.setCameraB(cameraB);
+    builder.addAllTransform(Doubles.asList(transform.getTransform().data));
+    builder.setError(transform.getError());
+    return builder.build();
   }
 }

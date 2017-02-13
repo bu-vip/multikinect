@@ -127,6 +127,7 @@ public class CalibrationManager {
   
   private void calculateTransform() {
     // Separate frames by pair of cameras
+    /*
     HashMap<ImmutableSet<String>, CameraTransform> transforms = new HashMap<>();
     sessionFrames.forEach((frame) -> {
       ImmutableSet<String> key = ImmutableSet.of(frame.getCameraA(), frame.getCameraB());
@@ -173,6 +174,7 @@ public class CalibrationManager {
 
     // Shutdown executor. On normal execution, all tasks should be done.
     executorService.shutdownNow();
+    */
   }
  
   public boolean isSession() {

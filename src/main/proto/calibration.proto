@@ -29,6 +29,7 @@ message CameraPairCalibration {
 	string camera_A = 1;
 	string camera_B = 2;
 	repeated double transform = 3;
+  double error = 4;
 }
 
 message CalibrationFrame {

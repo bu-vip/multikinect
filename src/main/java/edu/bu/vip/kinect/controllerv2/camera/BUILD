@@ -13,10 +13,14 @@ java_library(
     name = "framebus",
     srcs = [
         "FrameBus.java",
+        "FrameReceivedEvent.java",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
+        "//src/main/proto:camera_manager",
+        "//src/main/proto:frame",
     ],
 )
 
