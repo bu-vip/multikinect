@@ -1,35 +1,34 @@
 package edu.bu.vip.kinect.controllerv2.webconsole.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.protobuf.Timestamp;
 import edu.bu.vip.kinect.controller.calibration.Protos;
 import edu.bu.vip.kinect.util.TimestampUtils;
 import java.time.Instant;
 import java.util.List;
 
-public class Calibration {
+public class CalibrationRep {
   private long id;
   private String name;
   private Instant dateCreated;
-  private List<CalibrationFrame> frames;
+  private List<CalibrationRecordingRep> recordings;
   private double error;
 
-  protected Calibration() {
+  protected CalibrationRep() {
     // Jackson
   }
 
-  public Calibration(Protos.Calibration calibration) {
+  public CalibrationRep(Protos.Calibration calibration) {
     this.id = calibration.getId();
     this.name = calibration.getName();
     this.dateCreated = TimestampUtils.from(calibration.getDateCreated());
     // TODO(doug)
   }
 
-  public Calibration(long id, String name, Instant dateCreated, List<CalibrationFrame> frames, double error) {
+  public CalibrationRep(long id, String name, Instant dateCreated, List<CalibrationRecordingRep> recordings, double error) {
     this.id = id;
     this.name = name;
     this.dateCreated = dateCreated;
-    this.frames = frames;
+    this.recordings = recordings;
     this.error = error;
   }
 
@@ -54,7 +53,7 @@ public class Calibration {
   }
 
   @JsonProperty
-  public List<CalibrationFrame> getFrames() {
-    return frames;
+  public List<CalibrationRecordingRep> getRecordings() {
+    return recordings;
   }
 }

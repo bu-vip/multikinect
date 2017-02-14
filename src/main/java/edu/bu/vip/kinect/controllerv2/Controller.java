@@ -7,10 +7,11 @@ import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.webconsole.DevRedirectHandler;
 import edu.bu.vip.kinect.controllerv2.calibration.CalibrationDataLocation;
 import edu.bu.vip.kinect.controllerv2.calibration.CalibrationManager;
+import edu.bu.vip.kinect.controllerv2.calibration.CalibrationModule;
 import edu.bu.vip.kinect.controllerv2.webconsole.ApiHandler;
 import edu.bu.vip.kinect.controllerv2.webconsole.StateHandler;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.RecordingRep;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.SessionRep;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -38,8 +39,8 @@ public class Controller {
 
   private State state = State.SELECT_CALIBRATION;
   private Map<Long, Calibration> calibrations = new ConcurrentHashMap<>();
-  private Map<Long, Session> sessions = new ConcurrentHashMap<>();
-  private Recording newRecording;
+  private Map<Long, SessionRep> sessions = new ConcurrentHashMap<>();
+  private RecordingRep newRecordingRep;
   private long currentCalibration = -1;
   private long currentSession = -1;
 
@@ -56,6 +57,7 @@ public class Controller {
           protected void configure() {
             bind(ApiHandler.class);
             bind(StateHandler.class);
+            bind(CalibrationModule.class);
             bind(DevRedirectHandler.class);
             // TODO(doug) - Make a command line arg
             bindConstant().annotatedWith(CalibrationDataLocation.class)
@@ -94,16 +96,16 @@ public class Controller {
     }
   }
 
-  public ImmutableList<Session> getSessions() {
+  public ImmutableList<SessionRep> getSessions() {
     return ImmutableList.copyOf(sessions.values());
   }
 
-  public Session getCurrentSession() {
+  public SessionRep getCurrentSession() {
     return sessions.get(currentSession);
   }
 
-  public Recording getCurrentRecording() {
-    return newRecording;
+  public RecordingRep getCurrentRecording() {
+    return newRecordingRep;
   }
 
   public void newCalibration(String name) {
@@ -155,9 +157,9 @@ public class Controller {
     logger.info("Creating session: {}", name);
     // TODO(doug) - Check current state
     // TODO(doug) - create new session
-    Session newSession = new Session(System.currentTimeMillis(), name, Instant.now(),
+    SessionRep newSessionRep = new SessionRep(System.currentTimeMillis(), name, Instant.now(),
         new LinkedList<>());
-    sessions.put(newSession.getId(), newSession);
+    sessions.put(newSessionRep.getId(), newSessionRep);
   }
 
   public void selectSession(long sessionId) {
@@ -187,14 +189,14 @@ public class Controller {
     logger.info("Creating new recording");
     // TODO(doug) - Check current state
     state = State.RECORDING_DATA;
-    newRecording = new Recording(currentSession, System.currentTimeMillis(), name, Instant.now());
+    newRecordingRep = new RecordingRep(currentSession, System.currentTimeMillis(), name, Instant.now());
   }
 
   public void deleteRecording(long recordingId) {
     logger.info("Deleting recording: {}", recordingId);
     // TODO(doug) - implement
-    Session session = sessions.get(currentSession);
-    Iterator<Recording> recordings = session.getRecordings().iterator();
+    SessionRep sessionRep = sessions.get(currentSession);
+    Iterator<RecordingRep> recordings = sessionRep.getRecordingReps().iterator();
     while (recordings.hasNext()) {
       if (recordings.next().getId() == recordingId) {
         recordings.remove();
@@ -216,7 +218,7 @@ public class Controller {
     // TODO(doug) - Check current state
     // TODO(doug) - implement
     state = State.SESSION_IDLE;
-    sessions.get(currentSession).getRecordings().add(newRecording);
-    newRecording = null;
+    sessions.get(currentSession).getRecordingReps().add(newRecordingRep);
+    newRecordingRep = null;
   }
 }

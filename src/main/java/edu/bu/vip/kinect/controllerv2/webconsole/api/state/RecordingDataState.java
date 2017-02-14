@@ -2,36 +2,36 @@ package edu.bu.vip.kinect.controllerv2.webconsole.api.state;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.bu.vip.kinect.controllerv2.Controller.State;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationRep;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.RecordingRep;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.SessionRep;
 
 public class RecordingDataState extends ControllerState {
-  private Calibration calibration;
-  private Session session;
-  private Recording recordingData;
+  private CalibrationRep calibrationRep;
+  private SessionRep sessionRep;
+  private RecordingRep recordingData;
 
   public RecordingDataState(
-      Calibration calibration,
-      Session session, Recording recordingData) {
+      CalibrationRep calibrationRep,
+      SessionRep sessionRep, RecordingRep recordingData) {
     super(State.RECORDING_DATA);
-    this.calibration = calibration;
-    this.session = session;
+    this.calibrationRep = calibrationRep;
+    this.sessionRep = sessionRep;
     this.recordingData = recordingData;
   }
 
   @JsonProperty
-  public Calibration getCalibration() {
-    return calibration;
+  public CalibrationRep getCalibrationRep() {
+    return calibrationRep;
   }
 
   @JsonProperty
-  public Session getSession() {
-    return session;
+  public SessionRep getSessionRep() {
+    return sessionRep;
   }
 
   @JsonProperty
-  public Recording getRecordingData() {
+  public RecordingRep getRecordingData() {
     return recordingData;
   }
 }

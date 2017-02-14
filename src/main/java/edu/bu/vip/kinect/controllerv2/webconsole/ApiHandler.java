@@ -5,9 +5,9 @@ import static ratpack.jackson.Jackson.json;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controllerv2.Controller;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationRep;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.RecordingRep;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.SessionRep;
 import ratpack.func.Action;
 import ratpack.handling.Chain;
 import ratpack.http.Status;
@@ -43,7 +43,7 @@ public class ApiHandler implements Action<Chain> {
   public void execute(Chain chain) throws Exception {
     chain.post(NEW_CALIBRATION_URL, (context) -> {
       // TODO(doug) - implement
-      context.parse(Calibration.class).then(calibration -> {
+      context.parse(CalibrationRep.class).then(calibration -> {
         controller.newCalibration(calibration.getName());
         context.getResponse().status(Status.OK).send();
       });
@@ -92,7 +92,7 @@ public class ApiHandler implements Action<Chain> {
 
     chain.post(CREATE_SESSION_URL, context -> {
       // TODO(doug) - implement
-      context.parse(Session.class).then(session -> {
+      context.parse(SessionRep.class).then(session -> {
         controller.createSession(session.getName());
         context.getResponse().status(Status.OK).send();
       });
@@ -119,8 +119,8 @@ public class ApiHandler implements Action<Chain> {
 
     chain.post(NEW_RECORDING_URL, context -> {
       // TODO(doug) - implement
-      context.parse(Recording.class).then(recording -> {
-        controller.newRecording(recording.getName());
+      context.parse(RecordingRep.class).then(recordingRep -> {
+        controller.newRecording(recordingRep.getName());
         context.getResponse().status(Status.OK).send();
       });
     });

@@ -55,7 +55,7 @@ message Recording {
   google.protobuf.Timestamp date_created = 3;
 }
 
-// Calibration Group of Frames
+// CalibrationRep Group of Frames
 message GroupOfFrames {
   string camera_A = 1;
   string camera_B = 2;

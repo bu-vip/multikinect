@@ -47,7 +47,7 @@ public class CalibrationLoader {
         }
       }
     } else {
-      logger.warn("Calibration data directory does not exist: {}", dataDirPath);
+      logger.warn("CalibrationRep data directory does not exist: {}", dataDirPath);
     }
 
     return builder.build();

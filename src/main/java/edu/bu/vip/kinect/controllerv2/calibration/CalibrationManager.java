@@ -27,7 +27,7 @@ public class CalibrationManager {
   private static final int TRANSFORM_TIMEOUT = 1000000;
 
   /**
-   * Calibration from user's perspective:
+   * CalibrationRep from user's perspective:
    * - Start new calibration
    * - Start new "calibration session"
    * - 1 person walks around area, creating frames

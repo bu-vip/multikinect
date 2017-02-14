@@ -8,7 +8,7 @@ import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos;
 import edu.bu.vip.kinect.controllerv2.Controller;
 import edu.bu.vip.kinect.controllerv2.calibration.CalibrationLoader;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationRep;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.ControllerState;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.NewCalibrationFrameState;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.state.NewCalibrationState;
@@ -39,9 +39,9 @@ public class StateHandler implements Handler {
     switch (controller.getState()) {
       case SELECT_CALIBRATION: {
         // NOTE(doug) - Could do some caching here, if needed
-        ImmutableList.Builder<Calibration> builder = ImmutableList.builder();
+        ImmutableList.Builder<CalibrationRep> builder = ImmutableList.builder();
         for (Protos.Calibration calibration : calibrationLoader.loadCalibrations()) {
-          builder.add(new Calibration(calibration));
+          builder.add(new CalibrationRep(calibration));
         }
         state = new SelectCalibrationState(builder.build());
         break;
@@ -49,33 +49,33 @@ public class StateHandler implements Handler {
 
       case NEW_CALIBRATION: {
         // TODO(doug) - implement
-        state = new NewCalibrationState(new Calibration(controller.getCurrentCalibration()));
+        state = new NewCalibrationState(new CalibrationRep(controller.getCurrentCalibration()));
         break;
       }
 
       case NEW_CALIBRATION_FRAME: {
         // TODO(doug) - implement
-        state = new NewCalibrationFrameState(new Calibration(controller.getCurrentCalibration()));
+        state = new NewCalibrationFrameState(new CalibrationRep(controller.getCurrentCalibration()));
         break;
       }
 
       case SELECT_SESSION: {
         // TODO(doug) - implement
-        state = new SelectSessionState(new Calibration(controller.getCurrentCalibration()),
+        state = new SelectSessionState(new CalibrationRep(controller.getCurrentCalibration()),
             controller.getSessions());
         break;
       }
 
       case SESSION_IDLE: {
         // TODO(doug) - implement
-        state = new SessionIdleState(new Calibration(controller.getCurrentCalibration()),
+        state = new SessionIdleState(new CalibrationRep(controller.getCurrentCalibration()),
             controller.getCurrentSession());
         break;
       }
 
       case RECORDING_DATA: {
         // TODO(doug) - implement
-        state = new RecordingDataState(new Calibration(controller.getCurrentCalibration()),
+        state = new RecordingDataState(new CalibrationRep(controller.getCurrentCalibration()),
             controller.getCurrentSession(), controller.getCurrentRecording());
         break;
       }

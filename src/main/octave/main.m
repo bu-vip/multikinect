@@ -2,7 +2,7 @@ clear;
 
 addpath('./absor');
 
-path = '/home/doug/Desktop/kinectdata/9-24/frames/';
+path = '/home/doug/Desktop/kinectdata/9-24/recordings/';
 
 for i = 0:3
   i

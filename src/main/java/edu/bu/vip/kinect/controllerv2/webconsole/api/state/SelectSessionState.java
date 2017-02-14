@@ -2,28 +2,28 @@ package edu.bu.vip.kinect.controllerv2.webconsole.api.state;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.bu.vip.kinect.controllerv2.Controller.State;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationRep;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.SessionRep;
 import java.util.List;
 
 public class SelectSessionState extends ControllerState {
-  private Calibration calibration;
-  private List<Session> sessions;
+  private CalibrationRep calibrationRep;
+  private List<SessionRep> sessionReps;
 
-  public SelectSessionState(Calibration calibration,
-      List<Session> sessions) {
+  public SelectSessionState(CalibrationRep calibrationRep,
+      List<SessionRep> sessionReps) {
     super(State.SELECT_SESSION);
-    this.calibration = calibration;
-    this.sessions = sessions;
+    this.calibrationRep = calibrationRep;
+    this.sessionReps = sessionReps;
   }
 
   @JsonProperty
-  public Calibration getCalibration() {
-    return calibration;
+  public CalibrationRep getCalibrationRep() {
+    return calibrationRep;
   }
 
   @JsonProperty
-  public List<Session> getSessions() {
-    return sessions;
+  public List<SessionRep> getSessionReps() {
+    return sessionReps;
   }
 }

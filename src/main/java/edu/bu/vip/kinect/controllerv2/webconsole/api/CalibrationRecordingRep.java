@@ -3,26 +3,19 @@ package edu.bu.vip.kinect.controllerv2.webconsole.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
 
-public class Recording {
-  private long sessionId;
+public class CalibrationRecordingRep {
   private long id;
-  private String name;
+  private double error;
   private Instant dateCreated;
 
-  protected Recording() {
+  protected CalibrationRecordingRep() {
     // Jackson
   }
 
-  public Recording(long sessionId, long id, String name, Instant dateCreated) {
-    this.sessionId = sessionId;
+  public CalibrationRecordingRep(long id, double error, Instant dateCreated) {
     this.id = id;
-    this.name = name;
+    this.error = error;
     this.dateCreated = dateCreated;
-  }
-
-  @JsonProperty
-  public long getSessionId() {
-    return sessionId;
   }
 
   @JsonProperty
@@ -31,8 +24,8 @@ public class Recording {
   }
 
   @JsonProperty
-  public String getName() {
-    return name;
+  public double getError() {
+    return error;
   }
 
   @JsonProperty

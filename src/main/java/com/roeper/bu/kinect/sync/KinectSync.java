@@ -33,7 +33,7 @@ public class KinectSync {
         "/home/doug/Desktop/kinectdata/9-30/data-corner/take-2016-09-30_12-51-42-293.dat",
         "/home/doug/Desktop/kinectdata/9-30/data-corner/take-2016-09-30_12-52-18-109.dat");
 
-    //DenseMatrix64F transform = Calibration.calculateTransform(kinect1Files, kinect2Files);
+    //DenseMatrix64F transform = CalibrationRep.calculateTransform(kinect1Files, kinect2Files);
     DenseMatrix64F transform = new DenseMatrix64F(4, 4, true,  0.621,0.194,0.759,-2.524  ,
         -0.123,0.981, -0.150,0.471  ,
         -0.774,-0.000,0.633,3.280  ,

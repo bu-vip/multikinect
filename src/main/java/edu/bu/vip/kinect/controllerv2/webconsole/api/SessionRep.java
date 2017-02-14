@@ -4,21 +4,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
 import java.util.List;
 
-public class Session {
+public class SessionRep {
   private long id;
   private String name;
   private Instant dateCreated;
-  private List<Recording> recordings;
+  private List<RecordingRep> recordingReps;
 
-  protected Session() {
+  protected SessionRep() {
     // Jackson
   }
 
-  public Session(long id, String name, Instant dateCreated, List<Recording> recordings) {
+  public SessionRep(long id, String name, Instant dateCreated, List<RecordingRep> recordingReps) {
     this.id = id;
     this.name = name;
     this.dateCreated = dateCreated;
-    this.recordings = recordings;
+    this.recordingReps = recordingReps;
   }
 
   @JsonProperty
@@ -37,7 +37,7 @@ public class Session {
   }
 
   @JsonProperty
-  public List<Recording> getRecordings() {
-    return recordings;
+  public List<RecordingRep> getRecordingReps() {
+    return recordingReps;
   }
 }

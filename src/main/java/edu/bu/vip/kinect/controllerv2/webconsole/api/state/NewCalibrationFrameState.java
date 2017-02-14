@@ -2,19 +2,19 @@ package edu.bu.vip.kinect.controllerv2.webconsole.api.state;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.bu.vip.kinect.controllerv2.Controller.State;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
+import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationRep;
 
 public class NewCalibrationFrameState extends ControllerState {
-  private Calibration calibration;
+  private CalibrationRep calibrationRep;
 
   public NewCalibrationFrameState(
-      Calibration calibration) {
+      CalibrationRep calibrationRep) {
     super(State.NEW_CALIBRATION_FRAME);
-    this.calibration = calibration;
+    this.calibrationRep = calibrationRep;
   }
 
   @JsonProperty
-  public Calibration getCalibration() {
-    return calibration;
+  public CalibrationRep getCalibrationRep() {
+    return calibrationRep;
   }
 }

@@ -6,6 +6,7 @@ java_library(
     name = "manager",
     srcs = [
         "CalibrationManager.java",
+        "CalibrationModule.java",
     ],
     visibility = ["//visibility:public"],
     deps = [
@@ -13,6 +14,7 @@ java_library(
         ":calibrationio",
         ":cameratransform",
         ":fragmenter",
+        ":inmemorycalibrationdatadb",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
         "//:org_ejml_all",
