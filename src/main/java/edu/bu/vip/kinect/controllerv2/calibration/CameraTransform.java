@@ -3,8 +3,8 @@ package edu.bu.vip.kinect.controllerv2.calibration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Doubles;
 import com.roeper.bu.kinect.Protos.Frame;
-import edu.bu.vip.kinect.controller.calibration.Protos.CalibrationFrame;
 import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
+import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.kinect.sync.CoordinateTransform;
 import edu.bu.vip.kinect.sync.CoordinateTransform.Transform;
 import edu.bu.vip.kinect.sync.FrameUtils;
@@ -20,7 +20,7 @@ public class CameraTransform implements Callable<CameraPairCalibration> {
   private final String cameraA;
   private final String cameraB;
   private final CalibrationDataDB calibrationDataDB;
-  private final List<CalibrationFrame> frames = new ArrayList<>();
+  private final List<GroupOfFrames> frames = new ArrayList<>();
 
   public CameraTransform(String cameraA, String cameraB, CalibrationDataDB calibrationDataDB) {
     this.cameraA = cameraA;
@@ -43,7 +43,7 @@ public class CameraTransform implements Callable<CameraPairCalibration> {
     return cameraB;
   }
 
-  public void addFrame(CalibrationFrame frame) {
+  public void addFrame(GroupOfFrames frame) {
     frames.add(frame);
   }
 

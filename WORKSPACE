@@ -167,6 +167,7 @@ maven_jar(name = "org_eclipse_jetty_websocket_websocket_client", artifact = "org
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_common", artifact = "org.eclipse.jetty.websocket:websocket-common:jar:9.4.0.M1")
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_server", artifact = "org.eclipse.jetty.websocket:websocket-server:jar:9.4.0.M1")
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_servlet", artifact = "org.eclipse.jetty.websocket:websocket-servlet:jar:9.4.0.M1")
+maven_jar(name = "io_takari_junit_takari_cpsuite", artifact = "io.takari.junit:takari-cpsuite:jar:1.2.7")
 
 
 # WORKSPACE_END - beginning

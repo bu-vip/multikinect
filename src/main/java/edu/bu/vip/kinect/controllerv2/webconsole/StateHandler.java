@@ -49,33 +49,33 @@ public class StateHandler implements Handler {
 
       case NEW_CALIBRATION: {
         // TODO(doug) - implement
-        state = new NewCalibrationState(controller.getCurrentCalibration());
+        state = new NewCalibrationState(new Calibration(controller.getCurrentCalibration()));
         break;
       }
 
       case NEW_CALIBRATION_FRAME: {
         // TODO(doug) - implement
-        state = new NewCalibrationFrameState(controller.getCurrentCalibration());
+        state = new NewCalibrationFrameState(new Calibration(controller.getCurrentCalibration()));
         break;
       }
 
       case SELECT_SESSION: {
         // TODO(doug) - implement
-        state = new SelectSessionState(controller.getCurrentCalibration(),
+        state = new SelectSessionState(new Calibration(controller.getCurrentCalibration()),
             controller.getSessions());
         break;
       }
 
       case SESSION_IDLE: {
         // TODO(doug) - implement
-        state = new SessionIdleState(controller.getCurrentCalibration(),
+        state = new SessionIdleState(new Calibration(controller.getCurrentCalibration()),
             controller.getCurrentSession());
         break;
       }
 
       case RECORDING_DATA: {
         // TODO(doug) - implement
-        state = new RecordingDataState(controller.getCurrentCalibration(),
+        state = new RecordingDataState(new Calibration(controller.getCurrentCalibration()),
             controller.getCurrentSession(), controller.getCurrentRecording());
         break;
       }

@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class InMemoryCalibrationDataDB implements CalibrationDataDB {
 
-  private Map<String, List<Frame>> frames = new HashMap<>();
+  private Map<String, List<Frame>> cameraFrames = new HashMap<>();
 
   @Inject
   protected InMemoryCalibrationDataDB() {
@@ -20,31 +20,39 @@ public class InMemoryCalibrationDataDB implements CalibrationDataDB {
 
   @Override
   public void storeFrame(String cameraId, Frame frame) {
-    if (!frames.containsKey(cameraId)) {
-      frames.put(cameraId, new ArrayList<>());
+    if (!cameraFrames.containsKey(cameraId)) {
+      cameraFrames.put(cameraId, new ArrayList<>());
     }
-    frames.get(cameraId).add(frame);
+    cameraFrames.get(cameraId).add(frame);
+  }
+
+  @Override
+  public void storeFrames(String cameraId, List<Frame> frames) {
+    if (!cameraFrames.containsKey(cameraId)) {
+      cameraFrames.put(cameraId, new ArrayList<>());
+    }
+    cameraFrames.get(cameraId).addAll(frames);
   }
 
   @Override
   public ImmutableList<Frame> getAllFrames(String cameraId) {
-    if (!frames.containsKey(cameraId)) {
+    if (!cameraFrames.containsKey(cameraId)) {
       // TODO(doug) - evaluate
-      throw new RuntimeException("No frames for camera: " + cameraId);
+      throw new RuntimeException("No cameraFrames for camera: " + cameraId);
     }
 
-    return ImmutableList.copyOf(frames.get(cameraId));
+    return ImmutableList.copyOf(cameraFrames.get(cameraId));
   }
 
   @Override
   public ImmutableList<Frame> getAllFramesInInterval(String cameraId, long startTime, long endTime) {
-    if (!frames.containsKey(cameraId)) {
+    if (!cameraFrames.containsKey(cameraId)) {
       // TODO(doug) - evaluate
-      throw new RuntimeException("No frames for camera: " + cameraId);
+      throw new RuntimeException("No cameraFrames for camera: " + cameraId);
     }
 
-    // Get frames for camera
-    List<Frame> cameraFrames = frames.get(cameraId);
+    // Get cameraFrames for camera
+    List<Frame> cameraFrames = this.cameraFrames.get(cameraId);
     Iterator<Frame> cameraFrameIt = cameraFrames.iterator();
 
     ImmutableList.Builder<Frame> builder = ImmutableList.builder();

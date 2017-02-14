@@ -293,3 +293,12 @@ java_library(
         "@org_eclipse_jetty_websocket_websocket_servlet//jar",
     ],
 )
+
+java_library(
+    name = "io_takari_junit_takari_cpsuite",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@io_takari_junit_takari_cpsuite//jar",
+        "@junit_junit//jar",
+    ],
+)

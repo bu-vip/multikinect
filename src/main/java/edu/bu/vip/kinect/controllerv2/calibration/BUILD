@@ -3,6 +3,31 @@ package(
 )
 
 java_library(
+    name = "manager",
+    srcs = [
+        "CalibrationManager.java",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":calibrationdatadb",
+        ":calibrationio",
+        ":cameratransform",
+        ":fragmenter",
+        "//:com_google_guava_guava",
+        "//:com_google_inject_guice",
+        "//:org_ejml_all",
+        "//:org_slf4j_slf4j_api",
+        "//src/main/java/edu/bu/vip/kinect/controllerv2/camera:framebus",
+        "//src/main/java/edu/bu/vip/kinect/sync:coordinatetransform",
+        "//src/main/java/edu/bu/vip/kinect/sync:protoutils",
+        "//src/main/java/edu/bu/vip/kinect/util:timestamputils",
+        "//src/main/proto:calibration",
+        "//src/main/proto:camera_manager",
+        "//src/main/proto:frame",
+    ],
+)
+
+java_library(
     name = "calibrationio",
     srcs = [
         "CalibrationDataLocation.java",
@@ -54,6 +79,25 @@ java_library(
         ":calibrationdatadb",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
+        "//src/main/proto:frame",
+    ],
+)
+
+java_library(
+    name = "cameratransform",
+    srcs = [
+        "CameraTransform.java",
+    ],
+    deps = [
+        ":calibrationdatadb",
+        "//:com_google_guava_guava",
+        "//:com_google_inject_guice",
+        "//:org_ejml_all",
+        "//:org_slf4j_slf4j_api",
+        "//src/main/java/edu/bu/vip/kinect/sync:coordinatetransform",
+        "//src/main/java/edu/bu/vip/kinect/sync:protoutils",
+        "//src/main/proto:calibration",
+        "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
     ],
 )

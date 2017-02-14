@@ -1,5 +1,6 @@
 package edu.bu.vip.kinect.controllerv2.camera;
 
+import com.google.common.collect.ImmutableList;
 import com.roeper.bu.kinect.Protos.Frame;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,5 +42,16 @@ public class FrameReader {
         this.input = null;
       }
     }
+  }
+
+  public static ImmutableList<Frame> readAllFrames(InputStream in) throws IOException {
+    ImmutableList.Builder<Frame> builder = ImmutableList.builder();
+    FrameReader reader = new FrameReader(in);
+    while (reader.hasNext()) {
+      builder.add(reader.next());
+    }
+    reader.close();
+
+    return builder.build();
   }
 }

@@ -3,14 +3,14 @@ package edu.bu.vip.kinect.controllerv2;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.webconsole.DevRedirectHandler;
 import edu.bu.vip.kinect.controllerv2.calibration.CalibrationDataLocation;
+import edu.bu.vip.kinect.controllerv2.calibration.CalibrationManager;
 import edu.bu.vip.kinect.controllerv2.webconsole.ApiHandler;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.Calibration;
-import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationFrame;
+import edu.bu.vip.kinect.controllerv2.webconsole.StateHandler;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Recording;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.Session;
-import edu.bu.vip.kinect.controllerv2.webconsole.StateHandler;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -39,11 +39,11 @@ public class Controller {
   private State state = State.SELECT_CALIBRATION;
   private Map<Long, Calibration> calibrations = new ConcurrentHashMap<>();
   private Map<Long, Session> sessions = new ConcurrentHashMap<>();
-  private Calibration newCalibration;
-  private CalibrationFrame newCalibrationFrame;
   private Recording newRecording;
   private long currentCalibration = -1;
   private long currentSession = -1;
+
+  private CalibrationManager calibrationManager;
 
   public static void main(String[] args) throws Exception {
     RatpackServer server = RatpackServer.start(s -> {
@@ -88,7 +88,7 @@ public class Controller {
 
   public Calibration getCurrentCalibration() {
     if (currentCalibration == -1) {
-      return newCalibration;
+      return calibrationManager.getCalibration();
     } else {
       return calibrations.get(currentCalibration);
     }
@@ -107,12 +107,11 @@ public class Controller {
   }
 
   public void newCalibration(String name) {
-    logger.info("New calibration: {}", name);
     // TODO(doug) - Check current state
     state = State.NEW_CALIBRATION;
 
-    newCalibration = new Calibration(System.currentTimeMillis(), name, Instant.now(),
-        new LinkedList<>(), Double.POSITIVE_INFINITY);
+    // TODO(doug) - notes
+    calibrationManager.start(name, "");
   }
 
   public void selectCalibration(long calibrationId) {
@@ -131,30 +130,25 @@ public class Controller {
   }
 
   public void newCalibrationFrame() {
-    logger.info("Creating new calibration frame");
     // TODO(doug) - Check current state
     state = State.NEW_CALIBRATION_FRAME;
 
-    newCalibrationFrame = new CalibrationFrame(System.currentTimeMillis(), Double.POSITIVE_INFINITY,
-        Instant.now());
+    calibrationManager.startRecording();
   }
 
   public void finishNewCalibration() {
-    logger.info("Finishing calibration");
     // TODO(doug) - Check current state
     state = State.SELECT_CALIBRATION;
-    // TODO(doug) - Create calibration
+
+    Calibration newCalibration = calibrationManager.finish();
     calibrations.put(newCalibration.getId(), newCalibration);
-    newCalibration = null;
   }
 
   public void finishNewCalibrationFrame() {
-    logger.info("Finishing new calibration frame");
     // TODO(doug) - Check current state
     state = State.NEW_CALIBRATION;
-    // TODO(doug) - Create frame
-    newCalibration.getFrames().add(newCalibrationFrame);
-    newCalibrationFrame = null;
+
+    calibrationManager.stopRecording();
   }
 
   public void createSession(String name) {

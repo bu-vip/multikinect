@@ -12,35 +12,55 @@ option java_outer_classname = "Protos";
  * Used to store calibration data to files.
  */
 message Calibration {
-	// A "unique" id, collisions should be unlikely
-	int64 id = 1;
-	// User defined name
-	string name = 2;
-	// Used defined notes
-	string notes = 3;
-	google.protobuf.Timestamp date_created = 4;
-	repeated CameraPairCalibration camera_calibrations = 5;
+  // A "unique" id, collisions should be unlikely
+  int64 id = 1;
+  // User defined name
+  string name = 2;
+  // Used defined notes
+  string notes = 3;
+  google.protobuf.Timestamp date_created = 4;
+  repeated CameraPairCalibration camera_calibrations = 5;
+  repeated Recording recordings = 6;
 }
 
 /**
  * Defines a tranform between a pair of cameras.
  */
 message CameraPairCalibration {
-	string camera_A = 1;
-	string camera_B = 2;
-	repeated double transform = 3;
+  string camera_A = 1;
+  string camera_B = 2;
+  repeated double transform = 3;
   double error = 4;
 }
 
 message CalibrationFrame {
-	string camera_A = 1;
-	string camera_B = 2;
-	int64 fragment_A = 3;
-	int64 fragment_B = 4;
-	int64 start_time_A = 5;
-	int64 start_time_B = 6;
-	int64 end_time_A = 7;
-	int64 end_time_B = 8;
-	string file_A_path = 9;
-	string file_B_path = 10;
+  option deprecated = true;
+
+  string camera_A = 1;
+  string camera_B = 2;
+  int64 fragment_A = 3;
+  int64 fragment_B = 4;
+  int64 start_time_A = 5;
+  int64 start_time_B = 6;
+  int64 end_time_A = 7;
+  int64 end_time_B = 8;
+  string file_A_path = 9;
+  string file_B_path = 10;
+
+}
+
+message Recording {
+  int64 id = 1;
+  repeated GroupOfFrames gofs = 2;
+  google.protobuf.Timestamp date_created = 3;
+}
+
+// Calibration Group of Frames
+message GroupOfFrames {
+  string camera_A = 1;
+  string camera_B = 2;
+  int64 start_time_A = 3;
+  int64 start_time_B = 4;
+  int64 end_time_A = 5;
+  int64 end_time_B = 6;
 }

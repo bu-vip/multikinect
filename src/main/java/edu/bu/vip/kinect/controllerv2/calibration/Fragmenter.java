@@ -1,5 +1,6 @@
 package edu.bu.vip.kinect.controllerv2.calibration;
 
+import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,25 +17,37 @@ import com.google.inject.Inject;
 import com.roeper.bu.kinect.Protos.Frame;
 import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
 
-import edu.bu.vip.kinect.controller.calibration.Protos.CalibrationFrame;
 import edu.bu.vip.kinect.controllerv2.camera.FrameBus;
 import edu.bu.vip.kinect.controllerv2.camera.FrameReceivedEvent;
 
+/**
+ * Subscribes to {@link FrameReceivedEvent}s and creates {@link GroupOfFrames} that link pairs of
+ * camera data streams together.
+ */
 public class Fragmenter {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  /**
+   * Internal Docs:
+   *
+   * "Fragments" are a section of a camera's data stream where at least one skeleton is visible. For
+   * example, if a camera can see 0 skeletons from [t0, t1], 1 skeleton from [t1, t2], 0 from [t2,
+   * t3], and 1 from [t3, t4], two fragments would be created for the intervals [t1, t2] and [t3,
+   * t4].
+   */
 
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   // Counter for assigning fragment IDs
   private final AtomicLong fragmentCount = new AtomicLong(0);
   // Maps camera IDs to fragment IDs. Cameras can go through multiple fragment IDs over time.
   private final Map<String, Long> cameraFragmentIds = new HashMap<>();
   // Holds the time of the last seen frame of a fragment.
   private final Map<Long, Long> fragmentLastTime = new HashMap<>();
-  // Maps a pair of fragment IDs to a calibration frame.
-  private final Map<ImmutableSet<Long>, CalibrationFrame> calibrationFrames = new HashMap<>();
+  // Maps a pair of fragment IDs to a GOF. These GOFs have been started but are not finished.
+  private final Map<ImmutableSet<Long>, GroupOfFrames> activeGOFs = new HashMap<>();
+
   private final EventBus frameBus;
   private final CalibrationDataDB calibrationDataDB;
-  private Consumer<CalibrationFrame> frameConsumer;
+  private Consumer<GroupOfFrames> groupOfFramesConsumer;
 
   @Inject
   protected Fragmenter(@FrameBus EventBus frameBus, CalibrationDataDB calibrationDataDB) {
@@ -42,13 +55,13 @@ public class Fragmenter {
     this.calibrationDataDB = calibrationDataDB;
   }
 
-  public void start(Consumer<CalibrationFrame> frameConsumer) {
+  public void start(Consumer<GroupOfFrames> groupOfFramesConsumer) {
+    this.groupOfFramesConsumer = groupOfFramesConsumer;
+
     // Reset
     this.cameraFragmentIds.clear();
     this.fragmentLastTime.clear();
-    this.calibrationFrames.clear();
-
-    this.frameConsumer = frameConsumer;
+    this.activeGOFs.clear();
 
     // Subscribe to frame received events
     this.frameBus.register(this);
@@ -70,7 +83,7 @@ public class Fragmenter {
     if (frame.getSkeletonsCount() > 0) {
       // Check if the incoming frame is part of an existing fragment
       if (cameraFragmentIds.containsKey(props.getId())) {
-        // Write frame to fragment file
+        // Update the time for this fragment
         final long fragmentId = cameraFragmentIds.get(props.getId());
         fragmentLastTime.put(fragmentId, frame.getTime());
       } else {
@@ -78,11 +91,11 @@ public class Fragmenter {
         createNewFragment(props, event.getFrame());
       }
     } else {
-      // Check if calibration frames need to be finished
+      // Check if GOFs need to be finished
       if (cameraFragmentIds.containsKey(props.getId())) {
         logger.info("Closing all fragments connected to camera {}", props.getId());
 
-        // Close all calibration frames containing this camera
+        // Close all GOFs containing this camera
         final long fragmentId = cameraFragmentIds.get(props.getId());
         closeFragment(fragmentId);
 
@@ -97,18 +110,16 @@ public class Fragmenter {
 
     logger.info("Creating new fragment {} for camera {}", newFragmentId, props.getId());
 
-    // Create new calibration frames between each pair of cameras
+    // Create new GOFs between each pair of cameras
     cameraFragmentIds.forEach((cameraId, fragmentId) -> {
-      CalibrationFrame.Builder builder = CalibrationFrame.newBuilder();
+      GroupOfFrames.Builder builder = GroupOfFrames.newBuilder();
       builder.setCameraA(cameraId);
-      builder.setFragmentA(fragmentId);
       builder.setStartTimeA(fragmentLastTime.get(fragmentId));
 
       builder.setCameraB(props.getId());
-      builder.setFragmentB(newFragmentId);
       builder.setStartTimeB(frame.getTime());
 
-      calibrationFrames.put(ImmutableSet.of(fragmentId, newFragmentId), builder.build());
+      activeGOFs.put(ImmutableSet.of(fragmentId, newFragmentId), builder.build());
     });
 
     // Add the new fragment
@@ -116,22 +127,24 @@ public class Fragmenter {
   }
 
   private void closeFragment(final long fragmentId) {
-    // Iterate over all calibration frame
-    Iterator<ImmutableSet<Long>> it = calibrationFrames.keySet().iterator();
+    // Iterate over all GOFs
+    Iterator<ImmutableSet<Long>> it = activeGOFs.keySet().iterator();
     while (it.hasNext()) {
       ImmutableSet<Long> fragmentSet = it.next();
       // Check if this camera's fragment is part of the frame
       if (fragmentSet.contains(fragmentId)) {
-        // Get the frame with start times
-        CalibrationFrame started = calibrationFrames.get(fragmentSet);
-        CalibrationFrame.Builder builder = CalibrationFrame.newBuilder(started);
+        // Get the original GOF with start times
+        GroupOfFrames started = activeGOFs.get(fragmentSet);
+        GroupOfFrames.Builder builder = GroupOfFrames.newBuilder(started);
 
         // Update the end times
-        builder.setEndTimeA(fragmentLastTime.get(started.getFragmentA()));
-        builder.setEndTimeB(fragmentLastTime.get(started.getFragmentB()));
+        final long fragmentAId = cameraFragmentIds.get(started.getCameraA());
+        final long fragmentBId = cameraFragmentIds.get(started.getCameraB());
+        builder.setEndTimeA(fragmentLastTime.get(fragmentAId));
+        builder.setEndTimeB(fragmentLastTime.get(fragmentBId));
 
         // Send the new frame
-        frameConsumer.accept(builder.build());
+        groupOfFramesConsumer.accept(builder.build());
         it.remove();
       }
     }

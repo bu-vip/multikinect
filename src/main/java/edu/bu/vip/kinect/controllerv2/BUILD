@@ -19,6 +19,7 @@ java_binary(
         "//:org_slf4j_slf4j_log4j12",
         "//src/main/java/edu/bu/vip/kinect/controller:ratpackdevhandler",
         "//src/main/java/edu/bu/vip/kinect/controllerv2/calibration:calibrationio",
+        "//src/main/java/edu/bu/vip/kinect/controllerv2/calibration:manager",
         "//src/main/java/edu/bu/vip/kinect/controllerv2/camera:module",
         "//src/main/java/edu/bu/vip/kinect/sync:calibration",
         "//src/main/java/edu/bu/vip/kinect/sync:coordinatetransform",

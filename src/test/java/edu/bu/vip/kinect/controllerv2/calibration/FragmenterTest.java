@@ -13,6 +13,7 @@ import com.google.inject.Injector;
 import com.roeper.bu.kinect.Protos.Frame;
 import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
 import edu.bu.vip.kinect.controller.calibration.Protos.CalibrationFrame;
+import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.kinect.controllerv2.camera.FileFramePublisher;
 import edu.bu.vip.kinect.controllerv2.camera.FrameBus;
 import java.io.File;
@@ -37,7 +38,7 @@ public class FragmenterTest {
   private Fragmenter fragmenter;
   private FileFramePublisher publisher;
   @Mock
-  private Consumer<CalibrationFrame> frameConsumer;
+  private Consumer<GroupOfFrames> frameConsumer;
 
   @Before
   public void setUp() throws Exception {
@@ -82,6 +83,6 @@ public class FragmenterTest {
     publisher.publishAllFrames();
     fragmenter.stop();
     // TODO(doug) - Real test
-    verify(frameConsumer, atLeastOnce()).accept(any(CalibrationFrame.class));
+    verify(frameConsumer, atLeastOnce()).accept(any(GroupOfFrames.class));
   }
 }
