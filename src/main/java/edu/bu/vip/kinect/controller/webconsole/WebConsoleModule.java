@@ -6,6 +6,7 @@ import edu.bu.vip.kinect.controller.ControllerService;
 import edu.bu.vip.kinect.controller.webconsole.calibration.CalibrationHandler;
 import edu.bu.vip.kinect.controller.webconsole.skeletonfeed.SkeletonFeedServlet;
 import edu.bu.vip.kinect.controller.webconsole.state.StateHandler;
+import edu.bu.vip.kinect.controllerv2.webconsole.DevRedirectHandler;
 
 public class WebConsoleModule extends AbstractModule {
   @Override

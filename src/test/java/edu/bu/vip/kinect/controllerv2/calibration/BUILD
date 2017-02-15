@@ -43,3 +43,30 @@ java_test(
         "//src/test/java/edu/bu/vip/kinect/utils:matchers",
     ],
 )
+
+java_test(
+    name = "CameraManagerIntegrationTest",
+    size = "medium",
+    srcs = [
+        "CameraManagerIntegrationTest.java",
+    ],
+    resources = [
+        "//src/test/resources:kinectdata",
+    ],
+    deps = [
+        "//:com_google_guava_guava",
+        "//:com_google_inject_guice",
+        "//:junit_junit",
+        "//:org_ejml_all",
+        "//:org_hamcrest_hamcrest_junit",
+        "//src/main/java/edu/bu/vip/kinect/controllerv2/calibration:calibrationdatadb",
+        "//src/main/java/edu/bu/vip/kinect/controllerv2/calibration:inmemorycalibrationdatadb",
+        "//src/main/java/edu/bu/vip/kinect/controllerv2/calibration:manager",
+        "//src/main/java/edu/bu/vip/kinect/controllerv2/camera:fileframepublisher",
+        "//src/main/java/edu/bu/vip/kinect/controllerv2/camera:framebus",
+        "//src/main/proto:calibration",
+        "//src/main/proto:camera_manager",
+        "//src/main/proto:frame",
+        "//src/test/java/edu/bu/vip/kinect/utils:matchers",
+    ],
+)

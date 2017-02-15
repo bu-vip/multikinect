@@ -2,13 +2,16 @@ package edu.bu.vip.kinect.controllerv2;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
-import edu.bu.vip.kinect.controller.webconsole.DevRedirectHandler;
+import edu.bu.vip.kinect.controllerv2.camera.CameraModule;
+import edu.bu.vip.kinect.controllerv2.webconsole.DevRedirectHandler;
 import edu.bu.vip.kinect.controllerv2.calibration.CalibrationDataLocation;
 import edu.bu.vip.kinect.controllerv2.calibration.CalibrationManager;
 import edu.bu.vip.kinect.controllerv2.calibration.CalibrationModule;
 import edu.bu.vip.kinect.controllerv2.webconsole.ApiHandler;
+import edu.bu.vip.kinect.controllerv2.webconsole.IPHandler;
 import edu.bu.vip.kinect.controllerv2.webconsole.StateHandler;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.RecordingRep;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.SessionRep;
@@ -52,11 +55,14 @@ public class Controller {
         config.port(8080);
       });
       s.registry(Guice.registry(b -> {
+        b.module(CameraModule.class);
+        b.module(CalibrationModule.class);
         b.module(new AbstractModule() {
           @Override
           protected void configure() {
             bind(ApiHandler.class);
             bind(StateHandler.class);
+            bind(IPHandler.class);
             bind(CalibrationModule.class);
             bind(DevRedirectHandler.class);
             // TODO(doug) - Make a command line arg
@@ -68,6 +74,7 @@ public class Controller {
       s.handlers(chain -> {
         chain.insert(ApiHandler.class);
         chain.get(StateHandler.URL_PATH, StateHandler.class);
+        chain.get(IPHandler.URL_PATH, IPHandler.class);
         chain.get("::.*", DevRedirectHandler.class);
       });
     });
@@ -78,6 +85,11 @@ public class Controller {
     scanner.close();
 
     server.stop();
+  }
+
+  @Inject
+  public Controller(CalibrationManager calibrationManager) {
+    this.calibrationManager = calibrationManager;
   }
 
   public State getState() {

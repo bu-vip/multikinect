@@ -6,20 +6,20 @@ import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationRep;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.SessionRep;
 
 public class SessionIdleState extends ControllerState {
-  private CalibrationRep calibrationRep;
+  private CalibrationRep calibration;
   private SessionRep sessionRep;
 
   public SessionIdleState(
-      CalibrationRep calibrationRep,
+      CalibrationRep calibration,
       SessionRep sessionRep) {
     super(State.SESSION_IDLE);
-    this.calibrationRep = calibrationRep;
+    this.calibration = calibration;
     this.sessionRep = sessionRep;
   }
 
   @JsonProperty
-  public CalibrationRep getCalibrationRep() {
-    return calibrationRep;
+  public CalibrationRep getCalibration() {
+    return calibration;
   }
 
   @JsonProperty

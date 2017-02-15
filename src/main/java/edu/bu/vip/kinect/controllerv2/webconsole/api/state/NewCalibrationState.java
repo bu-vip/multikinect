@@ -5,15 +5,15 @@ import edu.bu.vip.kinect.controllerv2.Controller.State;
 import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationRep;
 
 public class NewCalibrationState extends ControllerState {
-  private CalibrationRep newCalibrationRep;
+  private CalibrationRep newCalibration;
 
-  public NewCalibrationState(CalibrationRep newCalibrationRep) {
+  public NewCalibrationState(CalibrationRep newCalibration) {
     super(State.NEW_CALIBRATION);
-    this.newCalibrationRep = newCalibrationRep;
+    this.newCalibration = newCalibration;
   }
 
   @JsonProperty
-  public CalibrationRep getNewCalibrationRep() {
-    return newCalibrationRep;
+  public CalibrationRep getNewCalibration() {
+    return newCalibration;
   }
 }

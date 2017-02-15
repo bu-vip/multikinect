@@ -3,7 +3,7 @@ package edu.bu.vip.kinect.controller;
 import edu.bu.vip.kinect.controllerv2.camera.CameraModule;
 import java.util.Scanner;
 
-import edu.bu.vip.kinect.controller.webconsole.DevRedirectHandler;
+import edu.bu.vip.kinect.controllerv2.webconsole.DevRedirectHandler;
 import edu.bu.vip.kinect.controller.webconsole.ModeHandler;
 import edu.bu.vip.kinect.controller.webconsole.WebConsoleModule;
 import edu.bu.vip.kinect.controller.webconsole.calibration.CalibrationHandler;

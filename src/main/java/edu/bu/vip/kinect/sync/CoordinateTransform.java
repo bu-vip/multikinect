@@ -138,7 +138,18 @@ public class CoordinateTransform {
     DenseMatrix64F rotation = eq.lookupMatrix("RT");
     SimpleMatrix dY = new SimpleMatrix(eq.lookupMatrix("dY"));
 
-    return new Transform(rotation, eq.lookupMatrix("R"), eq.lookupMatrix("T"), dY.normF(), denseA,
+    // Error is the average absolute distance between each pair of points
+    final double numberOfPoints = denseA.numRows;
+    double sum = 0;
+    for (int i = 0; i < dY.numRows(); i++) {
+      double dx = dY.get(i, 0);
+      double dy = dY.get(i, 1);
+      double dz = dY.get(i, 2);
+      sum +=  Math.sqrt(dx * dx  + dy * dy + dz * dz);
+    }
+    final double error = sum / numberOfPoints;
+
+    return new Transform(rotation, eq.lookupMatrix("R"), eq.lookupMatrix("T"), error, denseA,
         denseB);
   }
 

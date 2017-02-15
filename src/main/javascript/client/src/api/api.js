@@ -1,7 +1,7 @@
 import 'isomorphic-fetch';
 import {checkHttpResponseStatus, createJsonPostRequest} from './http';
 
-const BASE_URL = 'http://localhost:8080/_';
+const BASE_URL = 'http://' + IP.HOST + '/_';
 export const getStateUrl = () => BASE_URL + '/state';
 export const updateModeUrl = () => BASE_URL + "/mode";
 export const updateCalibrationUrl = () => BASE_URL + "/calibration";

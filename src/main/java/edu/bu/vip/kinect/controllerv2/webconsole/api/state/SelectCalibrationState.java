@@ -6,15 +6,15 @@ import edu.bu.vip.kinect.controllerv2.webconsole.api.CalibrationRep;
 import java.util.List;
 
 public class SelectCalibrationState extends ControllerState {
-  private List<CalibrationRep> calibrationReps;
+  private List<CalibrationRep> calibrations;
 
-  public SelectCalibrationState(List<CalibrationRep> calibrationReps) {
+  public SelectCalibrationState(List<CalibrationRep> calibrations) {
     super(State.SELECT_CALIBRATION);
-    this.calibrationReps = calibrationReps;
+    this.calibrations = calibrations;
   }
 
   @JsonProperty
-  public List<CalibrationRep> getCalibrationReps() {
-    return calibrationReps;
+  public List<CalibrationRep> getCalibrations() {
+    return calibrations;
   }
 }

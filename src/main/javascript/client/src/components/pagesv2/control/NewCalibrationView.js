@@ -100,10 +100,10 @@ class NewCalibrationView extends Component {
         // Create frames table
         const header = ["ID", "Error", "Date Created", ""];
         const tableKeys = ['id', 'error', 'dateCreated'];
-        const framesTable = (<DataTable
+        const recordingsTable = (<DataTable
             header={header}
             idKey="id"
-            content={calibration.frames}
+            content={calibration.recordings}
             contentKeys={tableKeys}
             rightIcon="delete"
             onRightIconClick={this.handleDeleteFrame}
@@ -128,8 +128,8 @@ class NewCalibrationView extends Component {
                 icon="done"
                 onClick={this.handleFinishClicked}/>
           </div>
-          <h2>Frames</h2>
-          {framesTable}
+          <h2>Recordings</h2>
+          {recordingsTable}
         </div>);
       }
     }

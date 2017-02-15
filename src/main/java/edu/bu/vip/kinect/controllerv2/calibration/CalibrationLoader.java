@@ -16,6 +16,7 @@ public class CalibrationLoader {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final String dataDirPath;
+  private boolean loggedDataNonExistent = false;
 
   @Inject
   public CalibrationLoader(@CalibrationDataLocation String dataDirPath) {
@@ -47,7 +48,10 @@ public class CalibrationLoader {
         }
       }
     } else {
-      logger.warn("CalibrationRep data directory does not exist: {}", dataDirPath);
+      if (!loggedDataNonExistent) {
+        logger.warn("Calibration data directory does not exist: {}", dataDirPath);
+        loggedDataNonExistent = true;
+      }
     }
 
     return builder.build();
