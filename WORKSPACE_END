@@ -24,6 +24,17 @@ java_proto_repositories(
     "com_google_protobuf_protobuf_java",
 ])
 
-# TODO(doug) - csharp protos
+# Load C# bazel rules
+git_repository(
+    name = "io_bazel_rules_dotnet",
+    remote = "https://github.com/bazelbuild/rules_dotnet.git",
+    commit = "3e8563200708e77facf095a5929f3511b6354788",
+)
+load("@io_bazel_rules_dotnet//dotnet:csharp.bzl", "csharp_repositories")
+csharp_repositories(use_local_mono = False) # or true, if you prefer
+
+# Load C# protobuf rules
+load("@org_pubref_rules_protobuf//csharp:rules.bzl", "csharp_proto_repositories")
+csharp_proto_repositories()
 
 # WORKSPACE_END - end

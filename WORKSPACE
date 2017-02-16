@@ -179,8 +179,7 @@ git_repository(
   tag = "v0.7.1",
 )
 
-# TODO(doug) - sha1 hashes
-
+# Load Java protobuf rules
 load("@org_pubref_rules_protobuf//java:rules.bzl", "java_proto_repositories")
 java_proto_repositories(
   excludes = [
@@ -196,6 +195,17 @@ java_proto_repositories(
     "com_google_protobuf_protobuf_java",
 ])
 
-# TODO(doug) - csharp protos
+# Load C# bazel rules
+git_repository(
+    name = "io_bazel_rules_dotnet",
+    remote = "https://github.com/bazelbuild/rules_dotnet.git",
+    commit = "d865b5e7f8804e3baac2cb962a44578981f13943",
+)
+load("@io_bazel_rules_dotnet//dotnet:csharp.bzl", "csharp_repositories")
+csharp_repositories(use_local_mono = True) # or true, if you prefer
+
+# Load C# protobuf rules
+load("@org_pubref_rules_protobuf//csharp:rules.bzl", "csharp_proto_repositories")
+csharp_proto_repositories()
 
 # WORKSPACE_END - end

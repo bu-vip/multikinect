@@ -1,4 +1,5 @@
 load("@org_pubref_rules_protobuf//java:rules.bzl", "java_proto_library")
+load("@org_pubref_rules_protobuf//csharp:rules.bzl", "csharp_proto_library")
 
 package(
     default_visibility = ["//visibility:public"],
@@ -32,6 +33,17 @@ java_proto_library(
     name = "camera",
     proto_deps = [":frame"],
     protos = ["camera.proto"],
+    with_grpc = True,
+)
+
+csharp_proto_library(
+    name = "camera_csharp",
+    proto_deps = [
+        ":frame",
+    ],
+    protos = [
+        "camera.proto",
+    ],
     with_grpc = True,
 )
 
