@@ -1,7 +1,7 @@
 package edu.bu.vip.kinect.controllerv2.camera;
 
-import com.roeper.bu.kinect.Protos.Frame;
-import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
+import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinect.master.camera.Grpc.CameraProps;
 
 public class FrameReceivedEvent {
   private CameraProps props;

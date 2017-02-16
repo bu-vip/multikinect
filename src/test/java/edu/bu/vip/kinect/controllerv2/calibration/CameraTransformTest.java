@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 
 import com.google.common.collect.ImmutableList;
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.kinect.controller.calibration.Protos.CalibrationFrame;
 import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;

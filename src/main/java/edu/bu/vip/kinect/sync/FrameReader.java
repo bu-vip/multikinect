@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import com.google.common.collect.ImmutableList;
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 
 public class FrameReader implements FrameDataSource {
   private Frame next;

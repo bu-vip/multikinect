@@ -1,8 +1,8 @@
 package edu.bu.vip.kinect.sync;
 
-import com.roeper.bu.kinect.Protos.Joint;
-import com.roeper.bu.kinect.Protos.Joint.TrackingState;
-import com.roeper.bu.kinect.Protos.Skeleton;
+import edu.bu.vip.multikinect.Protos.Joint;
+import edu.bu.vip.multikinect.Protos.Joint.TrackingState;
+import edu.bu.vip.multikinect.Protos.Skeleton;
 
 public class SkeletonUtils {
   

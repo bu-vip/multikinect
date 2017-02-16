@@ -1,7 +1,7 @@
 java_binary(
     name = "kinectdisplay",
     srcs = glob(["**/*.java"]),
-    main_class = "com.roeper.bu.kinectdisplay.KinectDisplay",
+    main_class = "edu.bu.vip.multikinectdisplay.KinectDisplay",
     # Private due to build problems with native libs
     visibility = ["//visibility:private"],
     runtime_deps = [

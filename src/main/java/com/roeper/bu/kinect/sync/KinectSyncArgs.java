@@ -1,4 +1,4 @@
-package com.roeper.bu.kinect.sync;
+package edu.bu.vip.multikinect.sync;
 
 import com.beust.jcommander.Parameter;
 

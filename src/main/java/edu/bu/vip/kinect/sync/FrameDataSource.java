@@ -1,6 +1,6 @@
 package edu.bu.vip.kinect.sync;
 
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 
 public interface FrameDataSource {
   public boolean hasNext();

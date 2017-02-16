@@ -1,7 +1,7 @@
 package edu.bu.vip.kinect.controllerv2.camera;
 
 import com.google.common.collect.ImmutableList;
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 import java.io.IOException;
 import java.io.InputStream;
 

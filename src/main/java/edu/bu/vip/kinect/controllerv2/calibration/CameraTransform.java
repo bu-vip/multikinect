@@ -2,7 +2,7 @@ package edu.bu.vip.kinect.controllerv2.calibration;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Doubles;
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.kinect.sync.CoordinateTransform;

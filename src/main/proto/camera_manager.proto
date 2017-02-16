@@ -2,7 +2,7 @@ syntax = 'proto3';
 
 package bu.vip.multikinect.master.camera;
 
-option java_package = "com.roeper.bu.kinect.master.camera";
+option java_package = "edu.bu.vip.multikinect.master.camera";
 option java_outer_classname = "Grpc";
 
 service CameraManager {

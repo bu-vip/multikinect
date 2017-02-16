@@ -1,4 +1,4 @@
-package com.roeper.bu.kinectdisplay.graphics;
+package edu.bu.vip.multikinectdisplay.graphics;
 
 /** Represents a color in 0.0-1.0 components range.
  * 

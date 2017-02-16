@@ -2,7 +2,7 @@ package edu.bu.vip.kinect.controllerv2.calibration;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

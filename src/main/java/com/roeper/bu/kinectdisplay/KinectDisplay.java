@@ -1,4 +1,4 @@
-package com.roeper.bu.kinectdisplay;
+package edu.bu.vip.multikinectdisplay;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -20,9 +20,9 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;// for new version of gl
-import com.roeper.bu.kinect.Protos.Frame;
-import com.roeper.bu.kinectdisplay.math.Quaternion;
-import com.roeper.bu.kinectdisplay.math.Vector3;
+import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinectdisplay.math.Quaternion;
+import edu.bu.vip.multikinectdisplay.math.Vector3;
 
 import edu.bu.vip.kinect.sync.FrameReader;
 

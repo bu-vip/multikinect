@@ -3,8 +3,8 @@ package edu.bu.vip.kinect.controller.realtime;
 import java.util.List;
 import java.util.Map;
 
-import com.roeper.bu.kinect.Protos.Frame;
-import com.roeper.bu.kinect.Protos.Skeleton;
+import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Skeleton;
 
 import edu.bu.vip.kinect.sync.Calibration;
 

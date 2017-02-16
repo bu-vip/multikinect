@@ -14,8 +14,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
-import com.roeper.bu.kinect.Protos.Frame;
-import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
+import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinect.master.camera.Grpc.CameraProps;
 
 import edu.bu.vip.kinect.controllerv2.camera.FrameBus;
 import edu.bu.vip.kinect.controllerv2.camera.FrameReceivedEvent;

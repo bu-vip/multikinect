@@ -9,7 +9,7 @@ import org.ejml.data.DenseMatrix64F;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Doubles;
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 
 import edu.bu.vip.kinect.sync.CoordinateTransform.Transform;
 

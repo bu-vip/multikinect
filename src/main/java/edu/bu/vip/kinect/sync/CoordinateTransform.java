@@ -8,7 +8,7 @@ import org.ejml.equation.Equation;
 import org.ejml.simple.SimpleMatrix;
 import org.ejml.simple.SimpleSVD;
 
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 
 public class CoordinateTransform {
 

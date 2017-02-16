@@ -6,7 +6,7 @@ import "thirdparty/protobuf/google/protobuf/timestamp.proto";
 
 package bu.vip.multikinect;
 
-option java_package = "com.roeper.bu.kinect";
+option java_package = "edu.bu.vip.multikinect";
 option java_outer_classname = "Protos";
 
 message Frame {

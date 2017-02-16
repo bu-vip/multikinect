@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import com.google.common.primitives.Booleans;
 import com.google.common.primitives.Doubles;
-import com.roeper.bu.kinect.Protos.Frame;
-import com.roeper.bu.kinect.Protos.Joint.JointType;
+import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Joint.JointType;
 
 public class FrameUtils {
 

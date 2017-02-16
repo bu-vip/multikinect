@@ -1,4 +1,4 @@
-package com.roeper.bu.kinectdisplay.math;
+package edu.bu.vip.multikinectdisplay.math;
 
 public class Matrix4
 {

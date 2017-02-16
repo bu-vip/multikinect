@@ -1,4 +1,4 @@
-package com.roeper.bu.kinectdisplay;
+package edu.bu.vip.multikinectdisplay;
 
 import java.io.IOException;
 
@@ -6,11 +6,11 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
-import com.roeper.bu.kinect.Protos.Frame;
-import com.roeper.bu.kinect.Protos.Joint.JointType;
-import com.roeper.bu.kinect.Protos.Position;
-import com.roeper.bu.kinect.Protos.Skeleton;
-import com.roeper.bu.kinectdisplay.math.Vector3;
+import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Joint.JointType;
+import edu.bu.vip.multikinect.Protos.Position;
+import edu.bu.vip.multikinect.Protos.Skeleton;
+import edu.bu.vip.multikinectdisplay.math.Vector3;
 
 import edu.bu.vip.kinect.sync.FrameReader;
 

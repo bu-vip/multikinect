@@ -1,27 +1,24 @@
 package edu.bu.vip.kinect.controllerv2.camera;
 
-import edu.bu.vip.kinect.controllerv2.camera.CameraChangeEvent.Type;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.roeper.bu.kinect.Protos.Frame;
-import com.roeper.bu.kinect.camera.CameraGrpc;
-import com.roeper.bu.kinect.camera.CameraGrpc.CameraStub;
-import com.roeper.bu.kinect.camera.Grpc.RecordOptions;
-import com.roeper.bu.kinect.master.camera.CameraManagerGrpc.CameraManagerImplBase;
-import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
-import com.roeper.bu.kinect.master.camera.Grpc.RegistrationRequest;
-import com.roeper.bu.kinect.master.camera.Grpc.RegistrationResponse;
-
+import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinect.master.camera.CameraManagerGrpc.CameraManagerImplBase;
+import edu.bu.vip.multikinect.master.camera.Grpc.CameraProps;
+import edu.bu.vip.multikinect.master.camera.Grpc.RegistrationRequest;
+import edu.bu.vip.multikinect.master.camera.Grpc.RegistrationResponse;
+import edu.bu.vip.kinect.controllerv2.camera.CameraChangeEvent.Type;
+import edu.bu.vip.multikinect.camera.CameraGrpc;
+import edu.bu.vip.multikinect.camera.CameraGrpc.CameraStub;
+import edu.bu.vip.multikinect.camera.Grpc.RecordOptions;
 import io.grpc.Channel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 @Singleton
 public class CameraManager extends CameraManagerImplBase {

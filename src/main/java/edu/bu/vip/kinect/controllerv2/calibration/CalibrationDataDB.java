@@ -1,7 +1,7 @@
 package edu.bu.vip.kinect.controllerv2.calibration;
 
 import com.google.common.collect.ImmutableList;
-import com.roeper.bu.kinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Frame;
 import java.util.List;
 
 public interface CalibrationDataDB {

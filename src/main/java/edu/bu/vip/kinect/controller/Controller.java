@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.roeper.bu.kinect.camera.Grpc.RecordOptions;
+importedu.bu.vip.multikinect.camera.Grpc.RecordOptions;
 
 import edu.bu.vip.kinect.controller.calibration.CalibrationManager;
 import edu.bu.vip.kinect.controllerv2.camera.CameraManager;

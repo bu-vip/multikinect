@@ -1,4 +1,4 @@
-package com.roeper.bu.kinectdisplay;
+package edu.bu.vip.multikinectdisplay;
 
 import com.beust.jcommander.Parameter;
 

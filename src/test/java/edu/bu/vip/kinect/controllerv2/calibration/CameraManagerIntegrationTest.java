@@ -8,7 +8,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
+import edu.bu.vip.multikinect.master.camera.Grpc.CameraProps;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controllerv2.camera.FileFramePublisher;
 import edu.bu.vip.kinect.controllerv2.camera.FrameBus;

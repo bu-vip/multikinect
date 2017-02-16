@@ -1,7 +1,7 @@
 package edu.bu.vip.kinect.controller;
 
 import com.google.common.base.Optional;
-import com.roeper.bu.kinect.camera.Grpc.RecordOptions;
+importedu.bu.vip.multikinect.camera.Grpc.RecordOptions;
 
 public class DefaultRecordingManager implements RecordingManager {
   

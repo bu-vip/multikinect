@@ -1,7 +1,7 @@
 package edu.bu.vip.kinect.controllerv2.camera;
 
 import com.google.common.eventbus.EventBus;
-import com.roeper.bu.kinect.master.camera.Grpc.CameraProps;
+import edu.bu.vip.multikinect.master.camera.Grpc.CameraProps;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
