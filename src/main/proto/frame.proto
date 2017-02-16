@@ -2,7 +2,7 @@
 
 syntax = 'proto3';
 
-package roeper.bu.kinect;
+package bu.vip.multikinect;
 
 option java_package = "com.roeper.bu.kinect";
 option java_outer_classname = "Protos";

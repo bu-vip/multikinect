@@ -1,6 +1,7 @@
-﻿using Grpc.Core;
+﻿using Bu.Vip.Multikinect;
+using Bu.Vip.Multikinect.Camera;
+using Grpc.Core;
 using Microsoft.Kinect;
-using Roeper.Bu.Kinect.Camera;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Roeper.Bu.Kinect
 {
-    class CameraService : Camera.Camera.CameraBase
+    class CameraService : Camera.CameraBase
     {
         private KinectSensor kinect;
         private MultiSourceFrameReader frameReader;

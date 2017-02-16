@@ -1,9 +1,9 @@
-﻿using Microsoft.Kinect;
-using Roeper.Bu.Kinect;
+﻿using Bu.Vip.Multikinect;
+using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
 
-namespace Roeper.Bu.Kinect
+namespace Bu.Vip.Multikinect
 {
     public class KinectBodiesToProto
     {
@@ -44,11 +44,11 @@ namespace Roeper.Bu.Kinect
             return skeletons;
         }
 
-        private static Roeper.Bu.Kinect.Joint ConvertJoint(Microsoft.Kinect.Joint joint, JointOrientation orientation)
+        private static Joint ConvertJoint(Microsoft.Kinect.Joint joint, JointOrientation orientation)
         {
-            return new Roeper.Bu.Kinect.Joint
+            return new Joint
             {
-                Type = (Roeper.Bu.Kinect.Joint.Types.JointType)joint.JointType,
+                Type = (Joint.Types.JointType)joint.JointType,
                 Position = new Position
                 {
                     X = joint.Position.X,
@@ -62,7 +62,7 @@ namespace Roeper.Bu.Kinect
                     Z = orientation.Orientation.Z,
                     W = orientation.Orientation.W
                 },
-                TrackingState = (Roeper.Bu.Kinect.Joint.Types.TrackingState)joint.TrackingState,
+                TrackingState = (Bu.Vip.Multikinect.Joint.Types.TrackingState)joint.TrackingState,
             };
         }
     }

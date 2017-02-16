@@ -2,13 +2,13 @@ syntax = 'proto3';
 
 import 'src/main/proto/frame.proto';
 
-package roeper.bu.kinect.camera;
+package bu.vip.multikinect.camera;
 
-option java_package = "com.roeper.bu.kinect.camera";
+option java_package = "edu.bu.vip.multikinect.camera";
 option java_outer_classname = "Grpc";
 
 service Camera {
-	rpc record(stream RecordOptions) returns (stream roeper.bu.kinect.Frame) {}
+	rpc record(stream RecordOptions) returns (stream bu.vip.multikinect.Frame) {}
 }
 
 message RecordOptions {
