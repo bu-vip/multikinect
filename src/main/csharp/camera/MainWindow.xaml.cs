@@ -124,6 +124,7 @@ namespace Roeper.Bu.Kinect
                     {
                         Props = new CameraProps
                         {
+                            Id = this.cameraId.Text,
                             Host = address.ToString(),
                             Port = PORT
                         }
