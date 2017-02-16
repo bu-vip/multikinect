@@ -24,7 +24,7 @@ import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinectdisplay.math.Quaternion;
 import edu.bu.vip.multikinectdisplay.math.Vector3;
 
-import edu.bu.vip.kinect.sync.FrameReader;
+import edu.bu.vip.multikinect.sync.FrameReader;
 
 public class KinectDisplay extends JFrame
     implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {

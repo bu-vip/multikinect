@@ -1,0 +1,35 @@
+package edu.bu.vip.multikinect.controllerv2.webconsole.api;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.Instant;
+
+public class CalibrationRecordingRep {
+  private long id;
+  private double error;
+  private Instant dateCreated;
+
+  protected CalibrationRecordingRep() {
+    // Jackson
+  }
+
+  public CalibrationRecordingRep(long id, double error, Instant dateCreated) {
+    this.id = id;
+    this.error = error;
+    this.dateCreated = dateCreated;
+  }
+
+  @JsonProperty
+  public long getId() {
+    return id;
+  }
+
+  @JsonProperty
+  public double getError() {
+    return error;
+  }
+
+  @JsonProperty
+  public Instant getDateCreated() {
+    return dateCreated;
+  }
+}

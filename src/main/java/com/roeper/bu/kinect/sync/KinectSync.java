@@ -4,8 +4,6 @@ import org.ejml.data.DenseMatrix64F;
 
 import com.google.common.collect.ImmutableList;
 
-import edu.bu.vip.kinect.sync.CoordinateTransform;
-
 public class KinectSync {
   public static void main(String[] args) throws Exception {
     /*

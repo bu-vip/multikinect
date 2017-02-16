@@ -16,7 +16,7 @@ java_binary(
         "//:org_jogamp_joal_joal_main",
         "//:org_jogamp_jocl_jocl_main",
         "//:org_jogamp_jogl_jogl_all",
-        "//src/main/java/edu/bu/vip/kinect/sync:framereader",
+        "//src/main/java/edu/bu/vip/multikinect/sync:framereader",
         "//src/main/proto:frame",
     ],
 )

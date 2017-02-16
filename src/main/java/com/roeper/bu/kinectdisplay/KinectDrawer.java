@@ -12,7 +12,7 @@ import edu.bu.vip.multikinect.Protos.Position;
 import edu.bu.vip.multikinect.Protos.Skeleton;
 import edu.bu.vip.multikinectdisplay.math.Vector3;
 
-import edu.bu.vip.kinect.sync.FrameReader;
+import edu.bu.vip.multikinect.sync.FrameReader;
 
 public class KinectDrawer {
   private static final float SPHERE = 0.05f;
