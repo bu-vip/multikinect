@@ -338,3 +338,6 @@ local.properties
 
 ### Other
 src-gen
+
+# Generated proto files
+protolib/*.cs

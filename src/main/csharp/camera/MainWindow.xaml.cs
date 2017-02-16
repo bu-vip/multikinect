@@ -4,9 +4,10 @@ using System.Windows;
 using System.Windows.Media;
 using Microsoft.Kinect;
 using Grpc.Core;
-using static Roeper.Bu.Kinect.Master.Camera.CameraManager;
-using Roeper.Bu.Kinect.Master.Camera;
+using static Bu.Vip.Multikinect.Master.Camera.CameraManager;
+using Bu.Vip.Multikinect.Master.Camera;
 using System.Net;
+using Bu.Vip.Multikinect.Camera;
 
 namespace Roeper.Bu.Kinect
 {
@@ -31,7 +32,7 @@ namespace Roeper.Bu.Kinect
             // Start the gRPC server
             grpcServer = new Server
             {
-                Services = { Camera.Camera.BindService(new CameraService()) },
+                Services = { Camera.BindService(new CameraService()) },
                 Ports = { new ServerPort("0.0.0.0", PORT, ServerCredentials.Insecure) }
             };
             grpcServer.Start();

@@ -1,6 +1,6 @@
 syntax = 'proto3';
 
-package roeper.bu.kinect.master.camera;
+package bu.vip.multikinect.master.camera;
 
 option java_package = "com.roeper.bu.kinect.master.camera";
 option java_outer_classname = "Grpc";

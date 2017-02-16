@@ -2,12 +2,12 @@ syntax = 'proto3';
 
 import 'src/main/proto/frame.proto';
 
-package bu.vip.kinect.controller.webconsole;
+package bu.vip.multikinect.controller.webconsole;
 
 option java_package = "edu.bu.vip.kinect.controller.webconsole";
 option java_outer_classname = "Protos";
 
 message FeedMessage {
 	string camera_id = 1;
-	roeper.bu.kinect.Frame frame = 2;
+	bu.vip.multikinect.Frame frame = 2;
 }

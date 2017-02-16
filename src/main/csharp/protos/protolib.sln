@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "protolib", "protolib\protolib.shproj", "{21891F4B-E268-4EC3-8FCD-58379DA8F645}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "protobuild", "protobuild\protobuild.csproj", "{DA6B18E9-06A8-46C7-B510-180EB88B7374}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		protolib\protolib.projitems*{21891f4b-e268-4ec3-8fcd-58379da8f645}*SharedItemsImports = 13
@@ -14,12 +12,6 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DA6B18E9-06A8-46C7-B510-180EB88B7374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA6B18E9-06A8-46C7-B510-180EB88B7374}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA6B18E9-06A8-46C7-B510-180EB88B7374}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA6B18E9-06A8-46C7-B510-180EB88B7374}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
