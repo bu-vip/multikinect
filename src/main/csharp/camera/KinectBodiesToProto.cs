@@ -1,5 +1,6 @@
 ﻿using Bu.Vip.Multikinect;
 using Microsoft.Kinect;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 
@@ -7,10 +8,17 @@ namespace Bu.Vip.Multikinect
 {
     public class KinectBodiesToProto
     {
-        public static Frame ConvertFrame(TimeSpan frameTime, Body[] bodies)
+        public static Frame ConvertFrame(TimeSpan frameTime, Body[] bodies, Instant ntpCaptureTime)
         {
+            long seconds = ntpCaptureTime.Ticks / NodaConstants.TicksPerSecond;
+            int nanos = (int)(ntpCaptureTime.Ticks - seconds * NodaConstants.TicksPerSecond) * 100; // Nodatime Ticks are 100 nanos
             Frame frame = new Frame {
-                Time = frameTime.Ticks
+                Time = frameTime.Ticks,
+                NtpCaptureTime = new Google.Protobuf.WellKnownTypes.Timestamp
+                {
+                    Seconds = seconds,
+                    Nanos = nanos
+                }
             };
             frame.Skeletons.AddRange(ConvertBodies(bodies));
 

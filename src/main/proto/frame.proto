@@ -2,6 +2,8 @@
 
 syntax = 'proto3';
 
+import "thirdparty/protobuf/google/protobuf/timestamp.proto";
+
 package bu.vip.multikinect;
 
 option java_package = "com.roeper.bu.kinect";
@@ -11,6 +13,7 @@ message Frame {
   // BodyFrame.RelativeTime
   int64 time = 1;
   repeated Skeleton skeletons = 2;
+  google.protobuf.Timestamp ntp_capture_time = 3;
 }
 
 message Skeleton {

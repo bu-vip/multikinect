@@ -2,6 +2,7 @@
 using Bu.Vip.Multikinect.Camera;
 using Grpc.Core;
 using Microsoft.Kinect;
+using NodaTime;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Roeper.Bu.Kinect
         private bool accessing = false;
         private Object accessLock = new object();
         private Body[] bodies = null;
+        private NetworkClock ntpClock = NetworkClock.Instance;
 
         public CameraService()
         {
@@ -30,6 +32,8 @@ namespace Roeper.Bu.Kinect
                 frameReader.IsPaused = true;
                 frameReader.MultiSourceFrameArrived += FrameReader_MultiSourceFrameArrived;
                 frameReader.IsPaused = false;
+
+                ntpClock.CacheTimeout = Duration.FromMinutes(1);
             }
             else
             {
@@ -70,7 +74,7 @@ namespace Roeper.Bu.Kinect
                 // If we received data, add to queue if needed
                 if (dataReceived)
                 {
-                    Frame frame = KinectBodiesToProto.ConvertFrame(frameTime, bodies);
+                    Frame frame = KinectBodiesToProto.ConvertFrame(frameTime, bodies, ntpClock.Now);
                     lock (accessLock)
                     {
                         if (accessing)

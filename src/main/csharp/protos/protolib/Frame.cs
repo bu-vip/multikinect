@@ -23,42 +23,44 @@ namespace Bu.Vip.Multikinect {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChpzcmMvbWFpbi9wcm90by9mcmFtZS5wcm90bxISYnUudmlwLm11bHRpa2lu",
-            "ZWN0IkYKBUZyYW1lEgwKBHRpbWUYASABKAMSLwoJc2tlbGV0b25zGAIgAygL",
-            "MhwuYnUudmlwLm11bHRpa2luZWN0LlNrZWxldG9uItgDCghTa2VsZXRvbhIK",
-            "CgJpZBgBIAEoBBIpCgZqb2ludHMYAiADKAsyGS5idS52aXAubXVsdGlraW5l",
-            "Y3QuSm9pbnQSPwoPaGFuZF9sZWZ0X3N0YXRlGAMgASgOMiYuYnUudmlwLm11",
-            "bHRpa2luZWN0LlNrZWxldG9uLkhhbmRTdGF0ZRJNChRoYW5kX2xlZnRfY29u",
-            "ZmlkZW5jZRgEIAEoDjIvLmJ1LnZpcC5tdWx0aWtpbmVjdC5Ta2VsZXRvbi5U",
-            "cmFja2luZ0NvbmZpZGVuY2USQAoQaGFuZF9yaWdodF9zdGF0ZRgFIAEoDjIm",
-            "LmJ1LnZpcC5tdWx0aWtpbmVjdC5Ta2VsZXRvbi5IYW5kU3RhdGUSTgoVaGFu",
-            "ZF9yaWdodF9jb25maWRlbmNlGAYgASgOMi8uYnUudmlwLm11bHRpa2luZWN0",
-            "LlNrZWxldG9uLlRyYWNraW5nQ29uZmlkZW5jZSJKCglIYW5kU3RhdGUSCwoH",
-            "VU5LTk9XThAAEg8KC05PVF9UUkFDS0VEEAESCAoET1BFThACEgoKBkNMT1NF",
-            "RBADEgkKBUxBU1NPEAQiJwoSVHJhY2tpbmdDb25maWRlbmNlEgcKA0xPVxAA",
-            "EggKBEhJR0gQASLBBQoFSm9pbnQSMQoEdHlwZRgBIAEoDjIjLmJ1LnZpcC5t",
-            "dWx0aWtpbmVjdC5Kb2ludC5Kb2ludFR5cGUSNAoLb3JpZW50YXRpb24YAiAB",
-            "KAsyHy5idS52aXAubXVsdGlraW5lY3QuT3JpZW50YXRpb24SLgoIcG9zaXRp",
-            "b24YAyABKAsyHC5idS52aXAubXVsdGlraW5lY3QuUG9zaXRpb24SPwoOdHJh",
-            "Y2tpbmdfc3RhdGUYBCABKA4yJy5idS52aXAubXVsdGlraW5lY3QuSm9pbnQu",
-            "VHJhY2tpbmdTdGF0ZSKgAwoJSm9pbnRUeXBlEg4KClNQSU5FX0JBU0UQABIN",
-            "CglTUElORV9NSUQQARIJCgVORUNLXxACEgkKBUhFQURfEAMSEQoNU0hPVUxE",
-            "RVJfTEVGVBAEEg4KCkVMQk9XX0xFRlQQBRIOCgpXUklTVF9MRUZUEAYSDQoJ",
-            "SEFORF9MRUZUEAcSEgoOU0hPVUxERVJfUklHSFQQCBIPCgtFTEJPV19SSUdI",
-            "VBAJEg8KC1dSSVNUX1JJR0hUEAoSDgoKSEFORF9SSUdIVBALEgwKCEhJUF9M",
-            "RUZUEAwSDQoJS05FRV9MRUZUEA0SDgoKQU5LTEVfTEVGVBAOEg0KCUZPT1Rf",
-            "TEVGVBAPEg0KCUhJUF9SSUdIVBAQEg4KCktORUVfUklHSFQQERIPCgtBTktM",
-            "RV9SSUdIVBASEg4KCkZPT1RfUklHSFQQExISCg5TUElORV9TSE9VTERFUhAU",
-            "EhEKDUhBTkRfVElQX0xFRlQQFRIOCgpUSFVNQl9MRUZUEBYSEgoOSEFORF9U",
-            "SVBfUklHSFQQFxIPCgtUSFVNQl9SSUdIVBAYIjsKDVRyYWNraW5nU3RhdGUS",
-            "DwoLTk9UX1RSQUNLRUQQABIMCghJTkZFUlJFRBABEgsKB1RSQUNLRUQQAiI5",
-            "CgtPcmllbnRhdGlvbhIJCgF4GAEgASgCEgkKAXkYAiABKAISCQoBehgDIAEo",
-            "AhIJCgF3GAQgASgCIisKCFBvc2l0aW9uEgkKAXgYASABKAISCQoBeRgCIAEo",
-            "AhIJCgF6GAMgASgCQh4KFGNvbS5yb2VwZXIuYnUua2luZWN0QgZQcm90b3Ni",
-            "BnByb3RvMw=="));
+            "ZWN0GjN0aGlyZHBhcnR5L3Byb3RvYnVmL2dvb2dsZS9wcm90b2J1Zi90aW1l",
+            "c3RhbXAucHJvdG8ifAoFRnJhbWUSDAoEdGltZRgBIAEoAxIvCglza2VsZXRv",
+            "bnMYAiADKAsyHC5idS52aXAubXVsdGlraW5lY3QuU2tlbGV0b24SNAoQbnRw",
+            "X2NhcHR1cmVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
+            "bXAi2AMKCFNrZWxldG9uEgoKAmlkGAEgASgEEikKBmpvaW50cxgCIAMoCzIZ",
+            "LmJ1LnZpcC5tdWx0aWtpbmVjdC5Kb2ludBI/Cg9oYW5kX2xlZnRfc3RhdGUY",
+            "AyABKA4yJi5idS52aXAubXVsdGlraW5lY3QuU2tlbGV0b24uSGFuZFN0YXRl",
+            "Ek0KFGhhbmRfbGVmdF9jb25maWRlbmNlGAQgASgOMi8uYnUudmlwLm11bHRp",
+            "a2luZWN0LlNrZWxldG9uLlRyYWNraW5nQ29uZmlkZW5jZRJAChBoYW5kX3Jp",
+            "Z2h0X3N0YXRlGAUgASgOMiYuYnUudmlwLm11bHRpa2luZWN0LlNrZWxldG9u",
+            "LkhhbmRTdGF0ZRJOChVoYW5kX3JpZ2h0X2NvbmZpZGVuY2UYBiABKA4yLy5i",
+            "dS52aXAubXVsdGlraW5lY3QuU2tlbGV0b24uVHJhY2tpbmdDb25maWRlbmNl",
+            "IkoKCUhhbmRTdGF0ZRILCgdVTktOT1dOEAASDwoLTk9UX1RSQUNLRUQQARII",
+            "CgRPUEVOEAISCgoGQ0xPU0VEEAMSCQoFTEFTU08QBCInChJUcmFja2luZ0Nv",
+            "bmZpZGVuY2USBwoDTE9XEAASCAoESElHSBABIsEFCgVKb2ludBIxCgR0eXBl",
+            "GAEgASgOMiMuYnUudmlwLm11bHRpa2luZWN0LkpvaW50LkpvaW50VHlwZRI0",
+            "CgtvcmllbnRhdGlvbhgCIAEoCzIfLmJ1LnZpcC5tdWx0aWtpbmVjdC5Pcmll",
+            "bnRhdGlvbhIuCghwb3NpdGlvbhgDIAEoCzIcLmJ1LnZpcC5tdWx0aWtpbmVj",
+            "dC5Qb3NpdGlvbhI/Cg50cmFja2luZ19zdGF0ZRgEIAEoDjInLmJ1LnZpcC5t",
+            "dWx0aWtpbmVjdC5Kb2ludC5UcmFja2luZ1N0YXRlIqADCglKb2ludFR5cGUS",
+            "DgoKU1BJTkVfQkFTRRAAEg0KCVNQSU5FX01JRBABEgkKBU5FQ0tfEAISCQoF",
+            "SEVBRF8QAxIRCg1TSE9VTERFUl9MRUZUEAQSDgoKRUxCT1dfTEVGVBAFEg4K",
+            "CldSSVNUX0xFRlQQBhINCglIQU5EX0xFRlQQBxISCg5TSE9VTERFUl9SSUdI",
+            "VBAIEg8KC0VMQk9XX1JJR0hUEAkSDwoLV1JJU1RfUklHSFQQChIOCgpIQU5E",
+            "X1JJR0hUEAsSDAoISElQX0xFRlQQDBINCglLTkVFX0xFRlQQDRIOCgpBTktM",
+            "RV9MRUZUEA4SDQoJRk9PVF9MRUZUEA8SDQoJSElQX1JJR0hUEBASDgoKS05F",
+            "RV9SSUdIVBAREg8KC0FOS0xFX1JJR0hUEBISDgoKRk9PVF9SSUdIVBATEhIK",
+            "DlNQSU5FX1NIT1VMREVSEBQSEQoNSEFORF9USVBfTEVGVBAVEg4KClRIVU1C",
+            "X0xFRlQQFhISCg5IQU5EX1RJUF9SSUdIVBAXEg8KC1RIVU1CX1JJR0hUEBgi",
+            "OwoNVHJhY2tpbmdTdGF0ZRIPCgtOT1RfVFJBQ0tFRBAAEgwKCElORkVSUkVE",
+            "EAESCwoHVFJBQ0tFRBACIjkKC09yaWVudGF0aW9uEgkKAXgYASABKAISCQoB",
+            "eRgCIAEoAhIJCgF6GAMgASgCEgkKAXcYBCABKAIiKwoIUG9zaXRpb24SCQoB",
+            "eBgBIAEoAhIJCgF5GAIgASgCEgkKAXoYAyABKAJCHgoUY29tLnJvZXBlci5i",
+            "dS5raW5lY3RCBlByb3Rvc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Bu.Vip.Multikinect.Frame), global::Bu.Vip.Multikinect.Frame.Parser, new[]{ "Time", "Skeletons" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Bu.Vip.Multikinect.Frame), global::Bu.Vip.Multikinect.Frame.Parser, new[]{ "Time", "Skeletons", "NtpCaptureTime" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bu.Vip.Multikinect.Skeleton), global::Bu.Vip.Multikinect.Skeleton.Parser, new[]{ "Id", "Joints", "HandLeftState", "HandLeftConfidence", "HandRightState", "HandRightConfidence" }, null, new[]{ typeof(global::Bu.Vip.Multikinect.Skeleton.Types.HandState), typeof(global::Bu.Vip.Multikinect.Skeleton.Types.TrackingConfidence) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bu.Vip.Multikinect.Joint), global::Bu.Vip.Multikinect.Joint.Parser, new[]{ "Type", "Orientation", "Position", "TrackingState" }, null, new[]{ typeof(global::Bu.Vip.Multikinect.Joint.Types.JointType), typeof(global::Bu.Vip.Multikinect.Joint.Types.TrackingState) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bu.Vip.Multikinect.Orientation), global::Bu.Vip.Multikinect.Orientation.Parser, new[]{ "X", "Y", "Z", "W" }, null, null, null),
@@ -95,6 +97,7 @@ namespace Bu.Vip.Multikinect {
     public Frame(Frame other) : this() {
       time_ = other.time_;
       skeletons_ = other.skeletons_.Clone();
+      NtpCaptureTime = other.ntpCaptureTime_ != null ? other.NtpCaptureTime.Clone() : null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -126,6 +129,17 @@ namespace Bu.Vip.Multikinect {
       get { return skeletons_; }
     }
 
+    /// <summary>Field number for the "ntp_capture_time" field.</summary>
+    public const int NtpCaptureTimeFieldNumber = 3;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp ntpCaptureTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp NtpCaptureTime {
+      get { return ntpCaptureTime_; }
+      set {
+        ntpCaptureTime_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Frame);
@@ -141,6 +155,7 @@ namespace Bu.Vip.Multikinect {
       }
       if (Time != other.Time) return false;
       if(!skeletons_.Equals(other.skeletons_)) return false;
+      if (!object.Equals(NtpCaptureTime, other.NtpCaptureTime)) return false;
       return true;
     }
 
@@ -149,6 +164,7 @@ namespace Bu.Vip.Multikinect {
       int hash = 1;
       if (Time != 0L) hash ^= Time.GetHashCode();
       hash ^= skeletons_.GetHashCode();
+      if (ntpCaptureTime_ != null) hash ^= NtpCaptureTime.GetHashCode();
       return hash;
     }
 
@@ -164,6 +180,10 @@ namespace Bu.Vip.Multikinect {
         output.WriteInt64(Time);
       }
       skeletons_.WriteTo(output, _repeated_skeletons_codec);
+      if (ntpCaptureTime_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(NtpCaptureTime);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -173,6 +193,9 @@ namespace Bu.Vip.Multikinect {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(Time);
       }
       size += skeletons_.CalculateSize(_repeated_skeletons_codec);
+      if (ntpCaptureTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NtpCaptureTime);
+      }
       return size;
     }
 
@@ -185,6 +208,12 @@ namespace Bu.Vip.Multikinect {
         Time = other.Time;
       }
       skeletons_.Add(other.skeletons_);
+      if (other.ntpCaptureTime_ != null) {
+        if (ntpCaptureTime_ == null) {
+          ntpCaptureTime_ = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        NtpCaptureTime.MergeFrom(other.NtpCaptureTime);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -201,6 +230,13 @@ namespace Bu.Vip.Multikinect {
           }
           case 18: {
             skeletons_.AddEntriesFrom(input, _repeated_skeletons_codec);
+            break;
+          }
+          case 26: {
+            if (ntpCaptureTime_ == null) {
+              ntpCaptureTime_ = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(ntpCaptureTime_);
             break;
           }
         }
