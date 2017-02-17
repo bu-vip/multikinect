@@ -5,6 +5,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
+import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationStore;
 import edu.bu.vip.multikinect.controllerv2.camera.CameraModule;
 import edu.bu.vip.multikinect.controllerv2.webconsole.DevRedirectHandler;
 import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationDataLocation;
@@ -19,6 +20,7 @@ import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
@@ -41,13 +43,13 @@ public class Controller {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private State state = State.SELECT_CALIBRATION;
-  private Map<Long, Calibration> calibrations = new ConcurrentHashMap<>();
   private Map<Long, SessionRep> sessions = new ConcurrentHashMap<>();
   private RecordingRep newRecordingRep;
   private long currentCalibration = -1;
   private long currentSession = -1;
 
   private CalibrationManager calibrationManager;
+  private CalibrationStore calibrationStore;
 
   public static void main(String[] args) throws Exception {
     RatpackServer server = RatpackServer.start(s -> {
@@ -88,8 +90,9 @@ public class Controller {
   }
 
   @Inject
-  public Controller(CalibrationManager calibrationManager) {
+  public Controller(CalibrationManager calibrationManager, CalibrationStore calibrationStore) {
     this.calibrationManager = calibrationManager;
+    this.calibrationStore = calibrationStore;
   }
 
   public State getState() {
@@ -97,14 +100,20 @@ public class Controller {
   }
 
   public ImmutableList<Calibration> getCalibrations() {
-    return ImmutableList.copyOf(calibrations.values());
+    return calibrationStore.getCalibrations();
   }
 
   public Calibration getCurrentCalibration() {
     if (currentCalibration == -1) {
       return calibrationManager.getCalibration();
     } else {
-      return calibrations.get(currentCalibration);
+      Optional<Calibration> optCal = calibrationStore.getCalibration(currentCalibration);
+      if (optCal.isPresent()) {
+        logger.error("Could not retrieve current calibration");
+        throw new RuntimeException("Could not retrieve current calibration");
+      }
+
+      return optCal.get();
     }
   }
 
@@ -139,8 +148,7 @@ public class Controller {
   public void deleteCalibration(long calibrationId) {
     logger.info("Deleting calibration: {}", calibrationId);
     // TODO(doug) - Check current state
-    // TODO(doug) - Handle calibration not found
-    calibrations.remove(calibrationId);
+    calibrationStore.deleteCalibration(calibrationId);
   }
 
   public void newCalibrationFrame() {
@@ -155,7 +163,7 @@ public class Controller {
     state = State.SELECT_CALIBRATION;
 
     Calibration newCalibration = calibrationManager.finish();
-    calibrations.put(newCalibration.getId(), newCalibration);
+    calibrationStore.createCalibration(newCalibration);
   }
 
   public void finishNewCalibrationFrame() {

@@ -18,6 +18,7 @@ java_binary(
         "//:org_slf4j_slf4j_api",
         "//:org_slf4j_slf4j_log4j12",
         "//src/main/java/edu/bu/vip/multikinect/controllerv2/calibration:calibrationio",
+        "//src/main/java/edu/bu/vip/multikinect/controllerv2/calibration:calibrationstore",
         "//src/main/java/edu/bu/vip/multikinect/controllerv2/calibration:manager",
         "//src/main/java/edu/bu/vip/multikinect/controllerv2/camera:module",
         "//src/main/java/edu/bu/vip/multikinect/sync:calibration",

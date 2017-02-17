@@ -59,7 +59,6 @@ public class CalibrationManager {
       recording = false;
       active = true;
       calibration = Calibration.newBuilder();
-      calibration.setId(System.currentTimeMillis());
       calibration.setName(name);
       calibration.setNotes(notes);
       calibration.setDateCreated(TimestampUtils.now());
