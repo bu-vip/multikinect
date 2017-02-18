@@ -1,32 +1,33 @@
 package edu.bu.vip.multikinect.sync;
 
+import edu.bu.vip.multikinect.Protos.Frame;
 import java.io.IOException;
 import java.util.List;
-
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.equation.Equation;
 import org.ejml.simple.SimpleMatrix;
 import org.ejml.simple.SimpleSVD;
-
-import edu.bu.vip.multikinect.Protos.Frame;
 
 public class CoordinateTransform {
 
   private static final int FRAME_WINDOW = 10;
 
   public static class Transform {
+
     private final DenseMatrix64F transform;
     private final DenseMatrix64F rotation;
     private final DenseMatrix64F translation;
     private final double error;
+    private final DenseMatrix64F errors;
     private final DenseMatrix64F xData;
     private final DenseMatrix64F yData;
 
     public Transform(DenseMatrix64F transform, DenseMatrix64F rotation, DenseMatrix64F translation,
-        double error, DenseMatrix64F xData, DenseMatrix64F yData) {
+        double error, DenseMatrix64F errors, DenseMatrix64F xData, DenseMatrix64F yData) {
       this.transform = transform;
       this.rotation = rotation;
       this.translation = translation;
+      this.errors = errors;
       this.error = error;
       this.xData = xData;
       this.yData = yData;
@@ -42,6 +43,10 @@ public class CoordinateTransform {
 
     public DenseMatrix64F getTranslation() {
       return translation;
+    }
+
+    public DenseMatrix64F getErrors() {
+      return errors;
     }
 
     public double getError() {
@@ -140,16 +145,20 @@ public class CoordinateTransform {
 
     // Error is the average absolute distance between each pair of points
     final double numberOfPoints = denseA.numRows;
+    DenseMatrix64F errors = new DenseMatrix64F(denseA.numRows, 1);
     double sum = 0;
     for (int i = 0; i < dY.numRows(); i++) {
       double dx = dY.get(i, 0);
       double dy = dY.get(i, 1);
       double dz = dY.get(i, 2);
-      sum +=  Math.sqrt(dx * dx  + dy * dy + dz * dz);
+      double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      sum += distance;
+      errors.set(i, 0, distance);
     }
     final double error = sum / numberOfPoints;
 
-    return new Transform(rotation, eq.lookupMatrix("R"), eq.lookupMatrix("T"), error, denseA,
+    return new Transform(rotation, eq.lookupMatrix("R"), eq.lookupMatrix("T"), error, errors,
+        denseA,
         denseB);
   }
 

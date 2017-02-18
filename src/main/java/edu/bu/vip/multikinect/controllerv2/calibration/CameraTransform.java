@@ -1,7 +1,9 @@
 package edu.bu.vip.multikinect.controllerv2.calibration;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.math.Stats;
 import com.google.common.primitives.Doubles;
+import edu.bu.vip.kinect.controller.calibration.Protos.ErrorStats;
 import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
@@ -111,6 +113,17 @@ public class CameraTransform implements Callable<CameraPairCalibration> {
     builder.setCameraB(cameraB);
     builder.addAllTransform(Doubles.asList(transform.getTransform().data));
     builder.setError(transform.getError());
+
+    ErrorStats.Builder errorBuilder = ErrorStats.newBuilder();
+    List<Double> errorsList = Doubles.asList(transform.getErrors().data);
+    Stats stats = Stats.of(errorsList);
+    errorBuilder.setMax(stats.max());
+    errorBuilder.setMin(stats.min());
+    errorBuilder.setMean(stats.mean());
+    errorBuilder.setStddev(stats.populationStandardDeviation());
+    errorBuilder.addAllErrors(errorsList);
+    builder.setErrorStats(errorBuilder);
+
     return builder.build();
   }
 }

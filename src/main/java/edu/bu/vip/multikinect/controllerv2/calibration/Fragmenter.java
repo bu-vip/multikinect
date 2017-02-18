@@ -45,6 +45,8 @@ public class Fragmenter {
   // Maps a pair of fragment IDs to a GOF. These GOFs have been started but are not finished.
   private final Map<ImmutableSet<Long>, GroupOfFrames> activeGOFs = new HashMap<>();
 
+  private final Object mainLock = new Object();
+
   private final EventBus frameBus;
   private final CalibrationDataDB calibrationDataDB;
   private Consumer<GroupOfFrames> groupOfFramesConsumer;
@@ -69,83 +71,97 @@ public class Fragmenter {
 
   public void stop() {
     this.frameBus.unregister(this);
+
+    synchronized (mainLock) {
+      // Finish all active GOFs
+      while (activeGOFs.size() > 0) {
+        ImmutableSet<Long> next = activeGOFs.keySet().iterator().next();
+        closeFragment(next.iterator().next());
+      }
+    }
   }
 
   @Subscribe
   public void onFrameReceivedEvent(FrameReceivedEvent event) {
-    final CameraProps props = event.getProps();
-    final Frame frame = event.getFrame();
+    synchronized (mainLock) {
+      final CameraProps props = event.getProps();
+      final Frame frame = event.getFrame();
 
-    // Save the camera frame
-    calibrationDataDB.storeFrame(props.getId(), frame);
+      // Save the camera frame
+      calibrationDataDB.storeFrame(props.getId(), frame);
 
-    // Check if the frame has at least 1 skeleton
-    if (frame.getSkeletonsCount() > 0) {
-      // Check if the incoming frame is part of an existing fragment
-      if (cameraFragmentIds.containsKey(props.getId())) {
-        // Update the time for this fragment
-        final long fragmentId = cameraFragmentIds.get(props.getId());
-        fragmentLastTime.put(fragmentId, frame.getTime());
+      // Check if the frame has at least 1 skeleton
+      if (frame.getSkeletonsCount() > 0) {
+        // Check if the incoming frame is part of an existing fragment
+        if (cameraFragmentIds.containsKey(props.getId())) {
+          // Update the time for this fragment
+          final long fragmentId = cameraFragmentIds.get(props.getId());
+          fragmentLastTime.put(fragmentId, frame.getTime());
+        } else {
+          // Create a new fragment for the camera
+          createNewFragment(props, event.getFrame());
+        }
       } else {
-        // Create a new fragment for the camera
-        createNewFragment(props, event.getFrame());
-      }
-    } else {
-      // Check if GOFs need to be finished
-      if (cameraFragmentIds.containsKey(props.getId())) {
-        logger.info("Closing all fragments connected to camera {}", props.getId());
+        // Check if GOFs need to be finished
+        if (cameraFragmentIds.containsKey(props.getId())) {
+          logger.info("Closing all fragments connected to camera {}", props.getId());
 
-        // Close all GOFs containing this camera
-        final long fragmentId = cameraFragmentIds.get(props.getId());
-        closeFragment(fragmentId);
+          // Close all GOFs containing this camera
+          final long fragmentId = cameraFragmentIds.get(props.getId());
+          closeFragment(fragmentId);
 
-        // Remove the fragment id
-        cameraFragmentIds.remove(props.getId());
+          // Remove the fragment id
+          cameraFragmentIds.remove(props.getId());
+        }
       }
     }
   }
 
   private void createNewFragment(CameraProps props, Frame frame) {
-    final long newFragmentId = fragmentCount.getAndIncrement();
+    synchronized (mainLock) {
+      final long newFragmentId = fragmentCount.getAndIncrement();
 
-    logger.info("Creating new fragment {} for camera {}", newFragmentId, props.getId());
+      logger.info("Creating new fragment {} for camera {}", newFragmentId, props.getId());
 
-    // Create new GOFs between each pair of cameras
-    cameraFragmentIds.forEach((cameraId, fragmentId) -> {
-      GroupOfFrames.Builder builder = GroupOfFrames.newBuilder();
-      builder.setCameraA(cameraId);
-      builder.setStartTimeA(fragmentLastTime.get(fragmentId));
+      // Create new GOFs between each pair of cameras
+      cameraFragmentIds.forEach((cameraId, fragmentId) -> {
+        GroupOfFrames.Builder builder = GroupOfFrames.newBuilder();
+        builder.setCameraA(cameraId);
+        builder.setStartTimeA(fragmentLastTime.get(fragmentId));
 
-      builder.setCameraB(props.getId());
-      builder.setStartTimeB(frame.getTime());
+        builder.setCameraB(props.getId());
+        builder.setStartTimeB(frame.getTime());
 
-      activeGOFs.put(ImmutableSet.of(fragmentId, newFragmentId), builder.build());
-    });
+        activeGOFs.put(ImmutableSet.of(fragmentId, newFragmentId), builder.build());
+      });
 
-    // Add the new fragment
-    cameraFragmentIds.put(props.getId(), newFragmentId);
+      // Add the new fragment
+      cameraFragmentIds.put(props.getId(), newFragmentId);
+    }
   }
 
   private void closeFragment(final long fragmentId) {
-    // Iterate over all GOFs
-    Iterator<ImmutableSet<Long>> it = activeGOFs.keySet().iterator();
-    while (it.hasNext()) {
-      ImmutableSet<Long> fragmentSet = it.next();
-      // Check if this camera's fragment is part of the frame
-      if (fragmentSet.contains(fragmentId)) {
-        // Get the original GOF with start times
-        GroupOfFrames started = activeGOFs.get(fragmentSet);
-        GroupOfFrames.Builder builder = GroupOfFrames.newBuilder(started);
+    synchronized (mainLock) {
+      // Iterate over all GOFs
+      Iterator<ImmutableSet<Long>> it = activeGOFs.keySet().iterator();
+      while (it.hasNext()) {
+        ImmutableSet<Long> fragmentSet = it.next();
+        // Check if this camera's fragment is part of the frame
+        if (fragmentSet.contains(fragmentId)) {
+          // Get the original GOF with start times
+          GroupOfFrames started = activeGOFs.get(fragmentSet);
+          GroupOfFrames.Builder builder = GroupOfFrames.newBuilder(started);
 
-        // Update the end times
-        final long fragmentAId = cameraFragmentIds.get(started.getCameraA());
-        final long fragmentBId = cameraFragmentIds.get(started.getCameraB());
-        builder.setEndTimeA(fragmentLastTime.get(fragmentAId));
-        builder.setEndTimeB(fragmentLastTime.get(fragmentBId));
+          // Update the end times
+          final long fragmentAId = cameraFragmentIds.get(started.getCameraA());
+          final long fragmentBId = cameraFragmentIds.get(started.getCameraB());
+          builder.setEndTimeA(fragmentLastTime.get(fragmentAId));
+          builder.setEndTimeB(fragmentLastTime.get(fragmentBId));
 
-        // Send the new frame
-        groupOfFramesConsumer.accept(builder.build());
-        it.remove();
+          // Send the new frame
+          groupOfFramesConsumer.accept(builder.build());
+          it.remove();
+        }
       }
     }
   }

@@ -17,6 +17,8 @@ import edu.bu.vip.multikinect.controllerv2.webconsole.api.state.RecordingDataSta
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.state.SelectCalibrationState;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.state.SelectSessionState;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.state.SessionIdleState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 
@@ -25,6 +27,7 @@ public class StateHandler implements Handler {
 
   public static final String URL_PATH = "_/state";
 
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private Controller controller;
   private CalibrationStore calibrationStore;
 

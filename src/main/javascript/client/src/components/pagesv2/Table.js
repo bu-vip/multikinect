@@ -58,7 +58,7 @@ class Table extends Component {
     if (this.props.header) {
       header = (<tr style={[styles.titleRow]}>
         {this.props.header.map((rowData, columnIndex) => {
-          const item = (rowData ? rowData.toString() : "");
+          const item = (rowData != null ? rowData.toString() : "");
           return (<th key={columnIndex}
                       style={[styles.allCells, styles.th]}>
             {item}
@@ -71,7 +71,7 @@ class Table extends Component {
     const rows = this.props.content.map((rowContent, rowIndex) => {
       // Convert the data array into table elements
       const row = rowContent.map((rowData, columnIndex) => {
-        const item = (rowData ? rowData.toString() : "");
+        const item = (rowData != null ? rowData.toString() : "");
         return (<td key={columnIndex}
                     style={[styles.allCells, styles.td]}>
           {item}

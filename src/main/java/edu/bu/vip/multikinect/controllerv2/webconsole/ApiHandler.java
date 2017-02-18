@@ -4,10 +4,13 @@ import static ratpack.jackson.Jackson.json;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.multikinect.controllerv2.Controller;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.CalibrationRep;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.RecordingRep;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.SessionRep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ratpack.func.Action;
 import ratpack.handling.Chain;
 import ratpack.http.Status;
@@ -32,6 +35,7 @@ public class ApiHandler implements Action<Chain> {
   private static final String FINISH_SESSION_URL = BASE_URL + "/finishSession";
   private static final String STOP_RECORDING_URL = BASE_URL + "/stopRecording";
 
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private Controller controller;
 
   @Inject
@@ -73,7 +77,8 @@ public class ApiHandler implements Action<Chain> {
     chain.get(DELETE_FRAME_URL, context -> {
       // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
-      // TODO(doug) - implement
+      controller.deleteCalibrationRecording(id);
+
       context.getResponse().status(Status.OK).send();
     });
 
@@ -142,6 +147,13 @@ public class ApiHandler implements Action<Chain> {
       // TODO(doug) - implement
       controller.stopRecording();
       context.getResponse().status(Status.OK).send();
+    });
+
+    chain.post("_/proto", context -> {
+     context.parse(Calibration.class).then(cal -> {
+        logger.info(cal.toString());
+        context.render(cal);
+     });
     });
   }
 }

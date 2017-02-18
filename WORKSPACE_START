@@ -1,7 +1,10 @@
 # WORKSPACE_START - beginning
 
 
-
+maven_server(
+    name = "jcenter",
+    url = "https://jcenter.bintray.com",
+)
 
 
 

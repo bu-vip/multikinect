@@ -216,6 +216,17 @@ java_library(
 )
 
 java_library(
+    name = "com_google_protobuf_protobuf_java_util",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@com_google_code_gson_gson//jar",
+        "@com_google_guava_guava//jar",
+        "@com_google_protobuf_protobuf_java//jar",
+        "@com_google_protobuf_protobuf_java_util//jar",
+    ],
+)
+
+java_library(
     name = "io_ratpack_ratpack_guice",
     visibility = ["//visibility:public"],
     exports = [
@@ -246,6 +257,14 @@ java_library(
         "@org_reactivestreams_reactive_streams//jar",
         "@org_slf4j_slf4j_api//jar",
         "@org_yaml_snakeyaml//jar",
+    ],
+)
+
+java_library(
+    name = "smartthings_ratpack_protobuf",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@smartthings_ratpack_protobuf//jar",
     ],
 )
 
@@ -291,14 +310,5 @@ java_library(
         "@org_eclipse_jetty_websocket_websocket_common//jar",
         "@org_eclipse_jetty_websocket_websocket_server//jar",
         "@org_eclipse_jetty_websocket_websocket_servlet//jar",
-    ],
-)
-
-java_library(
-    name = "io_takari_junit_takari_cpsuite",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@io_takari_junit_takari_cpsuite//jar",
-        "@junit_junit//jar",
     ],
 )

@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationStore;
+import edu.bu.vip.multikinect.controllerv2.camera.CameraManager;
 import edu.bu.vip.multikinect.controllerv2.camera.CameraModule;
 import edu.bu.vip.multikinect.controllerv2.webconsole.DevRedirectHandler;
 import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationDataLocation;
@@ -16,6 +17,8 @@ import edu.bu.vip.multikinect.controllerv2.webconsole.IPHandler;
 import edu.bu.vip.multikinect.controllerv2.webconsole.StateHandler;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.RecordingRep;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.SessionRep;
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.guice.Guice;
 import ratpack.server.RatpackServer;
+import smartthings.ratpack.protobuf.CacheConfig;
+import smartthings.ratpack.protobuf.ProtobufModule;
+import smartthings.ratpack.protobuf.ProtobufModule.Config;
 
 @Singleton
 public class Controller {
@@ -40,6 +46,8 @@ public class Controller {
     RECORDING_DATA
   }
 
+  public static final int GRPC_PORT = 45555;
+
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private State state = State.SELECT_CALIBRATION;
@@ -48,6 +56,8 @@ public class Controller {
   private long currentCalibration = -1;
   private long currentSession = -1;
 
+  private Server grpcServer;
+  private CameraManager cameraManager;
   private CalibrationManager calibrationManager;
   private CalibrationStore calibrationStore;
 
@@ -59,17 +69,21 @@ public class Controller {
       s.registry(Guice.registry(b -> {
         b.module(CameraModule.class);
         b.module(CalibrationModule.class);
+
+        Config protoConfig = new Config();
+        protoConfig.setCache(new CacheConfig());
+        b.moduleConfig(ProtobufModule.class, protoConfig);
+
         b.module(new AbstractModule() {
           @Override
           protected void configure() {
+            bind(ControllerService.class);
             bind(ApiHandler.class);
             bind(StateHandler.class);
             bind(IPHandler.class);
             bind(CalibrationModule.class);
             bind(DevRedirectHandler.class);
-            // TODO(doug) - Make a command line arg
-            bindConstant().annotatedWith(CalibrationDataLocation.class)
-                .to("/home/doug/Desktop/multikinect/calibration");
+
           }
         });
       }));
@@ -90,9 +104,19 @@ public class Controller {
   }
 
   @Inject
-  public Controller(CalibrationManager calibrationManager, CalibrationStore calibrationStore) {
+  public Controller(CameraManager cameraManager, CalibrationManager calibrationManager, CalibrationStore calibrationStore) {
+    this.cameraManager = cameraManager;
     this.calibrationManager = calibrationManager;
     this.calibrationStore = calibrationStore;
+  }
+
+  public void start() throws Exception {
+    grpcServer = ServerBuilder.forPort(GRPC_PORT).addService(cameraManager).build();
+    grpcServer.start();
+  }
+
+  public void stop() throws Exception {
+    grpcServer.shutdown();
   }
 
   public State getState() {
@@ -171,6 +195,12 @@ public class Controller {
     state = State.NEW_CALIBRATION;
 
     calibrationManager.stopRecording();
+  }
+
+  public void deleteCalibrationRecording(long id) {
+    // TODO(doug) - check state
+
+    calibrationManager.deleteRecording(id);
   }
 
   public void createSession(String name) {

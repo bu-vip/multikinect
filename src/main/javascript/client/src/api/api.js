@@ -61,7 +61,7 @@ export function newFrameRequest(frame) {
   .then(checkHttpResponseStatus);
 }
 
-const deleteFrameUrl = (id) => BASE_URL + "/deleteFrame/:id";
+const deleteFrameUrl = (id) => BASE_URL + "/deleteFrame/" + id;
 export function deleteFrameRequest(id) {
   return fetch(deleteFrameUrl(id))
   .then(checkHttpResponseStatus);

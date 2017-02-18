@@ -22,6 +22,8 @@ java_proto_repositories(
     "io_netty_netty_handler",
     "io_netty_netty_transport_native_epoll",
     "com_google_protobuf_protobuf_java",
+    "com_google_protobuf_protobuf_java_util",
+    "com_google_code_gson_gson",
 ])
 
 # Load C# bazel rules

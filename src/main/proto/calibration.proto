@@ -30,6 +30,15 @@ message CameraPairCalibration {
   string camera_B = 2;
   repeated double transform = 3;
   double error = 4;
+  ErrorStats error_stats = 5;
+}
+
+message ErrorStats {
+  double max = 1;
+  double min = 2;
+  double mean = 3;
+  double stddev = 4;
+  repeated double errors = 5;
 }
 
 message CalibrationFrame {

@@ -7,6 +7,7 @@ import SelectCalibrationView from './SelectCalibrationView';
 import NewCalibrationView from './NewCalibrationView';
 import SelectSessionView from './SelectSessionView';
 import RecordingHomeView from './RecordingHomeView';
+import CalibrationRecordingView from './CalibrationRecordingView';
 import RecordingPage from './RecordingPage';
 
 let styles = {
@@ -40,6 +41,9 @@ class ControlView extends Component {
           break;
         case 'RECORDING_DATA':
           view = (<RecordingPage controllerState={this.props.controllerState}/>);
+          break;
+        case 'NEW_CALIBRATION_FRAME':
+          view = (<CalibrationRecordingView controllerState={this.props.controllerState}/>);
           break;
         default:
           console.log("Unknown state: " + this.props.controllerState.state);

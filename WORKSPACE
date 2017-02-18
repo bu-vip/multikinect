@@ -2,7 +2,10 @@
 
 # WORKSPACE_START - beginning
 
-
+maven_server(
+    name = "jcenter",
+    url = "https://jcenter.bintray.com",
+)
 
 
 
@@ -37,11 +40,8 @@ maven_jar(name = "org_jogamp_gluegen_gluegen_rt", artifact = "org.jogamp.gluegen
 maven_jar(name = "org_jogamp_gluegen_gluegen_rt", artifact = "org.jogamp.gluegen:gluegen-rt:jar:natives-windows-i586:2.3.1")
 maven_jar(name = "org_jogamp_gluegen_gluegen_rt", artifact = "org.jogamp.gluegen:gluegen-rt:jar:2.3.1")
 maven_jar(name = "org_jogamp_gluegen_gluegen_rt_main", artifact = "org.jogamp.gluegen:gluegen-rt-main:jar:2.3.1")
-maven_jar(name = "com_google_guava_guava", artifact = "com.google.guava:guava:jar:19.0")
-maven_jar(name = "com_google_guava_guava", artifact = "com.google.guava:guava:jar:19.0")
+maven_jar(name = "com_google_code_gson_gson", artifact = "com.google.code.gson:gson:jar:2.3")
 maven_jar(name = "com_google_guava_guava", artifact = "com.google.guava:guava:jar:21.0")
-maven_jar(name = "com_google_guava_guava", artifact = "com.google.guava:guava:jar:19.0")
-maven_jar(name = "com_google_guava_guava", artifact = "com.google.guava:guava:jar:19.0")
 maven_jar(name = "com_google_inject_guice", artifact = "com.google.inject:guice:jar:4.1.1-SNAPSHOT")
 maven_jar(name = "com_google_inject_guice", artifact = "com.google.inject:guice:jar:4.1.0")
 maven_jar(name = "com_google_inject_guice", artifact = "com.google.inject:guice:jar:4.1.0")
@@ -152,8 +152,11 @@ maven_jar(name = "io_netty_netty_transport", artifact = "io.netty:netty-transpor
 maven_jar(name = "io_netty_netty_transport_native_epoll", artifact = "io.netty:netty-transport-native-epoll:jar:linux-x86_64:4.1.5.Final")
 maven_jar(name = "org_objenesis_objenesis", artifact = "org.objenesis:objenesis:jar:2.5")
 maven_jar(name = "com_google_protobuf_protobuf_java", artifact = "com.google.protobuf:protobuf-java:jar:3.0.0")
+maven_jar(name = "com_google_protobuf_protobuf_java", artifact = "com.google.protobuf:protobuf-java:jar:3.0.0")
+maven_jar(name = "com_google_protobuf_protobuf_java_util", artifact = "com.google.protobuf:protobuf-java-util:jar:3.0.0")
 maven_jar(name = "io_ratpack_ratpack_core", artifact = "io.ratpack:ratpack-core:jar:1.4.4")
 maven_jar(name = "io_ratpack_ratpack_guice", artifact = "io.ratpack:ratpack-guice:jar:1.4.4")
+maven_jar(name = "smartthings_ratpack_protobuf", artifact = "smartthings:ratpack-protobuf:jar:0.2.0", server="jcenter")
 maven_jar(name = "org_reactivestreams_reactive_streams", artifact = "org.reactivestreams:reactive-streams:jar:1.0.0")
 maven_jar(name = "org_ejml_simple", artifact = "org.ejml:simple:jar:0.29")
 maven_jar(name = "org_slf4j_slf4j_api", artifact = "org.slf4j:slf4j-api:jar:1.7.21")
@@ -167,7 +170,7 @@ maven_jar(name = "org_eclipse_jetty_websocket_websocket_client", artifact = "org
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_common", artifact = "org.eclipse.jetty.websocket:websocket-common:jar:9.4.0.M1")
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_server", artifact = "org.eclipse.jetty.websocket:websocket-server:jar:9.4.0.M1")
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_servlet", artifact = "org.eclipse.jetty.websocket:websocket-servlet:jar:9.4.0.M1")
-maven_jar(name = "io_takari_junit_takari_cpsuite", artifact = "io.takari.junit:takari-cpsuite:jar:1.2.7")
+
 
 
 # WORKSPACE_END - beginning
@@ -193,6 +196,8 @@ java_proto_repositories(
     "io_netty_netty_handler",
     "io_netty_netty_transport_native_epoll",
     "com_google_protobuf_protobuf_java",
+    "com_google_protobuf_protobuf_java_util",
+    "com_google_code_gson_gson",
 ])
 
 # Load C# bazel rules

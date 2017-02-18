@@ -1,7 +1,9 @@
 package edu.bu.vip.multikinect.controllerv2.webconsole.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableList;
 import edu.bu.vip.kinect.controller.calibration.Protos;
+import edu.bu.vip.kinect.controller.calibration.Protos.Recording;
 import edu.bu.vip.multikinect.util.TimestampUtils;
 import java.time.Instant;
 import java.util.List;
@@ -22,6 +24,11 @@ public class CalibrationRep {
     this.name = calibration.getName();
     this.dateCreated = TimestampUtils.from(calibration.getDateCreated());
     // TODO(doug)
+    ImmutableList.Builder<CalibrationRecordingRep> builder = ImmutableList.builder();
+    for (Recording recording : calibration.getRecordingsList()) {
+      builder.add(new CalibrationRecordingRep(recording));
+    }
+    recordings = builder.build();
   }
 
   public CalibrationRep(long id, String name, Instant dateCreated, List<CalibrationRecordingRep> recordings, double error) {

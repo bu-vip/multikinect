@@ -128,6 +128,7 @@ public class CalibrationManager {
       recording = false;
     }
 
+    logger.info("Finished calibration");
     active = false;
 
     return calibration.build();
@@ -177,6 +178,7 @@ public class CalibrationManager {
       calibration.clearCameraCalibrations();
       for (Future<CameraPairCalibration> task : tasks) {
         CameraPairCalibration result = task.get(TRANSFORM_TIMEOUT, TimeUnit.MILLISECONDS);
+        logger.info("Error: {}", result.getError());
         calibration.addCameraCalibrations(result);
       }
     } catch (TimeoutException e) {
