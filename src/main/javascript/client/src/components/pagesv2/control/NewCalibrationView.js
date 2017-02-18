@@ -8,7 +8,12 @@ import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
 import DataTable from '../DataTable';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
-import {newFrameRequest, finishCalibrationRequest, deleteFrameRequest} from '../../../api/api';
+import {
+  newFrameRequest,
+  finishCalibrationRequest,
+  deleteFrameRequest
+} from '../../../api/api';
+import {Bar} from 'react-chartjs-2';
 
 let styles = {
   base: {
@@ -110,13 +115,56 @@ class NewCalibrationView extends Component {
             emptyMessage="No frames"
         />);
 
+        let errorChart = (<div>No data</div>);
+        if (calibration.cameraCalibrations != null) {
+          errorChart = calibration.cameraCalibrations.map((cameraPair) => {
+            const chartKey = cameraPair.cameraA + "-" + cameraPair.cameraB;
+
+            const numBins = 10;
+            const range = cameraPair.max - cameraPair.min;
+            const binSize = range / numBins;
+            let bins = [];
+            let labels = [];
+            for (let i = 0; i < numBins; i++) {
+              bins.push(0);
+              labels.push((i * binSize + cameraPair.min).toFixed(5));
+            }
+
+            for (let i = 0; i < cameraPair.errors.length; i++) {
+              const value = cameraPair.errors[i];
+              let binIndex = Math.floor((value - cameraPair.min) / binSize);
+              bins[binIndex]++;
+            }
+
+            let chartData = {
+              labels: labels,
+              datasets: [
+                {
+                  label: "Errors (m)",
+                  data: bins
+                }
+              ]
+            };
+            return (<div key={chartKey}>
+              <h3>{chartKey}</h3>
+              <Bar
+                  data={chartData}
+              />
+              Max: {cameraPair.max}
+              Min: {cameraPair.min}
+              Mean: {cameraPair.mean}
+              Stddev: {cameraPair.stddev}
+            </div>);
+          });
+        }
+
         return (<div style={[styles.base]}>
           <div style={[styles.titleContainer]}>
             <div style={[styles.title]}>
               <h1>{calibration.name}
-              <IconButton
-                  icon="edit"
-                  onClick={this.handleEditInfoClick}/>
+                <IconButton
+                    icon="edit"
+                    onClick={this.handleEditInfoClick}/>
               </h1>
               <p>Error: {calibration.error}</p>
               <p>TODO(doug)</p>
@@ -130,6 +178,8 @@ class NewCalibrationView extends Component {
           </div>
           <h2>Recordings</h2>
           {recordingsTable}
+          <h2>Error</h2>
+          {errorChart}
         </div>);
       }
     }
