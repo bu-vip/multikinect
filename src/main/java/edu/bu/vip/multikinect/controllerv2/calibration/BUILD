@@ -12,6 +12,7 @@ java_library(
     deps = [
         ":calibrationdatadb",
         ":calibrationio",
+        ":calibrationstore",
         ":cameratransform",
         ":fragmenter",
         "//:com_google_guava_guava",

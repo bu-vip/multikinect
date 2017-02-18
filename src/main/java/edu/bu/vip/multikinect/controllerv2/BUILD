@@ -1,7 +1,7 @@
 java_binary(
     name = "controller",
     srcs = glob(["**/*.java"]),
-    main_class = "edu.bu.vip.kinect.controllerv2.Controller",
+    main_class = "edu.bu.vip.multikinect.controllerv2.Controller",
     resources = [
         "//src/main/resources:log4jprops",
     ],

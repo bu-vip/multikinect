@@ -8,6 +8,7 @@ import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos;
 import edu.bu.vip.multikinect.controllerv2.Controller;
 import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationLoader;
+import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationStore;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.CalibrationRep;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.state.ControllerState;
 import edu.bu.vip.multikinect.controllerv2.webconsole.api.state.NewCalibrationFrameState;
@@ -25,12 +26,12 @@ public class StateHandler implements Handler {
   public static final String URL_PATH = "_/state";
 
   private Controller controller;
-  private CalibrationLoader calibrationLoader;
+  private CalibrationStore calibrationStore;
 
   @Inject
-  protected StateHandler(Controller controller, CalibrationLoader calibrationLoader) {
+  protected StateHandler(Controller controller, CalibrationStore calibrationStore) {
     this.controller = controller;
-    this.calibrationLoader = calibrationLoader;
+    this.calibrationStore = calibrationStore;
   }
 
   @Override
@@ -40,7 +41,7 @@ public class StateHandler implements Handler {
       case SELECT_CALIBRATION: {
         // NOTE(doug) - Could do some caching here, if needed
         ImmutableList.Builder<CalibrationRep> builder = ImmutableList.builder();
-        for (Protos.Calibration calibration : calibrationLoader.loadCalibrations()) {
+        for (Protos.Calibration calibration : calibrationStore.getCalibrations()) {
           builder.add(new CalibrationRep(calibration));
         }
         state = new SelectCalibrationState(builder.build());

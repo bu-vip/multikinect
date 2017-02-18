@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class CameraManager extends CameraManagerImplBase {
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final AtomicInteger idCounter = new AtomicInteger(0);
   private final ConcurrentHashMap<String, Camera> camerasHostPortMap = new ConcurrentHashMap<>();
   private final ConcurrentHashMap<String, Camera> cameras = new ConcurrentHashMap<>();
   private final EventBus cameraBus;
@@ -49,7 +48,6 @@ public class CameraManager extends CameraManagerImplBase {
         if (!camerasHostPortMap.containsKey(hostPort)) {
           // Camera not registered
           CameraProps.Builder propsUpdated = CameraProps.newBuilder(sentProps);
-          propsUpdated.setId(Integer.toString(idCounter.getAndIncrement()));
           CameraProps props = propsUpdated.build();
 
           camera = new Camera(props);

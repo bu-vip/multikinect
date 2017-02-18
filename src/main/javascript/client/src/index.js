@@ -10,9 +10,6 @@ import {syncHistoryWithStore, routerMiddleware} from 'react-router-redux';
 
 import App from './App';
 import reducers from './reducers/reducers';
-import ConsolePage from './components/ConsolePage';
-import FeedPage from './components/FeedPage';
-
 import ControlPage from './components/pagesv2/control/ControlPage';
 
 const middleware = routerMiddleware(browserHistory);
@@ -30,7 +27,6 @@ render(
       <Router history={history}>
         <Route path="/" component={App}>
           <IndexRoute component={ControlPage}/>
-          <Route path={FeedPage.route} component={FeedPage}/>
         </Route>
       </Router>
     </Provider>,
