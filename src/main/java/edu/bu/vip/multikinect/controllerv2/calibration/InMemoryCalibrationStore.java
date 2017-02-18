@@ -7,10 +7,11 @@ import edu.bu.vip.kinect.controller.calibration.Protos.Calibration.Builder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 public class InMemoryCalibrationStore implements CalibrationStore {
 
-  private long idCounter = 0;
+  private long idCounter = (new Random()).nextInt();
   private Map<Long, Calibration> calibrations = new HashMap<>();
 
   @Inject

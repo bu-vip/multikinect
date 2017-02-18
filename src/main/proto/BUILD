@@ -55,3 +55,25 @@ java_proto_library(
     protos = ["camera_manager.proto"],
     with_grpc = True,
 )
+
+java_proto_library(
+    name = "web_api",
+    proto_deps = [
+        ":calibration",
+        ":session",
+        "//thirdparty/protobuf/google/protobuf:well_known_types",
+    ],
+    protos = [
+        "web_api.proto",
+    ],
+)
+
+java_proto_library(
+    name = "session",
+    proto_deps = [
+        "//thirdparty/protobuf/google/protobuf:well_known_types",
+    ],
+    protos = [
+        "session.proto",
+    ],
+)

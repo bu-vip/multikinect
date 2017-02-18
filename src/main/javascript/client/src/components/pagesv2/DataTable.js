@@ -39,18 +39,7 @@ class DataTable extends Component {
         // Enumerate through each key and get the cells content
         let rowContent = [];
         this.props.contentKeys.forEach((key) => {
-          let data = rowData[key];
-
-          // Convert dates
-          if (data.hasOwnProperty("epochSecond")) {
-            // Get the local date created
-            const dateCreated = Instant.ofEpochSecond(data.epochSecond,
-                data.nano);
-            const localTime = ZonedDateTime.ofInstant2(dateCreated,
-                ZoneId.SYSTEM);
-            data = localTime.format(formatter);
-          }
-
+          let data = (rowData.hasOwnProperty(key) ? rowData[key] : "");
           rowContent.push(data);
         });
 

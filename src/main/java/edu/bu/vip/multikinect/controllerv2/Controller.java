@@ -4,19 +4,20 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import edu.bu.vip.kinect.controller.calibration.Protos;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
+import edu.bu.vip.kinect.controller.data.Protos.Recording;
+import edu.bu.vip.kinect.controller.data.Protos.Session;
 import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationStore;
 import edu.bu.vip.multikinect.controllerv2.camera.CameraManager;
 import edu.bu.vip.multikinect.controllerv2.camera.CameraModule;
 import edu.bu.vip.multikinect.controllerv2.webconsole.DevRedirectHandler;
-import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationDataLocation;
 import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationManager;
 import edu.bu.vip.multikinect.controllerv2.calibration.CalibrationModule;
 import edu.bu.vip.multikinect.controllerv2.webconsole.ApiHandler;
 import edu.bu.vip.multikinect.controllerv2.webconsole.IPHandler;
 import edu.bu.vip.multikinect.controllerv2.webconsole.StateHandler;
-import edu.bu.vip.multikinect.controllerv2.webconsole.api.RecordingRep;
-import edu.bu.vip.multikinect.controllerv2.webconsole.api.SessionRep;
+import edu.bu.vip.multikinect.util.TimestampUtils;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import java.time.Instant;
@@ -51,8 +52,8 @@ public class Controller {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private State state = State.SELECT_CALIBRATION;
-  private Map<Long, SessionRep> sessions = new ConcurrentHashMap<>();
-  private RecordingRep newRecordingRep;
+  private Map<Long, Session> sessions = new ConcurrentHashMap<>();
+  private Recording newRecording;
   private long currentCalibration = -1;
   private long currentSession = -1;
 
@@ -104,7 +105,8 @@ public class Controller {
   }
 
   @Inject
-  public Controller(CameraManager cameraManager, CalibrationManager calibrationManager, CalibrationStore calibrationStore) {
+  public Controller(CameraManager cameraManager, CalibrationManager calibrationManager,
+      CalibrationStore calibrationStore) {
     this.cameraManager = cameraManager;
     this.calibrationManager = calibrationManager;
     this.calibrationStore = calibrationStore;
@@ -132,7 +134,7 @@ public class Controller {
       return calibrationManager.getCalibration();
     } else {
       Optional<Calibration> optCal = calibrationStore.getCalibration(currentCalibration);
-      if (optCal.isPresent()) {
+      if (!optCal.isPresent()) {
         logger.error("Could not retrieve current calibration");
         throw new RuntimeException("Could not retrieve current calibration");
       }
@@ -141,16 +143,16 @@ public class Controller {
     }
   }
 
-  public ImmutableList<SessionRep> getSessions() {
+  public ImmutableList<Session> getSessions() {
     return ImmutableList.copyOf(sessions.values());
   }
 
-  public SessionRep getCurrentSession() {
+  public Session getCurrentSession() {
     return sessions.get(currentSession);
   }
 
-  public RecordingRep getCurrentRecording() {
-    return newRecordingRep;
+  public Recording getCurrentRecording() {
+    return newRecording;
   }
 
   public void newCalibration(String name) {
@@ -207,9 +209,12 @@ public class Controller {
     logger.info("Creating session: {}", name);
     // TODO(doug) - Check current state
     // TODO(doug) - create new session
-    SessionRep newSessionRep = new SessionRep(System.currentTimeMillis(), name, Instant.now(),
-        new LinkedList<>());
-    sessions.put(newSessionRep.getId(), newSessionRep);
+    Session.Builder builder = Session.newBuilder();
+    builder.setId(System.currentTimeMillis());
+    builder.setDateCreated(TimestampUtils.now());
+    builder.setName(name);
+    Session newSession = builder.build();
+    sessions.put(newSession.getId(), newSession);
   }
 
   public void selectSession(long sessionId) {
@@ -239,17 +244,23 @@ public class Controller {
     logger.info("Creating new recording");
     // TODO(doug) - Check current state
     state = State.RECORDING_DATA;
-    newRecordingRep = new RecordingRep(currentSession, System.currentTimeMillis(), name, Instant.now());
+    Recording.Builder builder = Recording.newBuilder();
+    builder.setId(System.currentTimeMillis());
+    builder.setDateCreated(TimestampUtils.now());
+    builder.setName(name);
+    newRecording = builder.build();
   }
 
   public void deleteRecording(long recordingId) {
     logger.info("Deleting recording: {}", recordingId);
     // TODO(doug) - implement
-    SessionRep sessionRep = sessions.get(currentSession);
-    Iterator<RecordingRep> recordings = sessionRep.getRecordingReps().iterator();
-    while (recordings.hasNext()) {
-      if (recordings.next().getId() == recordingId) {
-        recordings.remove();
+    Session sessionRep = sessions.get(currentSession);
+
+    for (int i = 0; i < sessionRep.getRecordingsCount(); i++) {
+      if (sessionRep.getRecordings(i).getId() == recordingId) {
+        Session.Builder builder = sessionRep.toBuilder();
+        builder.removeRecordings(i);
+        sessionRep = builder.build();
         break;
       }
     }
@@ -268,7 +279,12 @@ public class Controller {
     // TODO(doug) - Check current state
     // TODO(doug) - implement
     state = State.SESSION_IDLE;
-    sessions.get(currentSession).getRecordingReps().add(newRecordingRep);
-    newRecordingRep = null;
+
+    Session session = sessions.get(currentSession);
+    Session.Builder builder = session.toBuilder();
+    builder.addRecordings(newRecording);
+    sessions.put(builder.getId(), builder.build());
+
+    newRecording = null;
   }
 }

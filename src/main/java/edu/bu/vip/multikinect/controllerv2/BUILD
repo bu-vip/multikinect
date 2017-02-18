@@ -33,6 +33,8 @@ java_binary(
         "//src/main/proto:camera",
         "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
+        "//src/main/proto:session",
         "//src/main/proto:skeletonfeed",
+        "//src/main/proto:web_api",
     ],
 )

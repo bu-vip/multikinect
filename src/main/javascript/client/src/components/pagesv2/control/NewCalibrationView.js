@@ -81,7 +81,7 @@ class NewCalibrationView extends Component {
     const controllerState = this.props.controllerState;
 
     if (controllerState) {
-      const calibration = controllerState.newCalibration;
+      const calibration = controllerState.calibration;
       if (this.state.editingInfo) {
 
         return (<div style={styles.base}>

@@ -1,14 +1,11 @@
 package edu.bu.vip.multikinect.controllerv2.webconsole;
 
-import static ratpack.jackson.Jackson.json;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
+import edu.bu.vip.kinect.controller.data.Protos.Recording;
+import edu.bu.vip.kinect.controller.data.Protos.Session;
 import edu.bu.vip.multikinect.controllerv2.Controller;
-import edu.bu.vip.multikinect.controllerv2.webconsole.api.CalibrationRep;
-import edu.bu.vip.multikinect.controllerv2.webconsole.api.RecordingRep;
-import edu.bu.vip.multikinect.controllerv2.webconsole.api.SessionRep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.func.Action;
@@ -47,7 +44,7 @@ public class ApiHandler implements Action<Chain> {
   public void execute(Chain chain) throws Exception {
     chain.post(NEW_CALIBRATION_URL, (context) -> {
       // TODO(doug) - implement
-      context.parse(CalibrationRep.class).then(calibration -> {
+      context.parse(Calibration.class).then(calibration -> {
         controller.newCalibration(calibration.getName());
         context.getResponse().status(Status.OK).send();
       });
@@ -97,7 +94,7 @@ public class ApiHandler implements Action<Chain> {
 
     chain.post(CREATE_SESSION_URL, context -> {
       // TODO(doug) - implement
-      context.parse(SessionRep.class).then(session -> {
+      context.parse(Session.class).then(session -> {
         controller.createSession(session.getName());
         context.getResponse().status(Status.OK).send();
       });
@@ -124,8 +121,8 @@ public class ApiHandler implements Action<Chain> {
 
     chain.post(NEW_RECORDING_URL, context -> {
       // TODO(doug) - implement
-      context.parse(RecordingRep.class).then(recordingRep -> {
-        controller.newRecording(recordingRep.getName());
+      context.parse(Recording.class).then(recording -> {
+        controller.newRecording(recording.getName());
         context.getResponse().status(Status.OK).send();
       });
     });
@@ -147,13 +144,6 @@ public class ApiHandler implements Action<Chain> {
       // TODO(doug) - implement
       controller.stopRecording();
       context.getResponse().status(Status.OK).send();
-    });
-
-    chain.post("_/proto", context -> {
-     context.parse(Calibration.class).then(cal -> {
-        logger.info(cal.toString());
-        context.render(cal);
-     });
     });
   }
 }

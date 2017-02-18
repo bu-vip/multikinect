@@ -1,0 +1,53 @@
+syntax = 'proto3';
+
+import 'src/main/proto/calibration.proto';
+import 'src/main/proto/session.proto';
+
+package bu.vip.kinect.controller.web;
+
+option java_package = "edu.bu.vip.kinect.controller.web";
+option java_outer_classname = "Protos";
+
+enum State {
+  UNKNOWN = 0;
+  SELECT_CALIBRATION = 1;
+  NEW_CALIBRATION = 2;
+  NEW_CALIBRATION_FRAME = 3;
+  SELECT_SESSION = 4;
+  SESSION_IDLE = 5;
+  RECORDING_DATA = 6;
+}
+
+message NewCalibrationFrameState {
+  bu.vip.kinect.controller.calibration.Calibration calibration = 1;
+  State state = 2;
+}
+
+message NewCalibrationState {
+  bu.vip.kinect.controller.calibration.Calibration calibration = 1;
+  State state = 2;
+}
+
+message RecordingDataState {
+  bu.vip.kinect.controller.calibration.Calibration calibration = 1;
+  bu.vip.kinect.controller.data.Session session = 2;
+  bu.vip.kinect.controller.data.Recording recording = 3;
+  State state = 4;
+}
+
+message SelectCalibrationState {
+  repeated bu.vip.kinect.controller.calibration.Calibration calibrations = 1;
+  State state = 2;
+}
+
+message SelectSessionState {
+  bu.vip.kinect.controller.calibration.Calibration calibration = 1;
+  repeated bu.vip.kinect.controller.data.Session sessions = 2;
+  State state = 3;
+}
+
+message SessionIdleState {
+  bu.vip.kinect.controller.calibration.Calibration calibration = 1;
+  bu.vip.kinect.controller.data.Session session = 2;
+  State state = 3;
+}
