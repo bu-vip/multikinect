@@ -1,6 +1,8 @@
 package edu.bu.vip.multikinect.sync;
 
 import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinect.controller.camera.FrameReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import org.ejml.data.DenseMatrix64F;
@@ -65,8 +67,8 @@ public class CoordinateTransform {
   public static Transform calculateTransform(String fileA, String fileB) throws IOException {
 
     // Find the min change between two frames in each stream
-    List<Frame> minA = FrameReader.readAllFrames(fileA);
-    List<Frame> minB = FrameReader.readAllFrames(fileB);
+    List<Frame> minA = FrameReader.readAllFrames(new FileInputStream(fileA));
+    List<Frame> minB = FrameReader.readAllFrames(new FileInputStream(fileB));
 
     Transform minRT = null;
     for (int i = 0; i < minA.size() - FRAME_WINDOW; i++) {
@@ -169,49 +171,5 @@ public class CoordinateTransform {
         simple.extractVector(false, 2).elementSum() / mat.numRows,};
     DenseMatrix64F meanMat = new DenseMatrix64F(1, 3, true, mean);
     return meanMat;
-  }
-
-  public static double calculateError(String fileA, String fileB, DenseMatrix64F transform,
-      int frameOffset) throws IOException {
-    int globalFrame = 0;
-
-    FrameReader readerA = new FrameReader(fileA);
-    FrameReader readerB = new FrameReader(fileB);
-    while (globalFrame + frameOffset < 0) {
-      readerA.getNext();
-      globalFrame++;
-    }
-
-    double error = 0;
-    int numberOfPoints = 0;
-    while (readerA.hasNext() && readerB.hasNext()) {
-      Frame frameA = readerA.getNext();
-      Frame frameB = readerB.getNext();
-
-      if (frameA.getSkeletonsCount() != frameB.getSkeletonsCount()
-          || frameA.getSkeletonsCount() == 0) {
-        continue;
-      }
-
-      boolean[] jointMask =
-          FrameUtils.joinJointMasks(FrameUtils.jointMasks(frameA), FrameUtils.jointMasks(frameB));
-
-      double[] dataA = FrameUtils.jointMatrix(frameA, jointMask);
-      DenseMatrix64F denseA = new DenseMatrix64F(dataA.length / 3, 3, true, dataA);
-      double[] dataB = FrameUtils.jointMatrix(frameB, jointMask);
-      DenseMatrix64F denseB = new DenseMatrix64F(dataB.length / 3, 3, true, dataB);
-
-      Equation eq = new Equation();
-      eq.alias(denseA, "X", denseB, "Y", transform, "T", denseA.numRows, "rowsX");
-      eq.process("Xt = T * [X, ones(rowsX, 1)]'");
-      eq.process("Err = [Y, ones(rowsX, 1)] - Xt'");
-      SimpleMatrix matrix = new SimpleMatrix(eq.lookupMatrix("Err"));
-      double norm = matrix.normF();
-      error += norm * norm;
-      numberOfPoints += matrix.numRows();
-    }
-
-    error = error / numberOfPoints;
-    return error;
   }
 }

@@ -1,7 +1,6 @@
 package edu.bu.vip.multikinect.controller;
 
 import com.google.inject.Inject;
-
 import ratpack.service.Service;
 import ratpack.service.StartEvent;
 import ratpack.service.StopEvent;

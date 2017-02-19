@@ -1,44 +1,111 @@
 package edu.bu.vip.multikinect.controller;
 
-import edu.bu.vip.multikinect.controllerv2.camera.CameraManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-importedu.bu.vip.multikinect.camera.Grpc.RecordOptions;
-
-import edu.bu.vip.kinect.controller.calibration.CalibrationManager;
+import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
+import edu.bu.vip.kinect.controller.data.Protos.Recording;
+import edu.bu.vip.kinect.controller.data.Protos.Session;
+import edu.bu.vip.multikinect.controller.calibration.CalibrationStore;
+import edu.bu.vip.multikinect.controller.camera.CameraManager;
+import edu.bu.vip.multikinect.controller.camera.CameraModule;
+import edu.bu.vip.multikinect.controller.webconsole.DevRedirectHandler;
+import edu.bu.vip.multikinect.controller.calibration.CalibrationManager;
+import edu.bu.vip.multikinect.controller.calibration.CalibrationModule;
+import edu.bu.vip.multikinect.controller.webconsole.ApiHandler;
+import edu.bu.vip.multikinect.controller.webconsole.IPHandler;
+import edu.bu.vip.multikinect.controller.webconsole.StateHandler;
+import edu.bu.vip.multikinect.util.TimestampUtils;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ratpack.guice.Guice;
+import ratpack.server.RatpackServer;
+import smartthings.ratpack.protobuf.CacheConfig;
+import smartthings.ratpack.protobuf.ProtobufModule;
+import smartthings.ratpack.protobuf.ProtobufModule.Config;
 
 @Singleton
-// TODO(doug) - evaluate thread safety
 public class Controller {
-  public static final int GRPC_PORT = 45555;
 
-  public enum Mode {
-    IDLE, CALIBRATION, REALTIME
+  public enum State {
+    SELECT_CALIBRATION,
+    NEW_CALIBRATION,
+    NEW_CALIBRATION_FRAME,
+    SELECT_SESSION,
+    SESSION_IDLE,
+    RECORDING_DATA
   }
 
-  private static final long MILLISECONDS_PER_SECOND = 1000;
-  private static final long UPDATE_THREAD_TIMEOUT = MILLISECONDS_PER_SECOND * 1;
+  public static final int GRPC_PORT = 45555;
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final RecordingManager recordingManager;
-  private final CameraManager cameraManager;
-  private final CalibrationManager calibrationManager;
-  private Mode currentMode = Mode.IDLE;
+
+  private State state = State.SELECT_CALIBRATION;
+  private Map<Long, Session> sessions = new ConcurrentHashMap<>();
+  private Recording newRecording;
+  private long currentCalibration = -1;
+  private long currentSession = -1;
+
   private Server grpcServer;
-  private Thread updateThread;
+  private CameraManager cameraManager;
+  private CalibrationManager calibrationManager;
+  private CalibrationStore calibrationStore;
+
+  public static void main(String[] args) throws Exception {
+    RatpackServer server = RatpackServer.start(s -> {
+      s.serverConfig(config -> {
+        config.port(8080);
+      });
+      s.registry(Guice.registry(b -> {
+        b.module(CameraModule.class);
+        b.module(CalibrationModule.class);
+
+        Config protoConfig = new Config();
+        protoConfig.setCache(new CacheConfig());
+        b.moduleConfig(ProtobufModule.class, protoConfig);
+
+        b.module(new AbstractModule() {
+          @Override
+          protected void configure() {
+            bind(ControllerService.class);
+            bind(ApiHandler.class);
+            bind(StateHandler.class);
+            bind(IPHandler.class);
+            bind(CalibrationModule.class);
+            bind(DevRedirectHandler.class);
+
+          }
+        });
+      }));
+      s.handlers(chain -> {
+        chain.insert(ApiHandler.class);
+        chain.get(StateHandler.URL_PATH, StateHandler.class);
+        chain.get(IPHandler.URL_PATH, IPHandler.class);
+        chain.get("::.*", DevRedirectHandler.class);
+      });
+    });
+
+    System.out.println("Press enter to stop");
+    Scanner scanner = new Scanner(System.in);
+    scanner.nextLine();
+    scanner.close();
+
+    server.stop();
+  }
 
   @Inject
-  // TODO(doug) - recording manager
-  protected Controller( CameraManager cameraManager, CalibrationManager calibrationManager) {
+  public Controller(CameraManager cameraManager, CalibrationManager calibrationManager,
+      CalibrationStore calibrationStore) {
     this.cameraManager = cameraManager;
-    this.recordingManager = null;
     this.calibrationManager = calibrationManager;
+    this.calibrationStore = calibrationStore;
   }
 
   public void start() throws Exception {
@@ -50,60 +117,170 @@ public class Controller {
     grpcServer.shutdown();
   }
 
-  public void setMode(Mode nextMode) {
-    if (nextMode != currentMode) {
-      logger.info("Transitioning from mode {} to {}", currentMode, nextMode);
-      
-      switch (currentMode) {
-        case CALIBRATION:
-          this.calibrationManager.finishCalibrationSession();
-          break;
+  public State getState() {
+    return this.state;
+  }
 
-        default:
-          break;
+  public ImmutableList<Calibration> getCalibrations() {
+    return calibrationStore.getCalibrations();
+  }
+
+  public Calibration getCurrentCalibration() {
+    if (currentCalibration == -1) {
+      return calibrationManager.getCalibration();
+    } else {
+      Optional<Calibration> optCal = calibrationStore.getCalibration(currentCalibration);
+      if (!optCal.isPresent()) {
+        logger.error("Could not retrieve current calibration");
+        throw new RuntimeException("Could not retrieve current calibration");
       }
 
-      currentMode = nextMode;
-
-      switch (currentMode) {
-        case CALIBRATION:
-          this.calibrationManager.beginCalibrationSession();
-          break;
-
-        default:
-          break;
-      }
-    }
-  }
-  
-  public Mode getMode() {
-    return currentMode;
-  }
-
-  public CameraManager getCameraManager() {
-    return this.cameraManager;
-  }
-
-  private void stopUpdateThread() {
-    updateThread.interrupt();
-    try {
-      updateThread.join(UPDATE_THREAD_TIMEOUT);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+      return optCal.get();
     }
   }
 
-  private class CameraUpdater implements Runnable {
-    @Override
-    public void run() {
-      while (!Thread.currentThread().isInterrupted()) {
-        // Update the recording manager
-        Optional<RecordOptions> optOptions = recordingManager.update();
-        // Update camera options if needed
-        if (optOptions.isPresent()) {
-          cameraManager.updateCameraOptions(optOptions.get());
-        }
+  public ImmutableList<Session> getSessions() {
+    return ImmutableList.copyOf(sessions.values());
+  }
+
+  public Session getCurrentSession() {
+    return sessions.get(currentSession);
+  }
+
+  public Recording getCurrentRecording() {
+    return newRecording;
+  }
+
+  public void newCalibration(String name) {
+    // TODO(doug) - Check current state
+    state = State.NEW_CALIBRATION;
+
+    // TODO(doug) - notes
+    calibrationManager.start(name, "");
+  }
+
+  public void selectCalibration(long calibrationId) {
+    logger.info("Selecting calibration: {}", calibrationId);
+    // TODO(doug) - Check current state
+    // TODO(doug) - Handle calibration not found
+    state = State.SELECT_SESSION;
+    currentCalibration = calibrationId;
+  }
+
+  public void deleteCalibration(long calibrationId) {
+    logger.info("Deleting calibration: {}", calibrationId);
+    // TODO(doug) - Check current state
+    calibrationStore.deleteCalibration(calibrationId);
+  }
+
+  public void newCalibrationFrame() {
+    // TODO(doug) - Check current state
+    state = State.NEW_CALIBRATION_FRAME;
+
+    calibrationManager.startRecording();
+  }
+
+  public void finishNewCalibration() {
+    // TODO(doug) - Check current state
+    state = State.SELECT_CALIBRATION;
+
+    Calibration newCalibration = calibrationManager.finish();
+    calibrationStore.createCalibration(newCalibration);
+  }
+
+  public void finishNewCalibrationFrame() {
+    // TODO(doug) - Check current state
+    state = State.NEW_CALIBRATION;
+
+    calibrationManager.stopRecording();
+  }
+
+  public void deleteCalibrationRecording(long id) {
+    // TODO(doug) - check state
+
+    calibrationManager.deleteRecording(id);
+  }
+
+  public void createSession(String name) {
+    logger.info("Creating session: {}", name);
+    // TODO(doug) - Check current state
+    // TODO(doug) - create new session
+    Session.Builder builder = Session.newBuilder();
+    builder.setId(System.currentTimeMillis());
+    builder.setDateCreated(TimestampUtils.now());
+    builder.setName(name);
+    Session newSession = builder.build();
+    sessions.put(newSession.getId(), newSession);
+  }
+
+  public void selectSession(long sessionId) {
+    logger.info("Selecting session: {}", sessionId);
+    // TODO(doug) - Check current state
+    // TODO(doug) - Handle session not found
+    state = State.SESSION_IDLE;
+    currentSession = sessionId;
+  }
+
+  public void deleteSession(long sessionId) {
+    logger.info("Deleting session: {}", sessionId);
+    // TODO(doug) - Check current state
+    // TODO(doug) - Handle session not found
+    sessions.remove(sessionId);
+  }
+
+  public void finishSelectSession() {
+    logger.info("Canceling session selection");
+    // TODO(doug) - Check current state
+    // TODO(doug) - implement
+    state = State.SELECT_CALIBRATION;
+    currentCalibration = -1;
+  }
+
+  public void newRecording(String name) {
+    logger.info("Creating new recording");
+    // TODO(doug) - Check current state
+    state = State.RECORDING_DATA;
+    Recording.Builder builder = Recording.newBuilder();
+    builder.setId(System.currentTimeMillis());
+    builder.setDateCreated(TimestampUtils.now());
+    builder.setName(name);
+    newRecording = builder.build();
+  }
+
+  public void deleteRecording(long recordingId) {
+    logger.info("Deleting recording: {}", recordingId);
+    // TODO(doug) - implement
+    Session sessionRep = sessions.get(currentSession);
+
+    for (int i = 0; i < sessionRep.getRecordingsCount(); i++) {
+      if (sessionRep.getRecordings(i).getId() == recordingId) {
+        Session.Builder builder = sessionRep.toBuilder();
+        builder.removeRecordings(i);
+        sessionRep = builder.build();
+        break;
       }
     }
+  }
+
+  public void finishSession() {
+    logger.info("Finishing session: {}", currentSession);
+    // TODO(doug) - Check current state
+    // TODO(doug) - implement
+    state = State.SELECT_SESSION;
+    currentSession = -1;
+  }
+
+  public void stopRecording() {
+    logger.info("Stopping recording");
+    // TODO(doug) - Check current state
+    // TODO(doug) - implement
+    state = State.SESSION_IDLE;
+
+    Session session = sessions.get(currentSession);
+    Session.Builder builder = session.toBuilder();
+    builder.addRecordings(newRecording);
+    sessions.put(builder.getId(), builder.build());
+
+    newRecording = null;
   }
 }
