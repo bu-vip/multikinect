@@ -9,6 +9,7 @@ import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinect.controller.camera.FrameReader;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,10 +39,12 @@ public abstract class CalibrationAlgorithmTest {
         dataStore.storeFrames(CAL_ID, recording, cameraId, frames);
       }
     }
-    dataStore.storeFrames(CAL_ID, 1, CAMERA_A, FrameReader.readAllFrames(getClass().getResourceAsStream("/kinect_24_a.dat")));
-    dataStore.storeFrames(CAL_ID, 1, CAMERA_B, FrameReader.readAllFrames(getClass().getResourceAsStream("/kinect_24_b.dat")));
+    dataStore.storeFrames(CAL_ID, 1, CAMERA_A,
+        FrameReader.readAllFrames(getClass().getResourceAsStream("/kinect_24_a.dat")));
+    dataStore.storeFrames(CAL_ID, 1, CAMERA_B,
+        FrameReader.readAllFrames(getClass().getResourceAsStream("/kinect_24_b.dat")));
 
-   algorithm = getAlgorithm();
+    algorithm = getAlgorithm();
   }
 
   protected CalibrationDataStore getDataStore() {
@@ -55,8 +58,10 @@ public abstract class CalibrationAlgorithmTest {
 
   @Test
   public void test() throws Exception {
-    algorithm.init(dataStore.getAllFrames(CAL_ID, 1, CAMERA_A), dataStore.getAllFrames(CAL_ID, 1, CAMERA_B));
-    ImmutableList<GroupOfFrames> gofs = algorithm.call();
+    Callable<ImmutableList<GroupOfFrames>> job = algorithm
+        .createJob(dataStore.getAllFrames(CAL_ID, 1, CAMERA_A),
+            dataStore.getAllFrames(CAL_ID, 1, CAMERA_B));
+    ImmutableList<GroupOfFrames> gofs = job.call();
 
     gofs.size();
   }

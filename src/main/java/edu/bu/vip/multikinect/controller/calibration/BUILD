@@ -10,15 +10,17 @@ java_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        ":bruteforcecalibrationalgorithm",
+        ":calibrationalgorithm",
         ":calibrationdatadb",
         ":calibrationstore",
         ":cameratransform",
-        ":fragmenter",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
         "//:org_ejml_all",
         "//:org_slf4j_slf4j_api",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:framebus",
+        "//src/main/java/edu/bu/vip/multikinect/controller/camera:module",
         "//src/main/java/edu/bu/vip/multikinect/sync:coordinatetransform",
         "//src/main/java/edu/bu/vip/multikinect/sync:protoutils",
         "//src/main/java/edu/bu/vip/multikinect/util:timestamputils",
@@ -29,16 +31,18 @@ java_library(
 )
 
 java_library(
-    name = "fragmenter",
+    name = "calibrationutils",
     srcs = [
-        "Fragmenter.java",
+        "CalibrationUtils.java",
     ],
     deps = [
         ":calibrationdatadb",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
+        "//:org_ejml_all",
         "//:org_slf4j_slf4j_api",
-        "//src/main/java/edu/bu/vip/multikinect/controller/camera:framebus",
+        "//src/main/java/edu/bu/vip/multikinect/sync:coordinatetransform",
+        "//src/main/java/edu/bu/vip/multikinect/sync:protoutils",
         "//src/main/proto:calibration",
         "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
@@ -70,6 +74,7 @@ java_library(
     ],
     deps = [
         ":calibrationdatadb",
+        ":calibrationutils",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
         "//:org_ejml_all",
@@ -117,6 +122,7 @@ java_library(
     ],
     deps = [
         ":calibrationalgorithm",
+        ":calibrationutils",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
         "//:org_ejml_all",

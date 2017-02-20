@@ -1,5 +1,7 @@
 package edu.bu.vip.multikinect.controller.camera;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -79,6 +81,10 @@ public class CameraManager extends CameraManagerImplBase {
       responseObserver.onError(e);
     }
 
+  }
+
+  public ImmutableSet<String> getConnectedCameras() {
+    return ImmutableSet.copyOf(cameras.keySet());
   }
 
   private String hostPortKey(CameraProps props) {

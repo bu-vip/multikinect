@@ -119,20 +119,21 @@ class NewCalibrationView extends Component {
         if (calibration.cameraCalibrations != null) {
           errorChart = calibration.cameraCalibrations.map((cameraPair) => {
             const chartKey = cameraPair.cameraA + "-" + cameraPair.cameraB;
+            const errorStats = cameraPair.errorStats;
 
             const numBins = 10;
-            const range = cameraPair.max - cameraPair.min;
+            const range = errorStats.max - errorStats.min;
             const binSize = range / numBins;
             let bins = [];
             let labels = [];
             for (let i = 0; i < numBins; i++) {
               bins.push(0);
-              labels.push((i * binSize + cameraPair.min).toFixed(5));
+              labels.push((i * binSize + errorStats.min).toFixed(5));
             }
 
-            for (let i = 0; i < cameraPair.errors.length; i++) {
-              const value = cameraPair.errors[i];
-              let binIndex = Math.floor((value - cameraPair.min) / binSize);
+            for (let i = 0; i < errorStats.errors.length; i++) {
+              const value = errorStats.errors[i];
+              let binIndex = Math.floor((value - errorStats.min) / binSize);
               bins[binIndex]++;
             }
 
@@ -145,15 +146,36 @@ class NewCalibrationView extends Component {
                 }
               ]
             };
+
+            // Prints the transformation matrix
+            let matrix = "\n[";
+            for (let i = 0; i < cameraPair.transform.length; i++) {
+              matrix += " " + cameraPair.transform[i].toFixed(5);
+              if (i % 4 == 3 && i != cameraPair.transform.length - 1) {
+                matrix += "\n"
+              }
+            }
+            matrix += "]";
+
             return (<div key={chartKey}>
               <h3>{chartKey}</h3>
               <Bar
                   data={chartData}
               />
-              Max: {cameraPair.max}
-              Min: {cameraPair.min}
-              Mean: {cameraPair.mean}
-              Stddev: {cameraPair.stddev}
+              <br/>
+              Max: {errorStats.max}
+              <br/>
+              Min: {errorStats.min}
+              <br/>
+              Mean: {errorStats.mean}
+              <br/>
+              Stddev: {errorStats.stddev}
+              <br/>
+              Num: {errorStats.errors.length}
+              <br/>
+              <pre>
+              Transform: {matrix}
+              </pre>
             </div>);
           });
         }

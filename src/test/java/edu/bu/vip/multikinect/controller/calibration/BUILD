@@ -1,27 +1,4 @@
 java_test(
-    name = "FragmenterTest",
-    srcs = ["FragmenterTest.java"],
-    resources = [
-        "//src/test/resources:kinectdata",
-    ],
-    deps = [
-        "//:com_google_guava_guava",
-        "//:com_google_inject_guice",
-        "//:junit_junit",
-        "//:org_hamcrest_hamcrest_junit",
-        "//:org_mockito_mockito_core",
-        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
-        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:fragmenter",
-        "//src/main/java/edu/bu/vip/multikinect/controller/camera:fileframepublisher",
-        "//src/main/java/edu/bu/vip/multikinect/controller/camera:framebus",
-        "//src/main/java/edu/bu/vip/multikinect/controller/camera:framereader",
-        "//src/main/proto:calibration",
-        "//src/main/proto:camera_manager",
-        "//src/main/proto:frame",
-    ],
-)
-
-java_test(
     name = "CameraTransformTest",
     srcs = ["CameraTransformTest.java"],
     resources = [
