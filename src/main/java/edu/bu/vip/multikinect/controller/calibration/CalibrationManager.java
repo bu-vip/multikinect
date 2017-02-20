@@ -1,5 +1,6 @@
 package edu.bu.vip.multikinect.controller.calibration;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
@@ -10,12 +11,15 @@ import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.kinect.controller.calibration.Protos.Recording;
+import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinect.controller.camera.FrameBus;
 import edu.bu.vip.multikinect.controller.camera.FrameReceivedEvent;
 import edu.bu.vip.multikinect.util.TimestampUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -99,6 +103,13 @@ public class CalibrationManager {
     if (recording) {
       this.frameBus.unregister(this);
 
+      /*
+      ImmutableList<Frame> framesA = calibrationDataStore.getAllFrames(calibration.getId(), currentRecording.getId(), cameraA);
+      ImmutableList<Frame> framesB = calibrationDataStore.getAllFrames(calibration.getId(), currentRecording.getId(), cameraA);
+      Callable<ImmutableList<GroupOfFrames>> job = algorithm.createJob(framesA, framesB);
+      Future<ImmutableList<GroupOfFrames>> future = jobExecutor.submit(job);
+      */
+
       calibration.addRecordings(currentRecording);
       currentRecording = null;
 
@@ -149,37 +160,21 @@ public class CalibrationManager {
   }
 
   private void calculateTransform() {
-    ImmutableList<Recording> recordings = ImmutableList.copyOf(calibration.getRecordingsList());
-
-    // Concatenate all recording frame lists together
-    ImmutableList.Builder<GroupOfFrames> allGOFsBuilder = ImmutableList.builder();
-    recordings.forEach((recording) -> {
-      allGOFsBuilder.addAll(recording.getGofsList());
-    });
-
-    ImmutableList<GroupOfFrames> allGOFs = allGOFsBuilder.build();
-
-    // Separate the GOFs by camera pair
-    HashMap<ImmutableSet<String>, CameraTransform> transforms = new HashMap<>();
-    allGOFs.forEach((frame) -> {
-      // Use a set as the key
-      ImmutableSet<String> key = ImmutableSet.of(frame.getCameraA(), frame.getCameraB());
-      // Check if this is a new camera pair, if so add a transform object
-      if (!transforms.containsKey(key)) {
-        transforms.put(key,
-            new CameraTransform(frame.getCameraA(), frame.getCameraB(), calibrationDataStore));
-      }
-
-      // Add the frame to the transform
-      transforms.get(key).addFrame(frame);
-    });
+    // TODO(doug) - get cameras
+    List<String> cameraIds = ImmutableList.of("camera1", "camera2");
+    Collection<List<String>> pairs = Collections2.permutations(cameraIds);
 
     List<Future<CameraPairCalibration>> tasks = new ArrayList<>();
     ExecutorService executorService = Executors.newFixedThreadPool(4);
-    transforms.forEach((key, value) -> {
-      Future<CameraPairCalibration> future = executorService.submit(value);
+    // Create camera transforms for each pair of cameras
+    for (List<String> pair : pairs) {
+      Callable<CameraPairCalibration> job = new CameraTransform(calibration.build(),
+          pair.get(0),
+          pair.get(1),
+          calibrationDataStore);
+      Future<CameraPairCalibration> future = executorService.submit(job);
       tasks.add(future);
-    });
+    }
 
     // Wait for tasks to finish
     try {
@@ -189,13 +184,9 @@ public class CalibrationManager {
         logger.info("Error: {}", result.getError());
         calibration.addCameraCalibrations(result);
       }
-    } catch (TimeoutException e) {
+    } catch (TimeoutException | InterruptedException | ExecutionException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    } catch (ExecutionException ex) {
-      ex.printStackTrace();
-    } catch (InterruptedException ie) {
-      ie.printStackTrace();
     }
 
     // Shutdown executor. On normal execution, all tasks should be done.

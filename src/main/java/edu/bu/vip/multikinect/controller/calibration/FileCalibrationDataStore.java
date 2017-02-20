@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -139,7 +140,7 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
     path += File.separator + key.getCalibrationId();
     path += File.separator + key.getRecordingId();
     // TODO(doug) - Careful, camera ids could have bad characters for file names
-    path += File.separator + key.cameraId;
+    path += File.separator + key.getCameraId();
     path += FILE_EXT;
     return path;
   }
@@ -166,6 +167,23 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
 
     public String getCameraId() {
       return cameraId;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(this.calibrationId, this.recordingId, this.cameraId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof Key) {
+        Key other = (Key) obj;
+        return Objects.equals(other.calibrationId, this.calibrationId) &&
+            Objects.equals(other.recordingId, this.recordingId) &&
+            Objects.equals(other.cameraId, this.cameraId);
+      }
+
+      return false;
     }
   }
 }
