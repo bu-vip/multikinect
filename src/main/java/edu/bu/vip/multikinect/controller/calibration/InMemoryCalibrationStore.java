@@ -2,6 +2,7 @@ package edu.bu.vip.multikinect.controller.calibration;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration.Builder;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class InMemoryCalibrationStore implements CalibrationStore {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());

@@ -6,7 +6,7 @@ public class CalibrationModule extends AbstractModule{
 
   @Override
   protected void configure() {
-    bind(CalibrationDataDB.class).toInstance(new InMemoryCalibrationDataDB());
-    bind(CalibrationStore.class).toInstance(new InMemoryCalibrationStore());
+    bind(CalibrationDataDB.class).to(FileCalibrationDataStore.class);
+    bind(CalibrationStore.class).to(InMemoryCalibrationStore.class);
   }
 }

@@ -8,6 +8,7 @@ import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinect.controller.camera.FrameReader;
 import java.io.File;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class FileCalibrationDataStore implements CalibrationDataDB {
 
   private static final String FILE_EXT = ".pbdat";
@@ -134,9 +136,10 @@ public class FileCalibrationDataStore implements CalibrationDataDB {
 
   private String getFilePath(Key key) {
     String path = this.rootDir;
-    path += File.pathSeparator + key.getCalibrationId();
-    path += File.pathSeparator + key.getRecordingId();
-    path += File.pathSeparator + key.cameraId;
+    path += File.separator + key.getCalibrationId();
+    path += File.separator + key.getRecordingId();
+    // TODO(doug) - Careful, camera ids could have bad characters for file names
+    path += File.separator + key.cameraId;
     path += FILE_EXT;
     return path;
   }

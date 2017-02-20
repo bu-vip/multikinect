@@ -2,12 +2,16 @@ package edu.bu.vip.multikinect.controller.calibration;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.kinect.controller.calibration.Protos.Recording;
+import edu.bu.vip.multikinect.controller.camera.FrameBus;
+import edu.bu.vip.multikinect.controller.camera.FrameReceivedEvent;
 import edu.bu.vip.multikinect.util.TimestampUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,12 +50,12 @@ public class CalibrationManager {
   private Calibration.Builder calibration;
 
   private CalibrationDataDB calibrationDataDB;
-  private Fragmenter fragmenter;
+  private EventBus frameBus;
 
   @Inject
-  public CalibrationManager(CalibrationDataDB calibrationDataDB, Fragmenter fragmenter) {
+  public CalibrationManager(CalibrationDataDB calibrationDataDB, @FrameBus EventBus frameBus) {
     this.calibrationDataDB = calibrationDataDB;
-    this.fragmenter = fragmenter;
+    this.frameBus =frameBus;
   }
 
   public void start(String name, String notes) {
@@ -76,20 +80,23 @@ public class CalibrationManager {
       currentRecording.setId(System.currentTimeMillis());
       currentRecording.setDateCreated(TimestampUtils.now());
 
-      fragmenter.start((groupOfFrames) -> {
-        currentRecording.addGofs(groupOfFrames);
-      });
+      this.frameBus.register(this);
       recording = true;
     } else {
       logger.warn("Already recording a frame");
     }
   }
 
+  @Subscribe
+  public void onFrameEventReceived(FrameReceivedEvent event) {
+    calibrationDataDB.storeFrame(calibration.getId(), currentRecording.getId(), event.getProps().getId(), event.getFrame());
+  }
+
   public void stopRecording() {
     checkActive();
 
     if (recording) {
-      fragmenter.stop();
+      this.frameBus.unregister(this);
 
       calibration.addRecordings(currentRecording);
       currentRecording = null;
@@ -123,7 +130,7 @@ public class CalibrationManager {
     if (recording) {
       logger.warn("finish() was called while recording, discarding active recording");
 
-      fragmenter.stop();
+      this.frameBus.unregister(this);
       currentRecording = null;
       recording = false;
     }

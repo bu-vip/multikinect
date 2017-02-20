@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Table;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import edu.bu.vip.multikinect.Protos.Frame;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class InMemoryCalibrationDataDB implements CalibrationDataDB {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());

@@ -11,7 +11,6 @@ java_library(
     visibility = ["//visibility:public"],
     deps = [
         ":calibrationdatadb",
-        ":calibrationio",
         ":calibrationstore",
         ":cameratransform",
         ":fragmenter",
@@ -26,21 +25,6 @@ java_library(
         "//src/main/proto:calibration",
         "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
-    ],
-)
-
-java_library(
-    name = "calibrationio",
-    srcs = [
-        "CalibrationDataLocation.java",
-        "CalibrationLoader.java",
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//:com_google_guava_guava",
-        "//:com_google_inject_guice",
-        "//:org_slf4j_slf4j_api",
-        "//src/main/proto:calibration",
     ],
 )
 
@@ -65,12 +49,16 @@ java_library(
     name = "calibrationdatadb",
     srcs = [
         "CalibrationDataDB.java",
+        "CalibrationDataLocation.java",
+        "FileCalibrationDataStore.java",
         "InMemoryCalibrationDataDB.java",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
         "//:org_slf4j_slf4j_api",
+        "//src/main/java/edu/bu/vip/multikinect/controller/camera:framereader",
         "//src/main/proto:frame",
     ],
 )

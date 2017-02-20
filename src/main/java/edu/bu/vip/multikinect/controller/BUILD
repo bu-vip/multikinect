@@ -20,7 +20,7 @@ java_binary(
         "//:org_slf4j_slf4j_api",
         "//:org_slf4j_slf4j_log4j12",
         "//:smartthings_ratpack_protobuf",
-        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationio",
+        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationstore",
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:manager",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:module",
