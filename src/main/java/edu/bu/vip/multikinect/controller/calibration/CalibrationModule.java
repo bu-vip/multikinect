@@ -8,5 +8,6 @@ public class CalibrationModule extends AbstractModule{
   protected void configure() {
     bind(CalibrationDataStore.class).to(FileCalibrationDataStore.class);
     bind(CalibrationStore.class).to(InMemoryCalibrationStore.class);
+    bind(CalibrationAlgorithm.class).to(BruteForceCalibrationAlgorithm.class);
   }
 }

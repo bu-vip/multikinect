@@ -1,25 +1,12 @@
 package edu.bu.vip.multikinect.controller.calibration;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.math.Stats;
-import com.google.common.primitives.Doubles;
-import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
-import edu.bu.vip.kinect.controller.calibration.Protos.ErrorStats;
 import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.multikinect.Protos.Frame;
-import edu.bu.vip.multikinect.sync.CoordinateTransform;
 import edu.bu.vip.multikinect.sync.CoordinateTransform.Transform;
-import edu.bu.vip.multikinect.sync.FrameUtils;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import org.ejml.data.DenseMatrix64F;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
 
@@ -31,6 +18,7 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
 
   private static class Job implements Callable<ImmutableList<GroupOfFrames>> {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ImmutableList<Frame> cameraAFrames;
     private final ImmutableList<Frame> cameraBFrames;
 
@@ -92,6 +80,10 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
             }
           }
         }
+      }
+
+      if (best != null) {
+        logger.info("Got error: {}", bestError);
       }
 
       return (best == null ? ImmutableList.of() : ImmutableList.of(best));

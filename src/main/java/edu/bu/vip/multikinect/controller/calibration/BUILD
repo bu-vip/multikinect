@@ -10,6 +10,8 @@ java_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        ":bruteforcecalibrationalgorithm",
+        ":calibrationalgorithm",
         ":calibrationdatadb",
         ":calibrationstore",
         ":cameratransform",
@@ -18,6 +20,7 @@ java_library(
         "//:org_ejml_all",
         "//:org_slf4j_slf4j_api",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:framebus",
+        "//src/main/java/edu/bu/vip/multikinect/controller/camera:module",
         "//src/main/java/edu/bu/vip/multikinect/sync:coordinatetransform",
         "//src/main/java/edu/bu/vip/multikinect/sync:protoutils",
         "//src/main/java/edu/bu/vip/multikinect/util:timestamputils",

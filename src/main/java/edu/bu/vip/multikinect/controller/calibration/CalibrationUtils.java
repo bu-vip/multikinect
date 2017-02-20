@@ -46,7 +46,8 @@ public class CalibrationUtils {
 
       if (frameA.getSkeletonsCount() != frameB.getSkeletonsCount()
           || frameA.getSkeletonsCount() == 0) {
-        throw new RuntimeException("Invalid pairing");
+        //throw new RuntimeException("Invalid pairing");
+        continue;
       }
 
       boolean[] jointMask =
