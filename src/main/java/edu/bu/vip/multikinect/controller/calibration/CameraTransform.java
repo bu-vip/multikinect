@@ -24,13 +24,13 @@ public class CameraTransform implements Callable<CameraPairCalibration> {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final String cameraA;
   private final String cameraB;
-  private final CalibrationDataDB calibrationDataDB;
+  private final CalibrationDataStore calibrationDataStore;
   private final List<GroupOfFrames> frames = new ArrayList<>();
 
-  public CameraTransform(String cameraA, String cameraB, CalibrationDataDB calibrationDataDB) {
+  public CameraTransform(String cameraA, String cameraB, CalibrationDataStore calibrationDataStore) {
     this.cameraA = cameraA;
     this.cameraB = cameraB;
-    this.calibrationDataDB = calibrationDataDB;
+    this.calibrationDataStore = calibrationDataStore;
   }
 
   private static double[] concatList(List<double[]> list) {
@@ -66,9 +66,9 @@ public class CameraTransform implements Callable<CameraPairCalibration> {
 
       // Get the frame data
       ImmutableList<Frame> framesA = null;
-      // calibrationDataDB.getAllFramesInInterval(frame.getCameraA(), frame.getStartTimeA(), frame.getEndTimeA());
+      // calibrationDataStore.getAllFramesInInterval(frame.getCameraA(), frame.getStartTimeA(), frame.getEndTimeA());
       ImmutableList<Frame> framesB = null;
-      //calibrationDataDB.getAllFramesInInterval(frame.getCameraB(), frame.getStartTimeB(), frame.getEndTimeB());
+      //calibrationDataStore.getAllFramesInInterval(frame.getCameraB(), frame.getStartTimeB(), frame.getEndTimeB());
 
       Iterator<Frame> itA = framesA.iterator();
       Iterator<Frame> itB = framesB.iterator();

@@ -15,13 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class InMemoryCalibrationDataDB implements CalibrationDataDB {
+public class InMemoryCalibrationDataStore implements CalibrationDataStore {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private Table<Long, Long, Map<String, List<Frame>>> dataStore = HashBasedTable.create();
 
   @Inject
-  protected InMemoryCalibrationDataDB() {
+  protected InMemoryCalibrationDataStore() {
 
   }
 

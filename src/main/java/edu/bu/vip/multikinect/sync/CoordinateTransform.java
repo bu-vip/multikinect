@@ -1,5 +1,6 @@
 package edu.bu.vip.multikinect.sync;
 
+import com.google.common.collect.ImmutableList;
 import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinect.controller.camera.FrameReader;
 import java.io.FileInputStream;
@@ -64,12 +65,7 @@ public class CoordinateTransform {
     }
   }
 
-  public static Transform calculateTransform(String fileA, String fileB) throws IOException {
-
-    // Find the min change between two frames in each stream
-    List<Frame> minA = FrameReader.readAllFrames(new FileInputStream(fileA));
-    List<Frame> minB = FrameReader.readAllFrames(new FileInputStream(fileB));
-
+  public static Transform calculateTransform(ImmutableList<Frame> minA, ImmutableList<Frame> minB) throws IOException {
     Transform minRT = null;
     for (int i = 0; i < minA.size() - FRAME_WINDOW; i++) {
 

@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FileCalibrationDataStore implements CalibrationDataDB {
+public class FileCalibrationDataStore implements CalibrationDataStore {
 
   private static final String FILE_EXT = ".pbdat";
 

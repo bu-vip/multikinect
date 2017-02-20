@@ -21,11 +21,11 @@ public class CameraTransformTest {
   private static final String ID2 = "camera2";
 
   private CameraTransform transform;
-  private CalibrationDataDB dataDB;
+  private CalibrationDataStore dataDB;
 
   @Before
   public void setUp() throws Exception {
-    dataDB = new InMemoryCalibrationDataDB();
+    dataDB = new InMemoryCalibrationDataStore();
     transform = new CameraTransform(ID1, ID2, dataDB);
   }
 

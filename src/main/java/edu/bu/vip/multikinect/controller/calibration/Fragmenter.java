@@ -48,13 +48,13 @@ public class Fragmenter {
   private final Object mainLock = new Object();
 
   private final EventBus frameBus;
-  private final CalibrationDataDB calibrationDataDB;
+  private final CalibrationDataStore calibrationDataStore;
   private Consumer<GroupOfFrames> groupOfFramesConsumer;
 
   @Inject
-  protected Fragmenter(@FrameBus EventBus frameBus, CalibrationDataDB calibrationDataDB) {
+  protected Fragmenter(@FrameBus EventBus frameBus, CalibrationDataStore calibrationDataStore) {
     this.frameBus = frameBus;
-    this.calibrationDataDB = calibrationDataDB;
+    this.calibrationDataStore = calibrationDataStore;
   }
 
   public void start(Consumer<GroupOfFrames> groupOfFramesConsumer) {
@@ -88,7 +88,7 @@ public class Fragmenter {
       final Frame frame = event.getFrame();
 
       // Save the camera frame
-      //calibrationDataDB.storeFrame(props.getId(), frame);
+      //calibrationDataStore.storeFrame(props.getId(), frame);
 
       // Check if the frame has at least 1 skeleton
       if (frame.getSkeletonsCount() > 0) {

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import edu.bu.vip.multikinect.Protos.Frame;
 import java.util.List;
 
-public interface CalibrationDataDB {
+public interface CalibrationDataStore {
 
   void storeFrame(long calibrationId, long recordingId, String cameraId, Frame frame);
 

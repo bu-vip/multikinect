@@ -39,7 +39,7 @@ public class FragmenterTest {
       @Override
       protected void configure() {
         bind(EventBus.class).annotatedWith(FrameBus.class).toInstance(frameBus);
-        bind(CalibrationDataDB.class).toInstance(new InMemoryCalibrationDataDB());
+        bind(CalibrationDataStore.class).toInstance(new InMemoryCalibrationDataStore());
       }
     });
 

@@ -48,10 +48,10 @@ java_library(
 java_library(
     name = "calibrationdatadb",
     srcs = [
-        "CalibrationDataDB.java",
         "CalibrationDataLocation.java",
+        "CalibrationDataStore.java",
         "FileCalibrationDataStore.java",
-        "InMemoryCalibrationDataDB.java",
+        "InMemoryCalibrationDataStore.java",
     ],
     visibility = ["//visibility:public"],
     deps = [
@@ -94,5 +94,36 @@ java_library(
         "//:com_google_inject_guice",
         "//:org_slf4j_slf4j_api",
         "//src/main/proto:calibration",
+    ],
+)
+
+java_library(
+    name = "calibrationalgorithm",
+    srcs = [
+        "CalibrationAlgorithm.java",
+    ],
+    deps = [
+        "//:com_google_guava_guava",
+        "//:org_slf4j_slf4j_api",
+        "//src/main/proto:calibration",
+        "//src/main/proto:frame",
+    ],
+)
+
+java_library(
+    name = "bruteforcecalibrationalgorithm",
+    srcs = [
+        "BruteForceCalibrationAlgorithm.java",
+    ],
+    deps = [
+        ":calibrationalgorithm",
+        "//:com_google_guava_guava",
+        "//:com_google_inject_guice",
+        "//:org_ejml_all",
+        "//:org_slf4j_slf4j_api",
+        "//src/main/java/edu/bu/vip/multikinect/sync:coordinatetransform",
+        "//src/main/java/edu/bu/vip/multikinect/sync:protoutils",
+        "//src/main/proto:calibration",
+        "//src/main/proto:frame",
     ],
 )

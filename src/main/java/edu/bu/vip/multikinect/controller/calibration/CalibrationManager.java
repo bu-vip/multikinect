@@ -49,12 +49,12 @@ public class CalibrationManager {
   private Recording.Builder currentRecording;
   private Calibration.Builder calibration;
 
-  private CalibrationDataDB calibrationDataDB;
+  private CalibrationDataStore calibrationDataStore;
   private EventBus frameBus;
 
   @Inject
-  public CalibrationManager(CalibrationDataDB calibrationDataDB, @FrameBus EventBus frameBus) {
-    this.calibrationDataDB = calibrationDataDB;
+  public CalibrationManager(CalibrationDataStore calibrationDataStore, @FrameBus EventBus frameBus) {
+    this.calibrationDataStore = calibrationDataStore;
     this.frameBus =frameBus;
   }
 
@@ -89,7 +89,8 @@ public class CalibrationManager {
 
   @Subscribe
   public void onFrameEventReceived(FrameReceivedEvent event) {
-    calibrationDataDB.storeFrame(calibration.getId(), currentRecording.getId(), event.getProps().getId(), event.getFrame());
+    calibrationDataStore
+        .storeFrame(calibration.getId(), currentRecording.getId(), event.getProps().getId(), event.getFrame());
   }
 
   public void stopRecording() {
@@ -166,7 +167,7 @@ public class CalibrationManager {
       // Check if this is a new camera pair, if so add a transform object
       if (!transforms.containsKey(key)) {
         transforms.put(key,
-            new CameraTransform(frame.getCameraA(), frame.getCameraB(), calibrationDataDB));
+            new CameraTransform(frame.getCameraA(), frame.getCameraB(), calibrationDataStore));
       }
 
       // Add the frame to the transform
