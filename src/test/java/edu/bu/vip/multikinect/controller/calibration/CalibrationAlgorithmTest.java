@@ -1,5 +1,6 @@
 package edu.bu.vip.multikinect.controller.calibration;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 
@@ -39,10 +40,6 @@ public abstract class CalibrationAlgorithmTest {
         dataStore.storeFrames(CAL_ID, recording, cameraId, frames);
       }
     }
-    dataStore.storeFrames(CAL_ID, 1, CAMERA_A,
-        FrameReader.readAllFrames(getClass().getResourceAsStream("/kinect_24_a.dat")));
-    dataStore.storeFrames(CAL_ID, 1, CAMERA_B,
-        FrameReader.readAllFrames(getClass().getResourceAsStream("/kinect_24_b.dat")));
 
     algorithm = getAlgorithm();
   }
@@ -63,7 +60,7 @@ public abstract class CalibrationAlgorithmTest {
             dataStore.getAllFrames(CAL_ID, 1, CAMERA_B));
     ImmutableList<GroupOfFrames> gofs = job.call();
 
-    gofs.size();
+    assertThat(gofs.size(), greaterThan(0));
   }
 
 }

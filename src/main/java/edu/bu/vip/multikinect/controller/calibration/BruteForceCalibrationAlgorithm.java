@@ -4,6 +4,9 @@ import com.google.common.collect.ImmutableList;
 import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinect.sync.CoordinateTransform.Transform;
+import edu.bu.vip.multikinect.util.TimestampUtils;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,9 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
   }
 
   private static class Job implements Callable<ImmutableList<GroupOfFrames>> {
+
+    private static final int MAX_LENGTH = 10;
+    private static final long MAX_NTP_TIME_DELTA = 1000 * 10;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ImmutableList<Frame> cameraAFrames;
@@ -33,16 +39,23 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
       double bestError = Double.POSITIVE_INFINITY;
       for (int indexA = 0; indexA < cameraAFrames.size(); indexA++) {
         Frame frameA = cameraAFrames.get(indexA);
+        Instant ntpA = TimestampUtils.from(frameA.getNtpCaptureTime());
 
-        // TODO(doug) - Checking NTP time to limit search distance would help
 
         // Check if the frame has a person in it, skip if not
         if (frameA.getSkeletonsCount() > 0) {
           for (int indexB = 0; indexB < cameraBFrames.size(); indexB++) {
             Frame frameB = cameraBFrames.get(indexB);
+            Instant ntpB = TimestampUtils.from(frameB.getNtpCaptureTime());
+
+            // Check NTP time to limit search distance
+            long ntpDelta = ntpA.until(ntpB, ChronoUnit.MILLIS);
+            if (ntpDelta > MAX_NTP_TIME_DELTA) {
+              break;
+            }
 
             // Check if the frame has a person in it, skip if not
-            if (frameB.getSkeletonsCount() > 0) {
+            if (frameB.getSkeletonsCount() > 0 && Math.abs(ntpDelta) < MAX_NTP_TIME_DELTA) {
               // Both frames have people in them
 
               // Find when the first one stops
@@ -51,7 +64,7 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
               Frame lastFrameB = frameB;
               while (indexA + length < cameraAFrames.size() && indexB + length < cameraBFrames
                   .size()
-                  && length < 10) {
+                  && length < MAX_LENGTH) {
                 lastFrameA = cameraAFrames.get(indexA + length);
                 lastFrameB = cameraBFrames.get(indexB + length);
                 if (lastFrameA.getSkeletonsCount() > 0 && lastFrameB.getSkeletonsCount() > 0) {

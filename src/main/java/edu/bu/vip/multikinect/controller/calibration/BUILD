@@ -129,6 +129,7 @@ java_library(
         "//:org_slf4j_slf4j_api",
         "//src/main/java/edu/bu/vip/multikinect/sync:coordinatetransform",
         "//src/main/java/edu/bu/vip/multikinect/sync:protoutils",
+        "//src/main/java/edu/bu/vip/multikinect/util:timestamputils",
         "//src/main/proto:calibration",
         "//src/main/proto:frame",
     ],
