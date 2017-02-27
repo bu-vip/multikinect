@@ -21,8 +21,9 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
 
   private static class Job implements Callable<ImmutableList<GroupOfFrames>> {
 
-    private static final int MAX_LENGTH = 10;
-    private static final long MAX_NTP_TIME_DELTA = 1000 * 10;
+    private static final int MIN_LENGTH = 50;
+    private static final int MAX_LENGTH = 200;
+    private static final long MAX_NTP_TIME_DELTA = 1000 * 1;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ImmutableList<Frame> cameraAFrames;
@@ -35,7 +36,11 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
 
     @Override
     public ImmutableList<GroupOfFrames> call() throws Exception {
+
+      logger.info("Starting calculation on {} and {} frames", cameraAFrames.size(), cameraBFrames.size());
+
       GroupOfFrames best = null;
+      Transform bestTransform = null;
       double bestError = Double.POSITIVE_INFINITY;
       for (int indexA = 0; indexA < cameraAFrames.size(); indexA++) {
         Frame frameA = cameraAFrames.get(indexA);
@@ -74,21 +79,26 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
                 }
               }
 
-              // Evaluate gof performance
-              long startA = frameA.getTime();
-              long startB = frameB.getTime();
-              long endA = lastFrameA.getTime();
-              long endB = lastFrameB.getTime();
-              GroupOfFrames.Builder builder = GroupOfFrames.newBuilder();
-              builder.setStartTimeA(startA);
-              builder.setStartTimeB(startB);
-              builder.setEndTimeA(endA);
-              builder.setEndTimeB(endB);
-              GroupOfFrames gof = builder.build();
-              Transform transform = CalibrationUtils.tranformOfMappings(cameraAFrames, cameraBFrames, ImmutableList.of(gof));
-              if (transform.getError() < bestError) {
-                best = gof;
-                bestError = transform.getError();
+              // Window must also be longer than minimum
+              if (length > MIN_LENGTH) {
+                // Evaluate gof performance
+                long startA = frameA.getTime();
+                long startB = frameB.getTime();
+                long endA = lastFrameA.getTime();
+                long endB = lastFrameB.getTime();
+                GroupOfFrames.Builder builder = GroupOfFrames.newBuilder();
+                builder.setStartTimeA(startA);
+                builder.setStartTimeB(startB);
+                builder.setEndTimeA(endA);
+                builder.setEndTimeB(endB);
+                GroupOfFrames gof = builder.build();
+                Transform transform = CalibrationUtils
+                    .tranformOfMappings(cameraAFrames, cameraBFrames, ImmutableList.of(gof));
+                if (transform.getError() < bestError) {
+                  best = gof;
+                  bestError = transform.getError();
+                  bestTransform = transform;
+                }
               }
             }
           }
@@ -96,7 +106,7 @@ public class BruteForceCalibrationAlgorithm implements CalibrationAlgorithm {
       }
 
       if (best != null) {
-        logger.info("Got error: {}", bestError);
+        logger.info("Got error: {} on points {}", bestError, bestTransform.getErrors().numRows);
       }
 
       return (best == null ? ImmutableList.of() : ImmutableList.of(best));

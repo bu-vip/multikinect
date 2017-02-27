@@ -58,7 +58,7 @@ public class CalibrationManager {
   private EventBus frameBus;
   private final CameraManager cameraManager;
   private final CalibrationAlgorithm algorithm;
-  private final ExecutorService algorithmExecutor = Executors.newCachedThreadPool();
+  private ExecutorService algorithmExecutor;
 
   @Inject
   public CalibrationManager(CalibrationDataStore calibrationDataStore, @FrameBus EventBus frameBus,
@@ -74,6 +74,7 @@ public class CalibrationManager {
       if (!active) {
         recording = false;
         active = true;
+        algorithmExecutor = Executors.newCachedThreadPool();
         Calibration.Builder builder = Calibration.newBuilder();
         builder.setName(name);
         builder.setNotes(notes);
@@ -208,6 +209,7 @@ public class CalibrationManager {
     algorithmExecutor.shutdown();
     try {
       algorithmExecutor.awaitTermination(TRANSFORM_TIMEOUT, TimeUnit.MILLISECONDS);
+      algorithmExecutor = null;
     } catch (InterruptedException e) {
       logger.error("Calculations timed out", e);
     }

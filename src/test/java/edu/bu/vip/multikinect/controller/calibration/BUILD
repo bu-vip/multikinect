@@ -66,6 +66,7 @@ java_library(
         "CalibrationAlgorithmTest.java",
     ],
     resources = [
+        "//src/main/resources:log4jprops",
         "//src/test/resources:calibration",
         "//src/test/resources:kinectdata",
     ],
@@ -74,6 +75,7 @@ java_library(
         "//:com_google_inject_guice",
         "//:junit_junit",
         "//:org_hamcrest_hamcrest_junit",
+        "//:org_slf4j_slf4j_log4j12",
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationalgorithm",
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:framereader",
