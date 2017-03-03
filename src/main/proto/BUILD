@@ -77,3 +77,14 @@ java_proto_library(
         "session.proto",
     ],
 )
+
+java_proto_library(
+    name = "realtime",
+    proto_deps = [
+        ":frame",
+        "//thirdparty/protobuf/google/protobuf:well_known_types",
+    ],
+    protos = [
+        "realtime.proto",
+    ],
+)

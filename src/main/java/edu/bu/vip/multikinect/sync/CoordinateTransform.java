@@ -2,9 +2,14 @@ package edu.bu.vip.multikinect.sync;
 
 import com.google.common.collect.ImmutableList;
 import edu.bu.vip.multikinect.Protos.Frame;
+import edu.bu.vip.multikinect.Protos.Joint;
+import edu.bu.vip.multikinect.Protos.Orientation;
+import edu.bu.vip.multikinect.Protos.Position;
+import edu.bu.vip.multikinect.Protos.Skeleton;
 import edu.bu.vip.multikinect.controller.camera.FrameReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.equation.Equation;
@@ -167,5 +172,54 @@ public class CoordinateTransform {
         simple.extractVector(false, 2).elementSum() / mat.numRows,};
     DenseMatrix64F meanMat = new DenseMatrix64F(1, 3, true, mean);
     return meanMat;
+  }
+
+  public static Frame transformFrame(Frame original, double[] transform) {
+    // Get all of the joints that need to be transformed
+    List<Joint> allJoints = new ArrayList<>();
+    for (Skeleton skeleton : original.getSkeletonsList()) {
+      for (Joint joint : skeleton.getJointsList()) {
+        allJoints.add(joint);
+      }
+    }
+
+    DenseMatrix64F transformationData = new DenseMatrix64F(4, 4, true, transform);
+
+    // Create a matrix of all of the joint positions
+    DenseMatrix64F positionData = new DenseMatrix64F(4, allJoints.size());
+    for (int jointIndex = 0; jointIndex < allJoints.size(); jointIndex++) {
+      Joint joint = allJoints.get(jointIndex);
+      positionData.set(0, jointIndex, joint.getPosition().getX());
+      positionData.set(1, jointIndex, joint.getPosition().getY());
+      positionData.set(2, jointIndex, joint.getPosition().getZ());
+      positionData.set(3, jointIndex, 1);
+    }
+
+    // Apply transformation matrix to positions
+    SimpleMatrix transformMatrix = new SimpleMatrix(transformationData);
+    SimpleMatrix positionMatrix = new SimpleMatrix(positionData);
+    DenseMatrix64F transformedPosMatrix = transformMatrix.mult(positionMatrix).getMatrix();
+    // TODO(doug) - Transform orientations
+
+    // Build a new frame with updated joints
+    Frame.Builder builder = original.toBuilder();
+    int jointIndex = 0;
+    for (Skeleton.Builder skeletonBuilder : builder.getSkeletonsBuilderList()) {
+      for (Joint.Builder jointBuilder : skeletonBuilder.getJointsBuilderList()) {
+        Position.Builder newPos = Position.newBuilder();
+        newPos.setX((float)transformedPosMatrix.get(0, jointIndex));
+        newPos.setY((float)transformedPosMatrix.get(1, jointIndex));
+        newPos.setZ((float)transformedPosMatrix.get(2, jointIndex));
+        jointBuilder.setPosition(newPos);
+
+        // TODO(doug) - Set orientation to 0 as not implemented
+        Orientation.Builder newOrient = Orientation.newBuilder();
+        jointBuilder.setOrientation(newOrient);
+
+        jointIndex++;
+      }
+    }
+
+    return builder.build();
   }
 }

@@ -46,6 +46,6 @@ def bazel_deps_jar():
   return command
 
 
-print("gen_workspace", bazel_gen_workspace())
-print("\n")
+# print("gen_workspace", bazel_gen_workspace())
+# print("\n")
 print("bazel-deps", bazel_deps_jar())

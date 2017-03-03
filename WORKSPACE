@@ -98,6 +98,7 @@ maven_jar(name = "org_eclipse_jetty_jetty_util", artifact = "org.eclipse.jetty:j
 maven_jar(name = "org_eclipse_jetty_jetty_util", artifact = "org.eclipse.jetty:jetty-util:jar:9.4.0.M1")
 maven_jar(name = "org_eclipse_jetty_jetty_util", artifact = "org.eclipse.jetty:jetty-util:jar:9.4.0.M1")
 maven_jar(name = "org_eclipse_jetty_jetty_util", artifact = "org.eclipse.jetty:jetty-util:jar:9.4.0.M1")
+maven_jar(name = "org_jgrapht_jgrapht_core", artifact = "org.jgrapht:jgrapht-core:jar:1.0.1")
 maven_jar(name = "org_jogamp_joal_joal", artifact = "org.jogamp.joal:joal:jar:2.3.1")
 maven_jar(name = "org_jogamp_joal_joal", artifact = "org.jogamp.joal:joal:jar:natives-android-aarch64:2.3.1")
 maven_jar(name = "org_jogamp_joal_joal", artifact = "org.jogamp.joal:joal:jar:natives-android-armv6:2.3.1")
@@ -170,7 +171,6 @@ maven_jar(name = "org_eclipse_jetty_websocket_websocket_client", artifact = "org
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_common", artifact = "org.eclipse.jetty.websocket:websocket-common:jar:9.4.0.M1")
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_server", artifact = "org.eclipse.jetty.websocket:websocket-server:jar:9.4.0.M1")
 maven_jar(name = "org_eclipse_jetty_websocket_websocket_servlet", artifact = "org.eclipse.jetty.websocket:websocket-servlet:jar:9.4.0.M1")
-
 
 
 # WORKSPACE_END - beginning

@@ -11,12 +11,15 @@ import edu.bu.vip.multikinect.controller.calibration.CalibrationDataLocation;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationStore;
 import edu.bu.vip.multikinect.controller.camera.CameraManager;
 import edu.bu.vip.multikinect.controller.camera.CameraModule;
+import edu.bu.vip.multikinect.controller.realtime.RealtimeModule;
 import edu.bu.vip.multikinect.controller.webconsole.DevRedirectHandler;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationManager;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationModule;
 import edu.bu.vip.multikinect.controller.webconsole.ApiHandler;
 import edu.bu.vip.multikinect.controller.webconsole.IPHandler;
 import edu.bu.vip.multikinect.controller.webconsole.StateHandler;
+import edu.bu.vip.multikinect.controller.webconsole.TransformedFeedHandler;
+import edu.bu.vip.multikinect.sync.CoordinateTransform.Transform;
 import edu.bu.vip.multikinect.util.TimestampUtils;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -67,6 +70,7 @@ public class Controller {
       s.registry(Guice.registry(b -> {
         b.module(CameraModule.class);
         b.module(CalibrationModule.class);
+        b.module(RealtimeModule.class);
 
         Config protoConfig = new Config();
         protoConfig.setCache(new CacheConfig());
@@ -78,6 +82,7 @@ public class Controller {
             bind(ControllerService.class);
             bind(ApiHandler.class);
             bind(StateHandler.class);
+            bind(TransformedFeedHandler.class);
             bind(IPHandler.class);
             bind(CalibrationModule.class);
             bind(DevRedirectHandler.class);
@@ -91,6 +96,7 @@ public class Controller {
         chain.insert(ApiHandler.class);
         chain.get(StateHandler.URL_PATH, StateHandler.class);
         chain.get(IPHandler.URL_PATH, IPHandler.class);
+        chain.get(TransformedFeedHandler.URL_PATH, TransformedFeedHandler.class);
         chain.get("::.*", DevRedirectHandler.class);
       });
     });

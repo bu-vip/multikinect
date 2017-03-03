@@ -2,6 +2,7 @@ syntax = 'proto3';
 
 import "thirdparty/protobuf/google/protobuf/timestamp.proto";
 
+// TODO(doug) - refactor package
 package bu.vip.kinect.controller.data;
 
 option java_package = "edu.bu.vip.kinect.controller.data";

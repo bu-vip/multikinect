@@ -1,0 +1,12 @@
+syntax = 'proto3';
+
+import 'src/main/proto/frame.proto';
+
+package bu.vip.multikinect.controller.realtime;
+
+option java_package = "edu.bu.vip.kinect.controller.realtime";
+option java_outer_classname = "Protos";
+
+message SyncedFrame {
+  repeated bu.vip.multikinect.Skeleton skeletons = 1;
+}

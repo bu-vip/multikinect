@@ -3,6 +3,7 @@ syntax = 'proto3';
 import 'src/main/proto/calibration.proto';
 import 'src/main/proto/session.proto';
 
+// TODO(doug) - refactor package
 package bu.vip.kinect.controller.web;
 
 option java_package = "edu.bu.vip.kinect.controller.web";

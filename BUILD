@@ -153,6 +153,14 @@ java_library(
 )
 
 java_library(
+    name = "org_jgrapht_jgrapht_core",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@org_jgrapht_jgrapht_core//jar",
+    ],
+)
+
+java_library(
     name = "org_jogamp_joal_joal_main",
     visibility = ["//visibility:public"],
     exports = [

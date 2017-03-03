@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import java.util.Optional;
 
+// TODO(doug) - I think CalibrationStore and CalibrationDataStore can be combined into a single module
 public interface CalibrationStore {
   Calibration createCalibration(Calibration calibration);
   Calibration updateCalibration(Calibration calibration);
