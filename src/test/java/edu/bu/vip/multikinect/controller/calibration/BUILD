@@ -84,3 +84,53 @@ java_library(
         "//src/main/proto:frame",
     ],
 )
+
+java_library(
+    name = "CalibrationDataStoreTest",
+    srcs = [
+        "CalibrationDataStoreTest.java",
+    ],
+    deps = [
+        "//:com_google_guava_guava",
+        "//:junit_junit",
+        "//:org_hamcrest_hamcrest_junit",
+        "//:org_slf4j_slf4j_log4j12",
+        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
+        "//src/main/proto:calibration",
+        "//src/main/proto:frame",
+    ],
+)
+
+java_test(
+    name = "InMemoryCalibrationDataStoreTest",
+    srcs = [
+        "InMemoryCalibrationDataStoreTest.java",
+    ],
+    deps = [
+        ":CalibrationDataStoreTest",
+        "//:com_google_guava_guava",
+        "//:junit_junit",
+        "//:org_hamcrest_hamcrest_junit",
+        "//:org_slf4j_slf4j_log4j12",
+        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
+        "//src/main/proto:calibration",
+        "//src/main/proto:frame",
+    ],
+)
+
+java_test(
+    name = "FileCalibrationDataStoreTest",
+    srcs = [
+        "FileCalibrationDataStoreTest.java",
+    ],
+    deps = [
+        ":CalibrationDataStoreTest",
+        "//:com_google_guava_guava",
+        "//:junit_junit",
+        "//:org_hamcrest_hamcrest_junit",
+        "//:org_slf4j_slf4j_log4j12",
+        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
+        "//src/main/proto:calibration",
+        "//src/main/proto:frame",
+    ],
+)

@@ -98,9 +98,9 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
   public Calibration createCalibration(Calibration calibration) {
     // Generate a new ID for the calibration
     Random rand = new Random();
-    long newId = rand.nextInt();
+    long newId = Math.abs(rand.nextInt());
     while (calibrationExists(newId)) {
-      newId = rand.nextInt();
+      newId = Math.abs(rand.nextInt());
     }
 
     // Update fields
@@ -277,6 +277,16 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
 
   private void saveCalibration(Calibration calibration) {
     File calibrationFile = getCalibrationFile(calibration.getId());
+
+    // Create parent dirs
+    try {
+      Files.createParentDirs(calibrationFile);
+    } catch (IOException e) {
+      logger.error("Error saving calibration", e);
+      throw new RuntimeException("Error saving calibration: " + e.getMessage());
+    }
+
+    // Write data to file
     try (FileOutputStream outputStream = new FileOutputStream(calibrationFile)) {
       calibration.writeTo(outputStream);
     } catch (IOException e) {
