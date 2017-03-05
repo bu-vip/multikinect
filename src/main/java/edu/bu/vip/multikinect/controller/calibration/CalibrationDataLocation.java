@@ -8,6 +8,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 
+// TODO(doug) - This annotation could probably be removed...
 @BindingAnnotation
 @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
 public @interface CalibrationDataLocation {}

@@ -8,7 +8,7 @@ import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.data.Protos.Recording;
 import edu.bu.vip.kinect.controller.data.Protos.Session;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationDataLocation;
-import edu.bu.vip.multikinect.controller.calibration.CalibrationStore;
+import edu.bu.vip.multikinect.controller.calibration.CalibrationDataStore;
 import edu.bu.vip.multikinect.controller.camera.CameraManager;
 import edu.bu.vip.multikinect.controller.camera.CameraModule;
 import edu.bu.vip.multikinect.controller.realtime.RealtimeModule;
@@ -60,7 +60,7 @@ public class Controller {
   private Server grpcServer;
   private CameraManager cameraManager;
   private CalibrationManager calibrationManager;
-  private CalibrationStore calibrationStore;
+  private CalibrationDataStore calibrationStore;
 
   public static void main(String[] args) throws Exception {
     RatpackServer server = RatpackServer.start(s -> {
@@ -111,7 +111,7 @@ public class Controller {
 
   @Inject
   public Controller(CameraManager cameraManager, CalibrationManager calibrationManager,
-      CalibrationStore calibrationStore) {
+      CalibrationDataStore calibrationStore) {
     this.cameraManager = cameraManager;
     this.calibrationManager = calibrationManager;
     this.calibrationStore = calibrationStore;

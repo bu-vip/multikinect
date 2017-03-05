@@ -1,6 +1,5 @@
 package edu.bu.vip.multikinect.controller.calibration;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -16,8 +15,8 @@ import edu.bu.vip.multikinect.controller.camera.FrameBus;
 import edu.bu.vip.multikinect.controller.camera.FrameReceivedEvent;
 import edu.bu.vip.multikinect.util.TimestampUtils;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -28,29 +27,31 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Handles creating new calibrations.
+ *
+ * The process for creating a new calibration is:
+ * <ol>
+ *   <li>Start a new calibration</li>
+ *   <li>Start recording data</li>
+ *   <li>Record data</li>
+ *   <li>Stop recording data</li>
+ *   <li>Repeat until accuracy is good</li>
+ *   <li>Delete bad recordings if necessary</li>
+ *   <li>Finish calibration</li>
+ * </ol>
+ */
 @Singleton
 public class CalibrationManager {
 
   private static final int TRANSFORM_TIMEOUT = 1000000;
 
-  /**
-   * Calibration from user's perspective:
-   * - Start new calibration
-   * - Start new "calibration session"
-   * - 1 person walks around area, creating frames
-   * - End session
-   * - Repeat until accuracy is good
-   * - Can delete sessions if something bad happens
-   * - Save calibration
-   * - Add name, description, other metadata
-   */
-
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private boolean active = false;
+  private boolean creatingCalibration = false;
+  private long calibrationId;
   private boolean recording;
   private Recording currentRecording;
-  private Calibration calibration;
   private Object calibrationLock = new Object();
   private Object recordingLock = new Object();
 
@@ -69,23 +70,35 @@ public class CalibrationManager {
     this.algorithm = algorithm;
   }
 
+  /**
+   * Start creating a new calibration.
+   * @param name - Name for the calibration
+   * @param notes - Notes for the calibration
+   *
+   * TODO(doug) - This structure doesn't make editing the fields easy, should probably change...
+   */
   public void start(String name, String notes) {
     synchronized (calibrationLock) {
-      if (!active) {
+      // Check if we're already creating a recording
+      if (!creatingCalibration) {
         recording = false;
-        active = true;
+        creatingCalibration = true;
         algorithmExecutor = Executors.newCachedThreadPool();
         Calibration.Builder builder = Calibration.newBuilder();
         builder.setName(name);
         builder.setNotes(notes);
         builder.setDateCreated(TimestampUtils.now());
-        calibration = builder.build();
+        // Create the calibration, store the ID so we can get it later
+        calibrationId = calibrationDataStore.createCalibration(builder.build()).getId();
       } else {
         logger.warn("Already creating a calibration");
       }
     }
   }
 
+  /**
+   * Start recording new data to be used for calculating the calibration.
+   */
   public void startRecording() {
     checkActive();
 
@@ -110,12 +123,15 @@ public class CalibrationManager {
     synchronized (calibrationLock) {
       synchronized (recordingLock) {
         calibrationDataStore
-            .storeFrame(calibration.getId(), currentRecording.getId(), event.getProps().getId(),
+            .storeFrame(calibrationId, currentRecording.getId(), event.getProps().getId(),
                 event.getFrame());
       }
     }
   }
 
+  /**
+   * Stop recording data.
+   */
   public void stopRecording() {
     checkActive();
 
@@ -134,9 +150,9 @@ public class CalibrationManager {
             String cameraA = pair.get(0);
             String cameraB = pair.get(1);
             ImmutableList<Frame> framesA = calibrationDataStore
-                .getAllFrames(calibration.getId(), currentRecording.getId(), cameraA);
+                .getAllFrames(calibrationId, currentRecording.getId(), cameraA);
             ImmutableList<Frame> framesB = calibrationDataStore
-                .getAllFrames(calibration.getId(), currentRecording.getId(), cameraB);
+                .getAllFrames(calibrationId, currentRecording.getId(), cameraB);
             Callable<ImmutableList<GroupOfFrames>> job = algorithm.createJob(framesA, framesB);
             try {
               ImmutableList<GroupOfFrames> gofs = job.call();
@@ -154,9 +170,13 @@ public class CalibrationManager {
 
           builder.addAllGofs(allFrames);
           synchronized (calibrationLock) {
-            Calibration.Builder calBuilder = calibration.toBuilder();
+            Optional<Calibration> optCal = calibrationDataStore.getCalibration(calibrationId);
+            if (!optCal.isPresent()) {
+              throw new RuntimeException("Couldn't get calibration to update...");
+            }
+            Calibration.Builder calBuilder = optCal.get().toBuilder();
             calBuilder.addRecordings(builder.build());
-            calibration = calBuilder.build();
+            calibrationDataStore.updateCalibration(calBuilder.build());
           }
           currentRecording = null;
 
@@ -171,11 +191,19 @@ public class CalibrationManager {
     }
   }
 
+  /**
+   * Delete a data recording from the new calibration.
+   * @param sessionId
+   */
   public void deleteRecording(long sessionId) {
     checkActive();
 
     synchronized (calibrationLock) {
-      Calibration.Builder builder = calibration.toBuilder();
+      Optional<Calibration> optCal = calibrationDataStore.getCalibration(calibrationId);
+      if (!optCal.isPresent()) {
+        throw new RuntimeException("Couldn't get calibration to update...");
+      }
+      Calibration.Builder builder = optCal.get().toBuilder();
       List<Recording> recordings = builder.getRecordingsList();
       for (int i = 0; i < recordings.size(); i++) {
         if (recordings.get(i).getId() == sessionId) {
@@ -183,22 +211,34 @@ public class CalibrationManager {
           break;
         }
       }
-      calibration = builder.build();
+      calibrationDataStore.updateCalibration(builder.build());
     }
   }
 
+  /**
+   * Get the new calibration being created.
+   * @return
+   */
   public Calibration getCalibration() {
     checkActive();
     synchronized (calibrationLock) {
-      return calibration;
+      Optional<Calibration> optCal = calibrationDataStore.getCalibration(calibrationId);
+      if (!optCal.isPresent()) {
+        throw new RuntimeException("Couldn't get calibration to update...");
+      }
+      return optCal.get();
     }
   }
 
+  /**
+   * Finish creating the calibration.
+   * @return
+   */
   public Calibration finish() {
     checkActive();
 
     if (recording) {
-      logger.warn("finish() was called while recording, discarding active recording");
+      logger.warn("finish() was called while recording, discarding creatingCalibration recording");
 
       this.frameBus.unregister(this);
       currentRecording = null;
@@ -215,21 +255,31 @@ public class CalibrationManager {
     }
 
     logger.info("Finished calibration");
-    active = false;
+    creatingCalibration = false;
 
     synchronized (calibrationLock) {
-      return calibration;
+      Optional<Calibration> optCal = calibrationDataStore.getCalibration(calibrationId);
+      if (!optCal.isPresent()) {
+        throw new RuntimeException("Couldn't get calibration to update...");
+      }
+      return optCal.get();
     }
   }
 
   private void checkActive() {
-    if (!active) {
+    if (!creatingCalibration) {
       throw new RuntimeException("Not creating a calibration");
     }
   }
 
   private void calculateTransform() {
     synchronized (calibrationLock) {
+      Optional<Calibration> optCal = calibrationDataStore.getCalibration(calibrationId);
+      if (!optCal.isPresent()) {
+        throw new RuntimeException("Couldn't get calibration to update...");
+      }
+      Calibration calibration = optCal.get();
+
       List<ImmutableList<String>> pairs = getCameraPairs();
       List<Future<CameraPairCalibration>> tasks = new ArrayList<>();
       // Create camera transforms for each pair of cameras
@@ -251,7 +301,7 @@ public class CalibrationManager {
           logger.info("Error: {}", result.getError());
           builder.addCameraCalibrations(result);
         }
-        calibration = builder.build();
+        calibrationDataStore.updateCalibration(builder.build());
       } catch (TimeoutException | InterruptedException | ExecutionException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

@@ -13,7 +13,6 @@ java_library(
         ":bruteforcecalibrationalgorithm",
         ":calibrationalgorithm",
         ":calibrationdatadb",
-        ":calibrationstore",
         ":cameratransform",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
@@ -63,6 +62,8 @@ java_library(
         "//:com_google_inject_guice",
         "//:org_slf4j_slf4j_api",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:framereader",
+        "//src/main/java/edu/bu/vip/multikinect/util:timestamputils",
+        "//src/main/proto:calibration",
         "//src/main/proto:frame",
     ],
 )
@@ -84,21 +85,6 @@ java_library(
         "//src/main/proto:calibration",
         "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
-    ],
-)
-
-java_library(
-    name = "calibrationstore",
-    srcs = [
-        "CalibrationStore.java",
-        "InMemoryCalibrationStore.java",
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//:com_google_guava_guava",
-        "//:com_google_inject_guice",
-        "//:org_slf4j_slf4j_api",
-        "//src/main/proto:calibration",
     ],
 )
 

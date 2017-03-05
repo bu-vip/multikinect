@@ -11,7 +11,7 @@ import edu.bu.vip.kinect.controller.web.Protos.SelectSessionState;
 import edu.bu.vip.kinect.controller.web.Protos.SessionIdleState;
 import edu.bu.vip.kinect.controller.web.Protos.State;
 import edu.bu.vip.multikinect.controller.Controller;
-import edu.bu.vip.multikinect.controller.calibration.CalibrationStore;
+import edu.bu.vip.multikinect.controller.calibration.CalibrationDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.handling.Context;
@@ -24,10 +24,10 @@ public class StateHandler implements Handler {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private Controller controller;
-  private CalibrationStore calibrationStore;
+  private CalibrationDataStore calibrationStore;
 
   @Inject
-  protected StateHandler(Controller controller, CalibrationStore calibrationStore) {
+  protected StateHandler(Controller controller, CalibrationDataStore calibrationStore) {
     this.controller = controller;
     this.calibrationStore = calibrationStore;
   }
