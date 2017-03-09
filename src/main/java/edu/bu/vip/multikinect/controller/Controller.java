@@ -7,8 +7,9 @@ import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.data.Protos.Recording;
 import edu.bu.vip.kinect.controller.data.Protos.Session;
-import edu.bu.vip.multikinect.controller.calibration.CalibrationDataLocation;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationDataStore;
+import edu.bu.vip.multikinect.controller.calibration.FileCalibrationDataStore;
+import edu.bu.vip.multikinect.controller.calibration.InMemoryCalibrationDataStore;
 import edu.bu.vip.multikinect.controller.camera.CameraManager;
 import edu.bu.vip.multikinect.controller.camera.CameraModule;
 import edu.bu.vip.multikinect.controller.realtime.RealtimeModule;
@@ -87,8 +88,8 @@ public class Controller {
             bind(CalibrationModule.class);
             bind(DevRedirectHandler.class);
             // TODO(doug) - Make a command line arg
-            bindConstant().annotatedWith(CalibrationDataLocation.class)
-                .to("/home/doug/Desktop/multikinect/calibration");
+            bind(CalibrationDataStore.class).toInstance(new FileCalibrationDataStore(
+                "/home/doug/Desktop/multikinect/calibration"));
           }
         });
       }));

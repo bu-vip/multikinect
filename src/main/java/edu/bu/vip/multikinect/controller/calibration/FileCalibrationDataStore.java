@@ -81,7 +81,7 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
       });
 
   @Inject
-  public FileCalibrationDataStore(@CalibrationDataLocation String rootDirPath) {
+  public FileCalibrationDataStore(String rootDirPath) {
     // Check that the data directory exists
     this.rootDir = new File(rootDirPath);
     if (!rootDir.exists()) {

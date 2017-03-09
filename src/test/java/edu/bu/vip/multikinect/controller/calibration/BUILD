@@ -134,3 +134,22 @@ java_test(
         "//src/main/proto:frame",
     ],
 )
+
+java_test(
+    name = "CalibrationManagerTest",
+    srcs = [
+        "CalibrationManagerTest.java",
+    ],
+    deps = [
+        "//:com_google_guava_guava",
+        "//:junit_junit",
+        "//:org_hamcrest_hamcrest_junit",
+        "//:org_mockito_mockito_core",
+        "//:org_slf4j_slf4j_log4j12",
+        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationalgorithm",
+        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
+        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:manager",
+        "//src/main/java/edu/bu/vip/multikinect/controller/camera:module",
+        "//src/main/proto:calibration",
+    ],
+)

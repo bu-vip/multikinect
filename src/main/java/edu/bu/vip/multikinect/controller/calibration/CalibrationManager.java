@@ -71,7 +71,7 @@ public class CalibrationManager {
   }
 
   /**
-   * Start creating a new calibration.
+   * Start creating a new calibration. Creates a new calibration in the data store.
    * @param name - Name for the calibration
    * @param notes - Notes for the calibration
    *
@@ -113,7 +113,7 @@ public class CalibrationManager {
         this.frameBus.register(this);
         recording = true;
       } else {
-        logger.warn("Already recording a frame");
+        logger.warn("Already recording");
       }
     }
   }

@@ -6,7 +6,6 @@ public class CalibrationModule extends AbstractModule{
 
   @Override
   protected void configure() {
-    bind(CalibrationDataStore.class).to(FileCalibrationDataStore.class);
     bind(CalibrationAlgorithm.class).to(BruteForceCalibrationAlgorithm.class);
   }
 }

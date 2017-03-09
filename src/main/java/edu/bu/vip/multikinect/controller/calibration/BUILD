@@ -51,7 +51,6 @@ java_library(
 java_library(
     name = "calibrationdatadb",
     srcs = [
-        "CalibrationDataLocation.java",
         "CalibrationDataStore.java",
         "FileCalibrationDataStore.java",
         "InMemoryCalibrationDataStore.java",
