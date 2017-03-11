@@ -1,10 +1,5 @@
 package edu.bu.vip.multikinect.controller.calibration;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.common.io.PatternFilenameFilter;
@@ -13,6 +8,7 @@ import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinect.controller.camera.FrameReader;
+import edu.bu.vip.multikinect.io.MessageWriter;
 import edu.bu.vip.multikinect.util.TimestampUtils;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,8 +19,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,30 +49,7 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final File rootDir;
-  private LoadingCache<Key, OutputStream> streamCache = CacheBuilder.newBuilder()
-      .maximumSize(10)
-      .expireAfterAccess(10, TimeUnit.MINUTES)
-      .removalListener(
-          new RemovalListener<Key, OutputStream>() {
-            @Override
-            public void onRemoval(RemovalNotification<Key, OutputStream> removalNotification) {
-              try {
-                OutputStream stream = removalNotification.getValue();
-                synchronized (stream) {
-                  stream.close();
-                }
-              } catch (IOException e) {
-                logger.warn("Error closing cached stream", e);
-              }
-            }
-          }).build(new CacheLoader<Key, OutputStream>() {
-        @Override
-        public OutputStream load(Key k1) throws Exception {
-          File file = getFrameFile(k1);
-          Files.createParentDirs(file);
-          return new FileOutputStream(file);
-        }
-      });
+  private final MessageWriter<Key> frameWriter;
 
   @Inject
   public FileCalibrationDataStore(String rootDirPath) {
@@ -92,6 +63,21 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
         throw new RuntimeException("Couldn't create data root directory");
       }
     }
+
+    this.frameWriter = new MessageWriter<>((key) -> {
+      OutputStream outputStream;
+      try {
+        File file = getFrameFile(key);
+        Files.createParentDirs(file);
+        outputStream = new FileOutputStream(file);
+      } catch (IOException e) {
+        // TODO(doug) - Might be able to recover from this error, but as it's implemented not it will cause the program to crash
+        logger.error("Error opening file to write", e);
+        throw new RuntimeException("Couldn't open file: " + e.getMessage());
+      }
+
+      return outputStream;
+    });
   }
 
   @Override
@@ -176,30 +162,15 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
 
   @Override
   public void storeFrame(long calibrationId, long recordingId, String cameraId, Frame frame) {
-    try {
-      OutputStream outputStream = streamCache.get(new Key(calibrationId, recordingId, cameraId));
-      synchronized (outputStream) {
-        frame.writeDelimitedTo(outputStream);
-      }
-    } catch (ExecutionException | IOException e) {
-      logger.error("Error writing frame", e);
-    }
+    Key key = new Key(calibrationId, recordingId, cameraId);
+    frameWriter.write(key, frame);
   }
 
   @Override
   public void storeFrames(long calibrationId, long recordingId, String cameraId,
       List<Frame> frames) {
-
-    try {
-      OutputStream outputStream = streamCache.get(new Key(calibrationId, recordingId, cameraId));
-      synchronized (outputStream) {
-        for (Frame frame : frames) {
-          frame.writeDelimitedTo(outputStream);
-        }
-      }
-    } catch (ExecutionException | IOException e) {
-      logger.error("Error writing frame", e);
-    }
+    Key key = new Key(calibrationId, recordingId, cameraId);
+    frameWriter.writeAll(key, frames);
   }
 
   @Override

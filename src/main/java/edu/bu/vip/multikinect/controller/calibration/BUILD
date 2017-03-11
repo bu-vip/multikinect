@@ -61,6 +61,7 @@ java_library(
         "//:com_google_inject_guice",
         "//:org_slf4j_slf4j_api",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:framereader",
+        "//src/main/java/edu/bu/vip/multikinect/io:messagewriter",
         "//src/main/java/edu/bu/vip/multikinect/util:timestamputils",
         "//src/main/proto:calibration",
         "//src/main/proto:frame",
