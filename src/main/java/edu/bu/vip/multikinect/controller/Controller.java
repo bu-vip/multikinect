@@ -12,6 +12,7 @@ import edu.bu.vip.multikinect.controller.calibration.FileCalibrationDataStore;
 import edu.bu.vip.multikinect.controller.calibration.InMemoryCalibrationDataStore;
 import edu.bu.vip.multikinect.controller.camera.CameraManager;
 import edu.bu.vip.multikinect.controller.camera.CameraModule;
+import edu.bu.vip.multikinect.controller.realtime.RealTimeManager;
 import edu.bu.vip.multikinect.controller.realtime.RealtimeModule;
 import edu.bu.vip.multikinect.controller.webconsole.DevRedirectHandler;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationManager;
@@ -62,6 +63,7 @@ public class Controller {
   private CameraManager cameraManager;
   private CalibrationManager calibrationManager;
   private CalibrationDataStore calibrationStore;
+  private RealTimeManager realTimeManager;
 
   public static void main(String[] args) throws Exception {
     RatpackServer server = RatpackServer.start(s -> {
@@ -112,10 +114,11 @@ public class Controller {
 
   @Inject
   public Controller(CameraManager cameraManager, CalibrationManager calibrationManager,
-      CalibrationDataStore calibrationStore) {
+      CalibrationDataStore calibrationStore, RealTimeManager realTimeManager) {
     this.cameraManager = cameraManager;
     this.calibrationManager = calibrationManager;
     this.calibrationStore = calibrationStore;
+    this.realTimeManager = realTimeManager;
   }
 
   public void start() throws Exception {
@@ -227,8 +230,16 @@ public class Controller {
     logger.info("Selecting session: {}", sessionId);
     // TODO(doug) - Check current state
     // TODO(doug) - Handle session not found
-    state = State.SESSION_IDLE;
-    currentSession = sessionId;
+
+    Optional<Calibration> optCal = calibrationStore.getCalibration(currentCalibration);
+    if (optCal.isPresent()) {
+      state = State.SESSION_IDLE;
+      currentSession = sessionId;
+      realTimeManager.start(optCal.get());
+    } else {
+      logger.warn("Couldn't get current calibration from store, id: {}", currentCalibration);
+      state = State.SELECT_CALIBRATION;
+    }
   }
 
   public void deleteSession(long sessionId) {

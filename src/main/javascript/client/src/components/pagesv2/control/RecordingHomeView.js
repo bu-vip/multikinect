@@ -1,13 +1,16 @@
-import {connect} from 'react-redux';
+import Radium from "radium";
+import React, {Component, PropTypes} from "react";
+import DataTable from "../DataTable";
+import IconButton from "../IconButton";
+import GlobalStyles from "../GlobalStyles";
+import DataForm from "./DataForm";
+import {
+  createRecordingRequest,
+  deleteRecordingRequest,
+  finishSessionRequest
+} from "../../../api/api";
+import RealTimeView from "./RealTimeView";
 
-import Radium from 'radium';
-import React, {Component, PropTypes} from 'react';
-import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
-import DataTable from '../DataTable';
-import IconButton from '../IconButton';
-import GlobalStyles from '../GlobalStyles';
-import DataForm from './DataForm';
-import {createRecordingRequest, deleteRecordingRequest, finishSessionRequest} from '../../../api/api';
 
 let styles = {
   base: {
@@ -172,9 +175,7 @@ class RecordingHomeView extends Component {
           <div style={[styles.bodyDiv]}>
 
             <div style={[styles.previewDiv]}>
-              <div style={[styles.previewView]}>
-                3D View
-              </div>
+              <RealTimeView />
             </div>
 
             <div style={[styles.recordingsDiv]}>

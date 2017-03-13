@@ -1,8 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import THREE from 'three';
-import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
-
-import Skeleton from './Skeleton';
+import React, {Component, PropTypes} from "react";
+import PureRenderMixin from "react/lib/ReactComponentWithPureRenderMixin";
+import Skeleton from "./Skeleton";
 
 class AllSkeletons extends Component {
   constructor(props, context) {

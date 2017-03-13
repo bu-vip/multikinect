@@ -23,9 +23,29 @@ public class CameraGraph {
 
   public CameraGraph(List<CameraPairCalibration> pairs) {
     for (CameraPairCalibration pair : pairs) {
-      // TODO(doug) - Inverse edge?
-      graph.addEdge(pair.getCameraA(), pair.getCameraB(), new CameraPairEdge(pair));
+      DenseMatrix64F transform = new DenseMatrix64F(4, 4, true, Doubles.toArray(pair.getTransformList()));
+      graph.addEdge(pair.getCameraA(), pair.getCameraB(), new CameraPairEdge(pair, transform, false));
+
+      DenseMatrix64F inverse = inverseTransformationMatrix(transform);
+      graph.addEdge(pair.getCameraB(), pair.getCameraA(), new CameraPairEdge(pair, inverse, true));
     }
+  }
+
+  private DenseMatrix64F inverseTransformationMatrix(DenseMatrix64F orig) {
+    SimpleMatrix origMat = new SimpleMatrix(orig);
+
+    SimpleMatrix rotationMat = origMat.extractMatrix(0, 3, 0, 3);
+    SimpleMatrix translation = origMat.extractMatrix(0, 3, 3, 4);
+
+    // For rotation matrices, the inverse is the transpose
+    SimpleMatrix inverseRot = rotationMat.transpose();
+    SimpleMatrix newTranslation = inverseRot.scale(-1).mult(translation);
+
+    SimpleMatrix finalMat = new SimpleMatrix(4, 4);
+    finalMat.combine(0, 0, inverseRot);
+    finalMat.combine(0, 3, newTranslation);
+
+    return finalMat.getMatrix();
   }
 
   /**
@@ -50,14 +70,20 @@ public class CameraGraph {
   private static class CameraPairEdge extends DefaultEdge {
 
     private static final long serialVersionUID = -2078620037807429905L;
-    private CameraPairCalibration pair;
 
-    public CameraPairEdge(CameraPairCalibration pair) {
+    private final CameraPairCalibration pair;
+    private final DenseMatrix64F transform;
+    private final boolean inverse;
+
+
+    public CameraPairEdge(CameraPairCalibration pair, DenseMatrix64F transform, boolean inverse) {
       this.pair = pair;
+      this.transform = transform;
+      this.inverse = inverse;
     }
 
     public DenseMatrix64F getTransform() {
-      return new DenseMatrix64F(4, 4, true, Doubles.toArray(pair.getTransformList()));
+      return transform;
     }
   }
 }

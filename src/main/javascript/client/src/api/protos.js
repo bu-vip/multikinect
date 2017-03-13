@@ -1,27 +1,19 @@
 import protobuf from 'protobufjs';
 
-/*
-import TIMESTAMP_PROTO from '../../../../../../thirdparty/protobuf/google/protobuf/timestamp.proto';
-import FRAME_PROTO from '../../../../proto/frame.proto';
-import FEED_PROTO from '../../../../proto/skeleton_feed.proto';
+const Protos = {
+  loaded: false
+};
+export {Protos};
 
-var builder = protobuf.newBuilder({ convertFieldsToCamelCase: false });
-protobuf.loadProto(TIMESTAMP_PROTO, builder, 'thirdparty/protobuf/google/protobuf/timestamp.proto');
-protobuf.loadProto(FRAME_PROTO, builder, './src/main/proto/frame.proto');
-protobuf.loadProto(FEED_PROTO, builder, './skeleton_feed.proto');
+protobuf.load("/protos.json", function(err, root) {
 
-const Frame = builder.build("bu.vip.multikinect.Frame");
-export {Frame};
+  if (err) {
+    console.error(err);
+  }
 
-const Skeleton = builder.build("bu.vip.multikinect.Skeleton");
-export {Skeleton};
+  Protos.Frame = root.lookup("bu.vip.multikinect.Frame");
+  Protos.JointType = root.lookup("bu.vip.multikinect.JointType");
+  Protos.SyncedFrame = root.lookup("bu.vip.multikinect.controller.realtime.SyncedFrame");
 
-const Joint = builder.build("bu.vip.multikinect.Joint");
-export {Joint};
-
-const JointType = builder.build("bu.vip.multikinect.Joint.JointType");
-export {JointType};
-
-const FeedMessage = builder.build("bu.vip.multikinect.controller.webconsole.FeedMessage");
-export {FeedMessage};
-*/
+  Protos.loaded = true;
+});

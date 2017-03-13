@@ -75,6 +75,7 @@ class AppView extends Component {
       this.props.handleControllerStateUpdate(json);
     })
     .catch(error => {
+      console.error(error);
       this.props.handleErrorGettingControllerState(error);
     });
   };

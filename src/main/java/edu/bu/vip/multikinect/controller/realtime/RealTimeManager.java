@@ -10,28 +10,46 @@ import edu.bu.vip.multikinect.Protos.Skeleton;
 import edu.bu.vip.multikinect.controller.camera.CameraManager;
 import edu.bu.vip.multikinect.controller.camera.FrameBus;
 import edu.bu.vip.multikinect.controller.camera.FrameReceivedEvent;
+import edu.bu.vip.multikinect.sync.CoordinateTransform;
 import java.util.HashMap;
 import java.util.Map;
+import org.ejml.data.DenseMatrix64F;
 
-public class RealtimeManager {
+public class RealTimeManager {
 
+  // TODO(doug) - Implement
+  private String centralCameraId = "camera1";
   private Calibration calibration;
-  private CameraManager cameraManager;
+  private CameraGraph cameraGraph;
   private EventBus frameBus;
   private EventBus syncedFrameBus;
   private Map<String, Frame> lastFrames = new HashMap<>();
 
   @Inject
-  protected RealtimeManager(CameraManager cameraManager, @FrameBus EventBus frameBus, @SyncedFrameBus EventBus syncedFrameBus) {
-    this.cameraManager = cameraManager;
+  protected RealTimeManager(@FrameBus EventBus frameBus, @SyncedFrameBus EventBus syncedFrameBus) {
     this.frameBus = frameBus;
     this.syncedFrameBus = syncedFrameBus;
   }
 
+  public void start(Calibration calibration) {
+    this.calibration = calibration;
+
+    // Initialize the camera graph with the calibration
+    cameraGraph = new CameraGraph(this.calibration.getCameraCalibrationsList());
+
+    // Subscribe to frame events
+    frameBus.register(this);
+  }
+
   @Subscribe
   public void onFrameReceivedEvent(FrameReceivedEvent event) {
-    // TODO(doug) - transform frames
-    lastFrames.put(event.getProps().getId(), event.getFrame());
+    // TODO(doug) - Time synchronization
+
+    // Transform frame into central camera's coordinate system
+    String cameraId = event.getProps().getId();
+    DenseMatrix64F transform = cameraGraph.calculateTransform(cameraId, centralCameraId);
+    Frame transformedFrame = CoordinateTransform.transformFrame(event.getFrame(), transform);
+    lastFrames.put(cameraId, transformedFrame);
 
     // TODO(doug) - combine skeletons that are close together
 

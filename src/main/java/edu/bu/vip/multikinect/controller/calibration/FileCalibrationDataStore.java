@@ -15,10 +15,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,18 +140,44 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
     ImmutableList.Builder<Calibration> resultBuilder = ImmutableList.builder();
 
     // Search for calibration files
-    File[] files = rootDir
-        .listFiles(new PatternFilenameFilter("*" + File.separator + "*" + CALIBRATION_FILE_EXT));
-    if (files != null) {
-      for (File calibrationFile : files) {
-        try (FileInputStream fileStream = new FileInputStream(calibrationFile)) {
-          // Parse data and add to list
-          Calibration newCalibration = Calibration.parseFrom(fileStream);
-          resultBuilder.add(newCalibration);
-        } catch (IOException e) {
-          logger.error("Error loading file: " + calibrationFile.getAbsolutePath(), e);
+    try {
+      Set<FileVisitOption> options = new HashSet<>();
+      java.nio.file.Files.walkFileTree(rootDir.toPath(), options, 2, new FileVisitor<Path>() {
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+            throws IOException {
+          return FileVisitResult.CONTINUE;
         }
-      }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+          // Check that the file is a calibration
+          PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**" + CALIBRATION_FILE_EXT);
+          if (matcher.matches(file)) {
+            try (FileInputStream fileStream = new FileInputStream(file.toFile())) {
+              // Parse data and add to list
+              Calibration newCalibration = Calibration.parseFrom(fileStream);
+              resultBuilder.add(newCalibration);
+            } catch (IOException e) {
+              logger.error("Error loading file: " + file.toAbsolutePath(), e);
+            }
+          }
+
+          return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+          return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+          return FileVisitResult.CONTINUE;
+        }
+      });
+    } catch (IOException e) {
+      logger.error("Error", e);
     }
 
     return resultBuilder.build();

@@ -5,6 +5,7 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.realtime.Protos.SyncedFrame;
+import edu.bu.vip.multikinect.Protos.Skeleton;
 import edu.bu.vip.multikinect.controller.camera.CameraChangeEvent;
 import edu.bu.vip.multikinect.controller.realtime.SyncedFrameBus;
 import io.netty.buffer.ByteBuf;
@@ -76,13 +77,15 @@ public class TransformedFeedHandler implements Handler {
         session = webSocket;
         this.syncedFrameBus.register(this);
         subscribed = true;
+
+        this.syncedFrameBus.post(SyncedFrame.newBuilder().addSkeletons(Skeleton.newBuilder().setId(123).build()).build());
       }
       return null;
     }
 
     @Override
     public void onMessage(WebSocketMessage<ByteBuf> frame) throws Exception {
-      logger.info("Recieved message: {}", frame);
+      logger.info("Received message: {}", frame);
     }
 
     @Override

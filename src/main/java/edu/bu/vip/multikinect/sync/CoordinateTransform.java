@@ -174,7 +174,7 @@ public class CoordinateTransform {
     return meanMat;
   }
 
-  public static Frame transformFrame(Frame original, double[] transform) {
+  public static Frame transformFrame(Frame original, DenseMatrix64F transform) {
     // Get all of the joints that need to be transformed
     List<Joint> allJoints = new ArrayList<>();
     for (Skeleton skeleton : original.getSkeletonsList()) {
@@ -182,8 +182,6 @@ public class CoordinateTransform {
         allJoints.add(joint);
       }
     }
-
-    DenseMatrix64F transformationData = new DenseMatrix64F(4, 4, true, transform);
 
     // Create a matrix of all of the joint positions
     DenseMatrix64F positionData = new DenseMatrix64F(4, allJoints.size());
@@ -196,7 +194,7 @@ public class CoordinateTransform {
     }
 
     // Apply transformation matrix to positions
-    SimpleMatrix transformMatrix = new SimpleMatrix(transformationData);
+    SimpleMatrix transformMatrix = new SimpleMatrix(transform);
     SimpleMatrix positionMatrix = new SimpleMatrix(positionData);
     DenseMatrix64F transformedPosMatrix = transformMatrix.mult(positionMatrix).getMatrix();
     // TODO(doug) - Transform orientations

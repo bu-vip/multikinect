@@ -1,0 +1,218 @@
+{
+  "nested": {
+    "bu": {
+      "nested": {
+        "vip": {
+          "nested": {
+            "multikinect": {
+              "options": {
+                "java_package": "edu.bu.vip.multikinect",
+                "java_outer_classname": "Protos"
+              },
+              "nested": {
+                "Frame": {
+                  "fields": {
+                    "time": {
+                      "type": "int64",
+                      "id": 1
+                    },
+                    "skeletons": {
+                      "rule": "repeated",
+                      "type": "Skeleton",
+                      "id": 2
+                    },
+                    "ntpCaptureTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 3
+                    }
+                  }
+                },
+                "Skeleton": {
+                  "fields": {
+                    "id": {
+                      "type": "uint64",
+                      "id": 1
+                    },
+                    "joints": {
+                      "rule": "repeated",
+                      "type": "Joint",
+                      "id": 2
+                    },
+                    "handLeftState": {
+                      "type": "HandState",
+                      "id": 3
+                    },
+                    "handLeftConfidence": {
+                      "type": "TrackingConfidence",
+                      "id": 4
+                    },
+                    "handRightState": {
+                      "type": "HandState",
+                      "id": 5
+                    },
+                    "handRightConfidence": {
+                      "type": "TrackingConfidence",
+                      "id": 6
+                    }
+                  },
+                  "nested": {
+                    "HandState": {
+                      "values": {
+                        "UNKNOWN": 0,
+                        "NOT_TRACKED": 1,
+                        "OPEN": 2,
+                        "CLOSED": 3,
+                        "LASSO": 4
+                      }
+                    },
+                    "TrackingConfidence": {
+                      "values": {
+                        "LOW": 0,
+                        "HIGH": 1
+                      }
+                    }
+                  }
+                },
+                "Joint": {
+                  "fields": {
+                    "type": {
+                      "type": "JointType",
+                      "id": 1
+                    },
+                    "orientation": {
+                      "type": "Orientation",
+                      "id": 2
+                    },
+                    "position": {
+                      "type": "Position",
+                      "id": 3
+                    },
+                    "trackingState": {
+                      "type": "TrackingState",
+                      "id": 4
+                    }
+                  },
+                  "nested": {
+                    "JointType": {
+                      "values": {
+                        "SPINE_BASE": 0,
+                        "SPINE_MID": 1,
+                        "NECK_": 2,
+                        "HEAD_": 3,
+                        "SHOULDER_LEFT": 4,
+                        "ELBOW_LEFT": 5,
+                        "WRIST_LEFT": 6,
+                        "HAND_LEFT": 7,
+                        "SHOULDER_RIGHT": 8,
+                        "ELBOW_RIGHT": 9,
+                        "WRIST_RIGHT": 10,
+                        "HAND_RIGHT": 11,
+                        "HIP_LEFT": 12,
+                        "KNEE_LEFT": 13,
+                        "ANKLE_LEFT": 14,
+                        "FOOT_LEFT": 15,
+                        "HIP_RIGHT": 16,
+                        "KNEE_RIGHT": 17,
+                        "ANKLE_RIGHT": 18,
+                        "FOOT_RIGHT": 19,
+                        "SPINE_SHOULDER": 20,
+                        "HAND_TIP_LEFT": 21,
+                        "THUMB_LEFT": 22,
+                        "HAND_TIP_RIGHT": 23,
+                        "THUMB_RIGHT": 24
+                      }
+                    },
+                    "TrackingState": {
+                      "values": {
+                        "NOT_TRACKED": 0,
+                        "INFERRED": 1,
+                        "TRACKED": 2
+                      }
+                    }
+                  }
+                },
+                "Orientation": {
+                  "fields": {
+                    "x": {
+                      "type": "float",
+                      "id": 1
+                    },
+                    "y": {
+                      "type": "float",
+                      "id": 2
+                    },
+                    "z": {
+                      "type": "float",
+                      "id": 3
+                    },
+                    "w": {
+                      "type": "float",
+                      "id": 4
+                    }
+                  }
+                },
+                "Position": {
+                  "fields": {
+                    "x": {
+                      "type": "float",
+                      "id": 1
+                    },
+                    "y": {
+                      "type": "float",
+                      "id": 2
+                    },
+                    "z": {
+                      "type": "float",
+                      "id": 3
+                    }
+                  }
+                },
+                "controller": {
+                  "nested": {
+                    "realtime": {
+                      "options": {
+                        "java_package": "edu.bu.vip.kinect.controller.realtime",
+                        "java_outer_classname": "Protos"
+                      },
+                      "nested": {
+                        "SyncedFrame": {
+                          "fields": {
+                            "skeletons": {
+                              "rule": "repeated",
+                              "type": "bu.vip.multikinect.Skeleton",
+                              "id": 1
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "google": {
+      "nested": {
+        "protobuf": {
+          "nested": {
+            "Timestamp": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

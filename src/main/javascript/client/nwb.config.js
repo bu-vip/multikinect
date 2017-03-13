@@ -1,3 +1,5 @@
+const WebpackShellPlugin = require('webpack-shell-plugin');
+
 module.exports = {
   type: 'react-app',
   karma: {
@@ -6,8 +8,16 @@ module.exports = {
   webpack: {
     extra: {
       devtool: '#inline-source-map',
+      plugins: [
+        new WebpackShellPlugin({
+          onBuildStart:[
+              './build_proto.sh'
+          ],
+          onBuildEnd:[]
+        })
+      ],
       module: {
-        loaders: [
+        rules: [
           {
             test: /\.proto$/,
             loader: "raw-loader"

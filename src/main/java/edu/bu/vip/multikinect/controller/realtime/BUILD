@@ -5,11 +5,12 @@ package(
 java_library(
     name = "manager",
     srcs = [
-        "RealtimeManager.java",
+        "RealTimeManager.java",
         "RealtimeModule.java",
     ],
     visibility = ["//visibility:public"],
     deps = [
+        ":cameragraph",
         ":syncedframebus",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",

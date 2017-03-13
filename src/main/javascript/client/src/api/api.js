@@ -5,7 +5,7 @@ const BASE_URL = 'http://' + IP.HOST + '/_';
 export const getStateUrl = () => BASE_URL + '/state';
 export const updateModeUrl = () => BASE_URL + "/mode";
 export const updateCalibrationUrl = () => BASE_URL + "/calibration";
-export const feedUrl = () => 'ws://localhost:8080/_' + "/feed";
+export const realtimeFeedUrl = () => 'ws://localhost:8080/_' + "/syncedFeed";
 
 export const MODES = {
   IDLE: "IDLE",
@@ -31,8 +31,8 @@ export function updateCalibrationRequest(mode) {
   .then(response => response.json());
 }
 
-export function feedSocket() {
-  let socket = new WebSocket(feedUrl());
+export function realTimeFeedSocket() {
+  let socket = new WebSocket(realtimeFeedUrl());
   socket.binaryType = "arraybuffer";
   return socket;
 }
