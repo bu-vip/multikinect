@@ -23,6 +23,10 @@ public class CameraGraph {
 
   public CameraGraph(List<CameraPairCalibration> pairs) {
     for (CameraPairCalibration pair : pairs) {
+
+      graph.addVertex(pair.getCameraA());
+      graph.addVertex(pair.getCameraB());
+
       DenseMatrix64F transform = new DenseMatrix64F(4, 4, true, Doubles.toArray(pair.getTransformList()));
       graph.addEdge(pair.getCameraA(), pair.getCameraB(), new CameraPairEdge(pair, transform, false));
 
@@ -42,8 +46,8 @@ public class CameraGraph {
     SimpleMatrix newTranslation = inverseRot.scale(-1).mult(translation);
 
     SimpleMatrix finalMat = new SimpleMatrix(4, 4);
-    finalMat.combine(0, 0, inverseRot);
-    finalMat.combine(0, 3, newTranslation);
+    finalMat = finalMat.combine(0, 0, inverseRot);
+    finalMat = finalMat.combine(0, 3, newTranslation);
 
     return finalMat.getMatrix();
   }
@@ -61,7 +65,8 @@ public class CameraGraph {
 
     SimpleMatrix combined = SimpleMatrix.identity(4);
     for (CameraPairEdge edge : path.getEdgeList()) {
-      combined = new SimpleMatrix(edge.getTransform()).mult(combined);
+      SimpleMatrix edgeTransform = new SimpleMatrix(edge.getTransform());
+      combined = edgeTransform.mult(combined);
     }
 
     return combined.getMatrix();

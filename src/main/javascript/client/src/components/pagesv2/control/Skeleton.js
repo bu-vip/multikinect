@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import THREE from 'three';
+import * as THREE from 'three';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import toMaterialStyle from 'material-color-hash';
 
@@ -10,30 +10,30 @@ class Skeleton extends Component {
     super(props, context);
 
     this.drawOrder = [
-      [Protos.JointType.HEAD_, Protos.JointType.NECK_],
-      [Protos.JointType.NECK_, Protos.JointType.SPINE_SHOULDER],
-      [Protos.JointType.SPINE_SHOULDER, Protos.JointType.SPINE_MID],
-      [Protos.JointType.SPINE_MID, Protos.JointType.SPINE_BASE],
+      [Protos.JointType.values.HEAD_, Protos.JointType.values.NECK_],
+      [Protos.JointType.values.NECK_, Protos.JointType.values.SPINE_SHOULDER],
+      [Protos.JointType.values.SPINE_SHOULDER, Protos.JointType.values.SPINE_MID],
+      [Protos.JointType.values.SPINE_MID, Protos.JointType.values.SPINE_BASE],
       // Left leg
-      [Protos.JointType.SPINE_BASE, Protos.JointType.HIP_LEFT],
-      [Protos.JointType.HIP_LEFT, Protos.JointType.KNEE_LEFT],
-      [Protos.JointType.KNEE_LEFT, Protos.JointType.ANKLE_LEFT],
-      [Protos.JointType.ANKLE_LEFT, Protos.JointType.FOOT_LEFT],
+      [Protos.JointType.values.SPINE_BASE, Protos.JointType.values.HIP_LEFT],
+      [Protos.JointType.values.HIP_LEFT, Protos.JointType.values.KNEE_LEFT],
+      [Protos.JointType.values.KNEE_LEFT, Protos.JointType.values.ANKLE_LEFT],
+      [Protos.JointType.values.ANKLE_LEFT, Protos.JointType.values.FOOT_LEFT],
       // Right left
-      [Protos.JointType.SPINE_BASE, Protos.JointType.HIP_RIGHT],
-      [Protos.JointType.HIP_RIGHT, Protos.JointType.KNEE_RIGHT],
-      [Protos.JointType.KNEE_RIGHT, Protos.JointType.ANKLE_RIGHT],
-      [Protos.JointType.ANKLE_RIGHT, Protos.JointType.FOOT_RIGHT],
+      [Protos.JointType.values.SPINE_BASE, Protos.JointType.values.HIP_RIGHT],
+      [Protos.JointType.values.HIP_RIGHT, Protos.JointType.values.KNEE_RIGHT],
+      [Protos.JointType.values.KNEE_RIGHT, Protos.JointType.values.ANKLE_RIGHT],
+      [Protos.JointType.values.ANKLE_RIGHT, Protos.JointType.values.FOOT_RIGHT],
       // Left arm
-      [Protos.JointType.SPINE_SHOULDER, Protos.JointType.SHOULDER_LEFT],
-      [Protos.JointType.SHOULDER_LEFT, Protos.JointType.ELBOW_LEFT],
-      [Protos.JointType.ELBOW_LEFT, Protos.JointType.WRIST_LEFT],
-      [Protos.JointType.WRIST_LEFT, Protos.JointType.HAND_LEFT],
+      [Protos.JointType.values.SPINE_SHOULDER, Protos.JointType.values.SHOULDER_LEFT],
+      [Protos.JointType.values.SHOULDER_LEFT, Protos.JointType.values.ELBOW_LEFT],
+      [Protos.JointType.values.ELBOW_LEFT, Protos.JointType.values.WRIST_LEFT],
+      [Protos.JointType.values.WRIST_LEFT, Protos.JointType.values.HAND_LEFT],
       // Right arm
-      [Protos.JointType.SPINE_SHOULDER, Protos.JointType.SHOULDER_RIGHT],
-      [Protos.JointType.SHOULDER_RIGHT, Protos.JointType.ELBOW_RIGHT],
-      [Protos.JointType.ELBOW_RIGHT, Protos.JointType.WRIST_RIGHT],
-      [Protos.JointType.WRIST_RIGHT, Protos.JointType.HAND_RIGHT],
+      [Protos.JointType.values.SPINE_SHOULDER, Protos.JointType.values.SHOULDER_RIGHT],
+      [Protos.JointType.values.SHOULDER_RIGHT, Protos.JointType.values.ELBOW_RIGHT],
+      [Protos.JointType.values.ELBOW_RIGHT, Protos.JointType.values.WRIST_RIGHT],
+      [Protos.JointType.values.WRIST_RIGHT, Protos.JointType.values.HAND_RIGHT],
     ];
 
     this.drawKeys = this.drawOrder.map((segment) => {
@@ -41,7 +41,7 @@ class Skeleton extends Component {
     });
 
     // Generate a random color based on the skeleton id
-    let numString = this.props.skeleton.id.high + " " + this.props.skeleton.id.low;
+    let numString = "" + this.props.skeleton.id;
     let hashStyle = toMaterialStyle(numString);
     this.state = {
         color: new THREE.Color(hashStyle.backgroundColor)

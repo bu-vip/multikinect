@@ -14,7 +14,7 @@ class AllSkeletons extends Component {
 
   render() {
     if (this.props.frame == null) {
-      return null;
+      return <group></group>;
     }
 
     return (<group>

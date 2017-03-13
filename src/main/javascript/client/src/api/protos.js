@@ -12,7 +12,7 @@ protobuf.load("/protos.json", function(err, root) {
   }
 
   Protos.Frame = root.lookup("bu.vip.multikinect.Frame");
-  Protos.JointType = root.lookup("bu.vip.multikinect.JointType");
+  Protos.JointType = root.lookup("bu.vip.multikinect.Joint.JointType");
   Protos.SyncedFrame = root.lookup("bu.vip.multikinect.controller.realtime.SyncedFrame");
 
   Protos.loaded = true;

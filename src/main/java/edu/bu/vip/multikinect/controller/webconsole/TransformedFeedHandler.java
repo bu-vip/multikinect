@@ -77,8 +77,6 @@ public class TransformedFeedHandler implements Handler {
         session = webSocket;
         this.syncedFrameBus.register(this);
         subscribed = true;
-
-        this.syncedFrameBus.post(SyncedFrame.newBuilder().addSkeletons(Skeleton.newBuilder().setId(123).build()).build());
       }
       return null;
     }

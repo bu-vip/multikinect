@@ -10,27 +10,6 @@
                 "java_outer_classname": "Protos"
               },
               "nested": {
-                "controller": {
-                  "nested": {
-                    "realtime": {
-                      "options": {
-                        "java_package": "edu.bu.vip.kinect.controller.realtime",
-                        "java_outer_classname": "Protos"
-                      },
-                      "nested": {
-                        "SyncedFrame": {
-                          "fields": {
-                            "skeletons": {
-                              "rule": "repeated",
-                              "type": "bu.vip.multikinect.Skeleton",
-                              "id": 1
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
                 "Frame": {
                   "fields": {
                     "time": {
@@ -185,6 +164,27 @@
                     "z": {
                       "type": "float",
                       "id": 3
+                    }
+                  }
+                },
+                "controller": {
+                  "nested": {
+                    "realtime": {
+                      "options": {
+                        "java_package": "edu.bu.vip.kinect.controller.realtime",
+                        "java_outer_classname": "Protos"
+                      },
+                      "nested": {
+                        "SyncedFrame": {
+                          "fields": {
+                            "skeletons": {
+                              "rule": "repeated",
+                              "type": "bu.vip.multikinect.Skeleton",
+                              "id": 1
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }

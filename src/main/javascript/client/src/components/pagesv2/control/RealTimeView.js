@@ -6,8 +6,8 @@ import AllSkeletons from "./AllSkeletons";
 import {realTimeFeedSocket} from "../../../api/api";
 import {Protos} from "../../../api/protos";
 
-const width = window.innerWidth / 2.2;
-const height = window.innerWidth / 2.2;
+const width = window.innerWidth * 2 / 3 ;
+const height = window.innerWidth  * 2 / 3 ;
 
 let styles = {
   base: {
@@ -57,12 +57,9 @@ class RealTimeView extends Component {
     this.socket = realTimeFeedSocket();
     let first = false;
     this.socket.onmessage = (event) => {
-      console.log(event);
-
       // TODO(doug) - fix the base64 issue in java
       let messageBuffer = this._base64ToArrayBuffer(event.data);
       let frame = Protos.SyncedFrame.decode(messageBuffer);
-      console.log(frame);
       // TODO(doug) - remove message logging
       if (!first && frame.skeletons.length > 0) {
         console.log(frame);
@@ -100,7 +97,7 @@ class RealTimeView extends Component {
               lookAt={this.cameraLookAt}
           />
           <AllSkeletons
-              frame={this.props.frame}
+              frame={this.state.frame}
           />
         </scene>
       </React3>

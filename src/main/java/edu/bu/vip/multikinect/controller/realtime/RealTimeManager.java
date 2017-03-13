@@ -3,6 +3,7 @@ package edu.bu.vip.multikinect.controller.realtime;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.realtime.Protos.SyncedFrame;
 import edu.bu.vip.multikinect.Protos.Frame;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.ejml.data.DenseMatrix64F;
 
+@Singleton
 public class RealTimeManager {
 
   // TODO(doug) - Implement
