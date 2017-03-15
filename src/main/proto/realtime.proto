@@ -8,5 +8,24 @@ option java_package = "edu.bu.vip.kinect.controller.realtime";
 option java_outer_classname = "Protos";
 
 message SyncedFrame {
-  repeated bu.vip.multikinect.Skeleton skeletons = 1;
+  repeated CombinedSkeleton skeletons = 1;
+  // Array of frames that were used to create this frame
+  repeated FrameDataPoint frame_points = 2;
+}
+
+message FrameDataPoint {
+  string camera_id = 1;
+  uint64 frame_id = 2;
+}
+
+message CombinedSkeleton {
+  uint64 id = 1;
+  bu.vip.multikinect.Skeleton skeleton = 2;
+  // Array of skeletons that were used to create this skeleton
+  repeated SkeletonDataPoint data_points = 3;
+}
+
+message SkeletonDataPoint {
+  string camera_id = 1;
+  uint64 skeleton_id = 2;
 }

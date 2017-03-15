@@ -8,6 +8,7 @@ option java_package = "edu.bu.vip.multikinect.camera";
 option java_outer_classname = "Grpc";
 
 service Camera {
+	// TODO(doug) - It would be really helpful if the frames were wrapped with the camera_id
 	rpc record(stream RecordOptions) returns (stream bu.vip.multikinect.Frame) {}
 }
 

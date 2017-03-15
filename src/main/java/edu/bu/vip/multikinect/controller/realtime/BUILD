@@ -11,6 +11,7 @@ java_library(
     visibility = ["//visibility:public"],
     deps = [
         ":cameragraph",
+        ":framecombiner",
         ":syncedframebus",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
@@ -18,6 +19,7 @@ java_library(
         "//:org_slf4j_slf4j_api",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:framebus",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:module",
+        "//src/main/java/edu/bu/vip/multikinect/controller/data:sessiondatastore",
         "//src/main/java/edu/bu/vip/multikinect/sync:coordinatetransform",
         "//src/main/java/edu/bu/vip/multikinect/sync:protoutils",
         "//src/main/java/edu/bu/vip/multikinect/util:timestamputils",
@@ -52,5 +54,18 @@ java_library(
         "//:org_ejml_all",
         "//:org_jgrapht_jgrapht_core",
         "//src/main/proto:calibration",
+    ],
+)
+
+java_library(
+    name = "framecombiner",
+    srcs = [
+        "FrameCombiner.java",
+    ],
+    deps = [
+        "//:com_google_guava_guava",
+        "//src/main/java/edu/bu/vip/multikinect/sync:protoutils",
+        "//src/main/proto:frame",
+        "//src/main/proto:realtime",
     ],
 )
