@@ -17,6 +17,7 @@ java_library(
     name = "protoutils",
     srcs = [
         "FrameUtils.java",
+        "PositionUtils.java",
         "SkeletonUtils.java",
     ],
     visibility = ["//visibility:public"],

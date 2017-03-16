@@ -9,6 +9,7 @@ package bu.vip.multikinect;
 option java_package = "edu.bu.vip.multikinect";
 option java_outer_classname = "Protos";
 
+// TODO(doug) - Unique IDs for frames would be very helpful
 message Frame {
   // BodyFrame.RelativeTime
   int64 time = 1;

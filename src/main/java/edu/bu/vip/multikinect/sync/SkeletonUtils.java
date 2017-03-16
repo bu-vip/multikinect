@@ -4,6 +4,8 @@ import edu.bu.vip.multikinect.Protos.Joint;
 import edu.bu.vip.multikinect.Protos.Joint.TrackingState;
 import edu.bu.vip.multikinect.Protos.Position;
 import edu.bu.vip.multikinect.Protos.Skeleton;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SkeletonUtils {
   
@@ -76,23 +78,20 @@ public class SkeletonUtils {
   }
 
   public static Position calculateCenter(Skeleton skeleton, boolean includeInferred) {
-    float xSum = 0;
-    float ySum = 0;
-    float zSum = 0;
+    List<Position> positions = new ArrayList<>();
     for (Joint joint : skeleton.getJointsList()) {
       if (joint.getTrackingState() == TrackingState.TRACKED ||
           (joint.getTrackingState() == TrackingState.INFERRED && includeInferred)) {
         Position position = joint.getPosition();
-        xSum += position.getX();
-        ySum += position.getY();
-        zSum += position.getZ();
+        positions.add(position);
       }
     }
 
-    Position.Builder builder = Position.newBuilder();
-    builder.setX(xSum / skeleton.getJointsCount());
-    builder.setY(ySum / skeleton.getJointsCount());
-    builder.setZ(zSum / skeleton.getJointsCount());
-    return builder.build();
+    return PositionUtils.average(positions);
+  }
+
+  public static Skeleton combine(List<Skeleton> skeletons) {
+    // TODO(doug)
+    return null;
   }
 }
