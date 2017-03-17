@@ -12,6 +12,7 @@ import edu.bu.vip.multikinect.controller.calibration.FileCalibrationDataStore;
 import edu.bu.vip.multikinect.controller.calibration.InMemoryCalibrationDataStore;
 import edu.bu.vip.multikinect.controller.camera.CameraManager;
 import edu.bu.vip.multikinect.controller.camera.CameraModule;
+import edu.bu.vip.multikinect.controller.data.SessionDataStore;
 import edu.bu.vip.multikinect.controller.realtime.RealTimeManager;
 import edu.bu.vip.multikinect.controller.realtime.RealtimeModule;
 import edu.bu.vip.multikinect.controller.webconsole.DevRedirectHandler;
@@ -54,16 +55,16 @@ public class Controller {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private State state = State.SELECT_CALIBRATION;
-  private Map<Long, Session> sessions = new ConcurrentHashMap<>();
-  private Recording newRecording;
   private long currentCalibration = -1;
   private long currentSession = -1;
+  private Recording newRecording;
 
   private Server grpcServer;
   private CameraManager cameraManager;
   private CalibrationManager calibrationManager;
   private CalibrationDataStore calibrationStore;
   private RealTimeManager realTimeManager;
+  private SessionDataStore sessionDataStore;
 
   public static void main(String[] args) throws Exception {
     RatpackServer server = RatpackServer.start(s -> {
@@ -114,11 +115,13 @@ public class Controller {
 
   @Inject
   public Controller(CameraManager cameraManager, CalibrationManager calibrationManager,
-      CalibrationDataStore calibrationStore, RealTimeManager realTimeManager) {
+      CalibrationDataStore calibrationStore, RealTimeManager realTimeManager,
+      SessionDataStore sessionDataStore) {
     this.cameraManager = cameraManager;
     this.calibrationManager = calibrationManager;
     this.calibrationStore = calibrationStore;
     this.realTimeManager = realTimeManager;
+    this.sessionDataStore = sessionDataStore;
   }
 
   public void start() throws Exception {
@@ -153,11 +156,17 @@ public class Controller {
   }
 
   public ImmutableList<Session> getSessions() {
-    return ImmutableList.copyOf(sessions.values());
+    return sessionDataStore.getSessions();
   }
 
   public Session getCurrentSession() {
-    return sessions.get(currentSession);
+    Optional<Session> optSes = sessionDataStore.getSession(currentSession);
+    if (!optSes.isPresent()) {
+      logger.error("Could not retrieve current session");
+      throw new RuntimeException("Could not retrieve current session");
+    }
+
+    return optSes.get();
   }
 
   public Recording getCurrentRecording() {
@@ -222,8 +231,7 @@ public class Controller {
     builder.setId(System.currentTimeMillis());
     builder.setDateCreated(TimestampUtils.now());
     builder.setName(name);
-    Session newSession = builder.build();
-    sessions.put(newSession.getId(), newSession);
+    sessionDataStore.createSession(builder.build());
   }
 
   public void selectSession(long sessionId) {
@@ -245,8 +253,7 @@ public class Controller {
   public void deleteSession(long sessionId) {
     logger.info("Deleting session: {}", sessionId);
     // TODO(doug) - Check current state
-    // TODO(doug) - Handle session not found
-    sessions.remove(sessionId);
+    sessionDataStore.deleteSession(sessionId);
   }
 
   public void finishSelectSession() {
@@ -261,24 +268,23 @@ public class Controller {
     logger.info("Creating new recording");
     // TODO(doug) - Check current state
     state = State.RECORDING_DATA;
-    Recording.Builder builder = Recording.newBuilder();
-    builder.setId(System.currentTimeMillis());
-    builder.setDateCreated(TimestampUtils.now());
-    builder.setName(name);
-    newRecording = builder.build();
+    newRecording = realTimeManager.startRecording(currentSession, name, "");
   }
 
   public void deleteRecording(long recordingId) {
     logger.info("Deleting recording: {}", recordingId);
     // TODO(doug) - implement
-    Session sessionRep = sessions.get(currentSession);
 
-    for (int i = 0; i < sessionRep.getRecordingsCount(); i++) {
-      if (sessionRep.getRecordings(i).getId() == recordingId) {
-        Session.Builder builder = sessionRep.toBuilder();
-        builder.removeRecordings(i);
-        sessionRep = builder.build();
-        break;
+    Optional<Session> optSes = sessionDataStore.getSession(currentSession);
+    if (optSes.isPresent()) {
+      Session session = optSes.get();
+      for (int i = 0; i < session.getRecordingsCount(); i++) {
+        if (session.getRecordings(i).getId() == recordingId) {
+          Session.Builder builder = session.toBuilder();
+          builder.removeRecordings(i);
+          sessionDataStore.updateSession(builder.build());
+          break;
+        }
       }
     }
   }
@@ -296,12 +302,6 @@ public class Controller {
     // TODO(doug) - Check current state
     // TODO(doug) - implement
     state = State.SESSION_IDLE;
-
-    Session session = sessions.get(currentSession);
-    Session.Builder builder = session.toBuilder();
-    builder.addRecordings(newRecording);
-    sessions.put(builder.getId(), builder.build());
-
-    newRecording = null;
+    realTimeManager.stopRecording();
   }
 }

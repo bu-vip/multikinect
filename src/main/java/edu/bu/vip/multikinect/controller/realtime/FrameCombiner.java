@@ -1,5 +1,8 @@
 package edu.bu.vip.multikinect.controller.realtime;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.LoadingCache;
 import edu.bu.vip.kinect.controller.realtime.Protos.CombinedSkeleton;
 import edu.bu.vip.kinect.controller.realtime.Protos.FrameDataPoint;
 import edu.bu.vip.kinect.controller.realtime.Protos.SkeletonDataPoint;
@@ -11,17 +14,32 @@ import edu.bu.vip.multikinect.sync.PositionUtils;
 import edu.bu.vip.multikinect.sync.SkeletonUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FrameCombiner {
 
   private static final float MAX_COMBINE_DISTANCE = 0.1f;
 
-  public static SyncedFrame combineFrames(Map<String, Frame> frames) {
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private long idCounter = 0;
+  private Cache<Long, Long> idMappings = CacheBuilder.newBuilder()
+      .maximumSize(10000)
+      .build();
+
+  public FrameCombiner() {
+
+  }
+
+  public SyncedFrame combineFrames(Map<String, Frame> frames) {
     // Group skeletons together
     List<SkeletonGroup> groups = new ArrayList<>();
     frames.forEach((cameraId, frame) -> {
@@ -29,7 +47,7 @@ public class FrameCombiner {
       if (groups.size() == 0) {
         // If not, create new sets for each skeleton in the frame
         frame.getSkeletonsList().forEach(skeleton -> {
-          SkeletonGroup skeletonGroup = new SkeletonGroup(groups.size());
+          SkeletonGroup skeletonGroup = new SkeletonGroup();
           skeletonGroup.addSkeleton(cameraId, skeleton);
           groups.add(skeletonGroup);
         });
@@ -77,11 +95,39 @@ public class FrameCombiner {
         // Create new groups for all skeletons that haven't been mapped
         frame.getSkeletonsList().forEach(skeleton -> {
           if (!skeletonsMapped.contains(skeleton.getId())) {
-            SkeletonGroup skeletonGroup = new SkeletonGroup(groups.size());
+
+            SkeletonGroup skeletonGroup = new SkeletonGroup();
             skeletonGroup.addSkeleton(cameraId, skeleton);
             groups.add(skeletonGroup);
           }
         });
+      }
+    });
+
+    // Assign or get old ids for each group
+    groups.forEach(group -> {
+      // See if any of the skeletons have already been part of a past group
+      Long groupId = null;
+      for (Skeleton skeleton : group.getSkeletons()) {
+        Long possibleId = idMappings.getIfPresent(skeleton.getId());
+        if (possibleId != null) {
+          groupId = possibleId;
+          break;
+        }
+      }
+
+      // If no group was found, create a new id
+      if (groupId == null) {
+        groupId = idCounter;
+        idCounter++;
+      }
+
+      // Set the group's id
+      group.setId(groupId);
+
+      // Make sure all skeletons in the group map to the id
+      for (Skeleton skeleton : group.getSkeletons()) {
+        idMappings.put(skeleton.getId(), groupId);
       }
     });
 
@@ -104,13 +150,12 @@ public class FrameCombiner {
 
   private static class SkeletonGroup {
 
-    private final long id;
+    private long id;
     private final List<String> cameraIds = new ArrayList<>();
     private final List<Skeleton> skeletons = new ArrayList<>();
     private final List<Position> centers = new ArrayList<>();
 
-    public SkeletonGroup(long id) {
-      this.id = id;
+    public SkeletonGroup() {
     }
 
     public void addSkeleton(String cameraId, Skeleton skeleton) {
@@ -123,14 +168,23 @@ public class FrameCombiner {
       return PositionUtils.average(centers);
     }
 
+    public void setId(long id) {
+      this.id = id;
+    }
+
     public long getId() {
       return id;
+    }
+
+    public List<Skeleton> getSkeletons() {
+      return skeletons;
     }
 
     public CombinedSkeleton toCombinedSkeleton() {
       CombinedSkeleton.Builder builder = CombinedSkeleton.newBuilder();
 
       // TODO(doug) - Unique id...
+      builder.setId(id);
 
       // Add the skeleton data points
       for (int i = 0; i < cameraIds.size(); i++) {

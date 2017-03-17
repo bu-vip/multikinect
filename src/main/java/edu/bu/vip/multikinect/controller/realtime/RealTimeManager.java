@@ -5,7 +5,7 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
-import edu.bu.vip.kinect.controller.calibration.Protos.Recording;
+import edu.bu.vip.kinect.controller.data.Protos.Recording;
 import edu.bu.vip.kinect.controller.realtime.Protos.SyncedFrame;
 import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinect.Protos.Skeleton;
@@ -16,10 +16,13 @@ import edu.bu.vip.multikinect.sync.CoordinateTransform;
 import java.util.HashMap;
 import java.util.Map;
 import org.ejml.data.DenseMatrix64F;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class RealTimeManager {
 
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private final EventBus frameBus;
   private final EventBus syncedFrameBus;
   private final SessionDataStore sessionDataStore;
@@ -32,6 +35,7 @@ public class RealTimeManager {
   private boolean recording = false;
   private long sessionId;
   private long recordingId;
+  private FrameCombiner frameCombiner;
 
   @Inject
   protected RealTimeManager(@FrameBus EventBus frameBus, @SyncedFrameBus EventBus syncedFrameBus,
@@ -47,8 +51,17 @@ public class RealTimeManager {
     // Initialize the camera graph with the calibration
     cameraGraph = new CameraGraph(this.calibration.getCameraCalibrationsList());
 
+    frameCombiner = new FrameCombiner();
+
     // Subscribe to frame events
     frameBus.register(this);
+  }
+
+  public void stop() {
+    calibration = null;
+    cameraGraph = null;
+    frameCombiner = null;
+    frameBus.unregister(this);
   }
 
   @Subscribe
@@ -62,7 +75,7 @@ public class RealTimeManager {
     lastFrames.put(cameraId, transformedFrame);
 
     // Combine skeletons that are close together
-    SyncedFrame syncedFrame = FrameCombiner.combineFrames(lastFrames);
+    SyncedFrame syncedFrame = frameCombiner.combineFrames(lastFrames);
 
     // Send out an new synced frame event
     syncedFrameBus.post(syncedFrame);
@@ -74,7 +87,7 @@ public class RealTimeManager {
     }
   }
 
-  public void startRecording(long sessionId, String name, String notes) {
+  public Recording startRecording(long sessionId, String name, String notes) {
     synchronized (recordingLock) {
       recording = true;
 
@@ -86,6 +99,8 @@ public class RealTimeManager {
 
       this.sessionId = sessionId;
       this.recordingId = recordingId;
+
+      return builder.build();
     }
   }
 
