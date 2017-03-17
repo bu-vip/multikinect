@@ -10,7 +10,6 @@ java_binary(
     ],
     deps = [
         "@org_pubref_rules_protobuf//java:grpc_compiletime_deps",
-        "//:com_fasterxml_jackson_core_jackson_databind",
         "//:com_google_guava_guava",
         "//:com_google_inject_guice",
         "//:com_google_protobuf_protobuf_java",
