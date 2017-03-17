@@ -23,6 +23,8 @@ java_binary(
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:manager",
         "//src/main/java/edu/bu/vip/multikinect/controller/camera:module",
+        "//src/main/java/edu/bu/vip/multikinect/controller/data:sessiondatastore",
+        "//src/main/java/edu/bu/vip/multikinect/controller/plugin",
         "//src/main/java/edu/bu/vip/multikinect/controller/realtime:manager",
         "//src/main/java/edu/bu/vip/multikinect/controller/realtime:syncedframebus",
         "//src/main/java/edu/bu/vip/multikinect/sync:coordinatetransform",

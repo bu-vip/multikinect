@@ -107,7 +107,6 @@ class RecordingHomeView extends Component {
   };
 
   handleBackNavigation = () => {
-    // TODO(doug) - use
     finishSessionRequest();
   };
 
@@ -160,6 +159,9 @@ class RecordingHomeView extends Component {
 
         return (<div style={[styles.base]}>
           <div style={[styles.titleContainer]}>
+            <IconButton
+                icon="arrow_back"
+                onClick={this.handleBackNavigation}/>
             <div style={[styles.title]}>
               <h1>{session.name}
                 <IconButton

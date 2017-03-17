@@ -43,7 +43,6 @@ public class ApiHandler implements Action<Chain> {
   @Override
   public void execute(Chain chain) throws Exception {
     chain.post(NEW_CALIBRATION_URL, (context) -> {
-      // TODO(doug) - implement
       context.parse(Calibration.class).then(calibration -> {
         controller.newCalibration(calibration.getName());
         context.getResponse().status(Status.OK).send();
@@ -51,28 +50,23 @@ public class ApiHandler implements Action<Chain> {
     });
 
     chain.get(SELECT_CALIBRATION_URL, (context) -> {
-      // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
       controller.selectCalibration(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.get(DELETE_CALIBRATION_URL, (context) -> {
-      // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
       controller.deleteCalibration(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(NEW_FRAME_URL, context -> {
-      // TODO(doug) - implement
-
       controller.newCalibrationFrame();
       context.getResponse().status(Status.OK).send();
     });
 
     chain.get(DELETE_FRAME_URL, context -> {
-      // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
       controller.deleteCalibrationRecording(id);
 
@@ -80,20 +74,16 @@ public class ApiHandler implements Action<Chain> {
     });
 
     chain.post(FINISH_CALIBRATION_URL, context -> {
-      // TODO(doug) - implement
-
       controller.finishNewCalibration();
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(FINISH_FRAME_URL, context -> {
-      // TODO(doug) - implement
       controller.finishNewCalibrationFrame();
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(CREATE_SESSION_URL, context -> {
-      // TODO(doug) - implement
       context.parse(Session.class).then(session -> {
         controller.createSession(session.getName());
         context.getResponse().status(Status.OK).send();
@@ -101,26 +91,23 @@ public class ApiHandler implements Action<Chain> {
     });
 
     chain.get(SELECT_SESSION_URL, context -> {
-      // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
       controller.selectSession(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.get(DELETE_SESSION_URL, context -> {
-      // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
       controller.deleteSession(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(CANCEL_SELECT_SESSION_URL, context -> {
-      // TODO(doug) - implement
       controller.finishSelectSession();
+      context.getResponse().status(Status.OK).send();
     });
 
     chain.post(NEW_RECORDING_URL, context -> {
-      // TODO(doug) - implement
       context.parse(Recording.class).then(recording -> {
         controller.newRecording(recording.getName());
         context.getResponse().status(Status.OK).send();
@@ -128,20 +115,17 @@ public class ApiHandler implements Action<Chain> {
     });
 
     chain.get(DELETE_RECORDING_URL, context -> {
-      // TODO(doug) - implement
       long id = Long.parseLong(context.getPathTokens().get("id"));
       controller.deleteRecording(id);
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(FINISH_SESSION_URL, context -> {
-      // TODO(doug) - implement
       controller.finishSession();
       context.getResponse().status(Status.OK).send();
     });
 
     chain.post(STOP_RECORDING_URL, context -> {
-      // TODO(doug) - implement
       controller.stopRecording();
       context.getResponse().status(Status.OK).send();
     });

@@ -8,7 +8,7 @@ import NewCalibrationView from './NewCalibrationView';
 import SelectSessionView from './SelectSessionView';
 import RecordingHomeView from './RecordingHomeView';
 import CalibrationRecordingView from './CalibrationRecordingView';
-import RecordingPage from './RecordingPage';
+import RecordingPage from './RecordingView';
 
 let styles = {
   base: {}

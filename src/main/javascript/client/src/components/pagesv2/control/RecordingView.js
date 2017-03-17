@@ -14,6 +14,7 @@ import DataTable from '../DataTable';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
 import {stopRecordingRequest} from '../../../api/api';
+import RealTimeView from "./RealTimeView";
 
 let styles = {
   base: {
@@ -56,8 +57,6 @@ class RecordingView extends Component {
   }
 
   stopRecording = () => {
-    console.log("stop recording");
-    // TODO(doug) - implement
     stopRecordingRequest();
   };
 
@@ -77,7 +76,7 @@ class RecordingView extends Component {
 
   render() {
     // TODO(doug) - calc stats
-    const recording = this.props.controllerState.recordingData;
+    const recording = this.props.controllerState.recording;
     let stats = [];
     stats.push({
       name: "Name",
@@ -87,8 +86,7 @@ class RecordingView extends Component {
       name: "Id",
       value: recording.id
     });
-    const dateCreated = Instant.ofEpochSecond(recording.dateCreated.epochSecond,
-        recording.dateCreated.nano);
+    const dateCreated = Instant.parse(recording.dateCreated);
     const timeElapsed = Duration.between(dateCreated, Instant.now());
     stats.push({
       name: "Length",
@@ -106,7 +104,7 @@ class RecordingView extends Component {
     return (<div style={[styles.base]}>
       <div style={[styles.titleContainer]}>
         <div style={[styles.title]}>
-          <h1>{this.props.controllerState.recordingData.name}</h1>
+          <h1>{this.props.controllerState.recording.name}</h1>
         </div>
         <IconButton
             icon="done"
@@ -115,9 +113,7 @@ class RecordingView extends Component {
       <div style={[styles.bodyDiv]}>
 
         <div style={[styles.previewDiv]}>
-          <div style={[styles.previewView]}>
-            3D View
-          </div>
+          <RealTimeView />
         </div>
 
         <div style={[styles.recordingsDiv]}>

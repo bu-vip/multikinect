@@ -4,8 +4,10 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import edu.bu.vip.kinect.controller.calibration.Protos;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.data.Protos.Recording;
+import edu.bu.vip.kinect.controller.data.Protos.Session;
 import edu.bu.vip.kinect.controller.realtime.Protos.SyncedFrame;
 import edu.bu.vip.multikinect.Protos.Frame;
 import edu.bu.vip.multikinect.Protos.Skeleton;
@@ -13,8 +15,13 @@ import edu.bu.vip.multikinect.controller.camera.FrameBus;
 import edu.bu.vip.multikinect.controller.camera.FrameReceivedEvent;
 import edu.bu.vip.multikinect.controller.data.SessionDataStore;
 import edu.bu.vip.multikinect.sync.CoordinateTransform;
+import edu.bu.vip.multikinect.util.TimestampUtils;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import org.ejml.data.DenseMatrix64F;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,16 +98,43 @@ public class RealTimeManager {
     synchronized (recordingLock) {
       recording = true;
 
+      // Get the session
+      Optional<Session> optSes = sessionDataStore.getSession(sessionId);
+      if (!optSes.isPresent()) {
+        throw new RuntimeException("Couldn't get session to record");
+      }
+      Session session = optSes.get();
+
+      // Get all recording ids that are taken
+      Set<Long> recordingIds = new HashSet<>();
+      session.getRecordingsList().forEach(recording -> {
+        recordingIds.add(recording.getId());
+      });
+
+      // Assign an id that isn't taken
+      Random rand = new Random();
+      long recordingId;
+      do {
+        recordingId = Math.abs(rand.nextLong());
+      }
+      while (recordingIds.contains(recordingId));
+
+      // Create the recording
       Recording.Builder builder = Recording.newBuilder();
+      builder.setId(recordingId);
+      builder.setName(name);
+      builder.setDateCreated(TimestampUtils.now());
+      Recording recording = builder.build();
 
-      // TODO(doug)
-      long recordingId = 0;
-
+      // Update the session
+      Session.Builder updatedSession = session.toBuilder();
+      updatedSession.addRecordings(recording);
+      sessionDataStore.updateSession(updatedSession.build());
 
       this.sessionId = sessionId;
       this.recordingId = recordingId;
 
-      return builder.build();
+      return recording;
     }
   }
 

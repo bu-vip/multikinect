@@ -179,8 +179,54 @@
                           "fields": {
                             "skeletons": {
                               "rule": "repeated",
-                              "type": "bu.vip.multikinect.Skeleton",
+                              "type": "CombinedSkeleton",
                               "id": 1
+                            },
+                            "framePoints": {
+                              "rule": "repeated",
+                              "type": "FrameDataPoint",
+                              "id": 2
+                            }
+                          }
+                        },
+                        "FrameDataPoint": {
+                          "fields": {
+                            "cameraId": {
+                              "type": "string",
+                              "id": 1
+                            },
+                            "frameId": {
+                              "type": "uint64",
+                              "id": 2
+                            }
+                          }
+                        },
+                        "CombinedSkeleton": {
+                          "fields": {
+                            "id": {
+                              "type": "uint64",
+                              "id": 1
+                            },
+                            "skeleton": {
+                              "type": "bu.vip.multikinect.Skeleton",
+                              "id": 2
+                            },
+                            "dataPoints": {
+                              "rule": "repeated",
+                              "type": "SkeletonDataPoint",
+                              "id": 3
+                            }
+                          }
+                        },
+                        "SkeletonDataPoint": {
+                          "fields": {
+                            "cameraId": {
+                              "type": "string",
+                              "id": 1
+                            },
+                            "skeletonId": {
+                              "type": "uint64",
+                              "id": 2
                             }
                           }
                         }

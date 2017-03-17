@@ -27,6 +27,7 @@ java_library(
         "//src/main/proto:camera_manager",
         "//src/main/proto:frame",
         "//src/main/proto:realtime",
+        "//src/main/proto:session",
     ],
 )
 
@@ -53,6 +54,7 @@ java_library(
         "//:com_google_inject_guice",
         "//:org_ejml_all",
         "//:org_jgrapht_jgrapht_core",
+        "//:org_slf4j_slf4j_api",
         "//src/main/proto:calibration",
     ],
 )
@@ -64,6 +66,7 @@ java_library(
     ],
     deps = [
         "//:com_google_guava_guava",
+        "//:org_slf4j_slf4j_api",
         "//src/main/java/edu/bu/vip/multikinect/sync:protoutils",
         "//src/main/proto:frame",
         "//src/main/proto:realtime",

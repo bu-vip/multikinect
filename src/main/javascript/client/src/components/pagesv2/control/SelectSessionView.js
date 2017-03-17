@@ -1,12 +1,15 @@
-import {connect} from 'react-redux';
-
-import Radium from 'radium';
-import React, {Component, PropTypes} from 'react';
-import DateTable from '../DataTable';
-import DataForm from './DataForm';
-import IconButton from '../IconButton';
-import GlobalStyles from '../GlobalStyles';
-import {createSessionRequest, selectSessionRequest, deleteSessionRequest, cancelSelectSessionRequest} from '../../../api/api';
+import Radium from "radium";
+import React, {Component, PropTypes} from "react";
+import DateTable from "../DataTable";
+import DataForm from "./DataForm";
+import IconButton from "../IconButton";
+import GlobalStyles from "../GlobalStyles";
+import {
+  createSessionRequest,
+  selectSessionRequest,
+  deleteSessionRequest,
+  cancelSelectSessionRequest
+} from "../../../api/api";
 
 let styles = {
   base: {
@@ -72,7 +75,6 @@ class SelectSessionView extends Component {
   };
 
   handleBackNavigation = () => {
-    // TODO(doug) - use
     cancelSelectSessionRequest();
   };
 
@@ -107,6 +109,9 @@ class SelectSessionView extends Component {
 
       return (<div style={[styles.base]}>
         <div style={[styles.titleContainer]}>
+          <IconButton
+              icon="arrow_back"
+              onClick={this.handleBackNavigation}/>
           <div style={[styles.title]}>
             <h1>Select Session</h1>
             <p>Select a session from the list below or create a new one by
