@@ -237,8 +237,7 @@ public class Controller {
     // TODO(doug) - Check current state
     state = State.SELECT_CALIBRATION;
 
-    Calibration newCalibration = calibrationManager.finish();
-    calibrationStore.createCalibration(newCalibration);
+    calibrationManager.finish();
   }
 
   public void finishNewCalibrationFrame() {
