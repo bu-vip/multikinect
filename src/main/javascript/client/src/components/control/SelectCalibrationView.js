@@ -5,8 +5,8 @@ import React, {Component, PropTypes} from 'react';
 import DataTable from '../DataTable';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
-import DataForm from './DataForm';
-import {newCalibration, selectCalibration, deleteCalibration} from '../../../api/api';
+import DataForm from '../DataForm';
+import {newCalibration, selectCalibration, deleteCalibration} from '../../api/api';
 
 let styles = {
   base: {

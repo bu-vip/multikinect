@@ -1,7 +1,7 @@
 import Radium from "radium";
 import React, {Component, PropTypes} from "react";
 import DateTable from "../DataTable";
-import DataForm from "./DataForm";
+import DataForm from "../DataForm";
 import IconButton from "../IconButton";
 import GlobalStyles from "../GlobalStyles";
 import {
@@ -9,7 +9,7 @@ import {
   selectSessionRequest,
   deleteSessionRequest,
   cancelSelectSessionRequest
-} from "../../../api/api";
+} from "../../api/api";
 
 let styles = {
   base: {

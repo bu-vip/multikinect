@@ -3,13 +3,13 @@ import React, {Component, PropTypes} from "react";
 import DataTable from "../DataTable";
 import IconButton from "../IconButton";
 import GlobalStyles from "../GlobalStyles";
-import DataForm from "./DataForm";
+import DataForm from "../DataForm";
 import {
   createRecordingRequest,
   deleteRecordingRequest,
   finishSessionRequest
-} from "../../../api/api";
-import RealTimeView from "./RealTimeView";
+} from "../../api/api";
+import RealTimeView from "../realtimeview/RealTimeView";
 
 
 let styles = {

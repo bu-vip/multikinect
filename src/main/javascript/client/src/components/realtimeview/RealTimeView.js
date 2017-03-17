@@ -3,8 +3,8 @@ import React3 from "react-three-renderer";
 import * as THREE from 'three';
 import Stats from "stats.js";
 import AllSkeletons from "./AllSkeletons";
-import {realTimeFeedSocket} from "../../../api/api";
-import {Protos} from "../../../api/protos";
+import {realTimeFeedSocket} from "../../api/api";
+import {Protos} from "../../api/protos";
 
 const width = window.innerWidth * 2 / 3 ;
 const height = window.innerWidth  * 2 / 3 ;
@@ -53,7 +53,6 @@ class RealTimeView extends Component {
   };
 
   componentDidMount() {
-    console.log(Protos);
     this.socket = realTimeFeedSocket();
     let first = false;
     this.socket.onmessage = (event) => {
@@ -80,6 +79,11 @@ class RealTimeView extends Component {
   }
 
   render() {
+
+    if (!this.state.frame) {
+      return <div>Loading...</div>;
+    }
+
     return (<div ref="container" style={styles.base}>
       <React3
           mainCamera="camera"

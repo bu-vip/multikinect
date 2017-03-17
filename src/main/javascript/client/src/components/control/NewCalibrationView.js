@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
 import {push} from 'react-router-redux';
-import DataForm from './DataForm';
+import DataForm from '../DataForm';
 import {Instant, ZonedDateTime, DateTimeFormatter, ZoneId} from 'js-joda';
 import DataTable from '../DataTable';
 import IconButton from '../IconButton';
@@ -12,7 +12,7 @@ import {
   newFrameRequest,
   finishCalibrationRequest,
   deleteFrameRequest
-} from '../../../api/api';
+} from '../../api/api';
 import {Bar} from 'react-chartjs-2';
 
 let styles = {

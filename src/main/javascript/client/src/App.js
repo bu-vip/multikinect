@@ -11,7 +11,7 @@ import {
 import {sendGetStateRequest} from './api/api';
 
 import {push} from 'react-router-redux';
-import ControlPage from './components/pagesv2/control/ControlPage';
+import ControlPage from './components/control/ControlPage';
 
 const PADDING = 16;
 let styles = {
@@ -62,7 +62,7 @@ class AppView extends Component {
   }
 
   componentDidMount() {
-    this.timer = setInterval(this.tick, 1000);
+    this.timer = setInterval(this.tick, 50);
   }
 
   componentWillUnmount() {

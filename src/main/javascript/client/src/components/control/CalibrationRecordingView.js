@@ -4,7 +4,7 @@ import Radium from 'radium';
 import React, {Component, PropTypes} from 'react';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
-import {finishFrameRequest} from '../../../api/api';
+import {finishFrameRequest} from '../../api/api';
 
 let styles = {
   base: {

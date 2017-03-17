@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import toMaterialStyle from 'material-color-hash';
 
-import {Protos} from '../../../api/protos';
+import {Protos} from '../../api/protos';
 
 class Skeleton extends Component {
   constructor(props, context) {

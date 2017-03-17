@@ -13,8 +13,8 @@ import {
 import DataTable from '../DataTable';
 import IconButton from '../IconButton';
 import GlobalStyles from '../GlobalStyles';
-import {stopRecordingRequest} from '../../../api/api';
-import RealTimeView from "./RealTimeView";
+import {stopRecordingRequest} from '../../api/api';
+import RealTimeView from "../realtimeview/RealTimeView";
 
 let styles = {
   base: {

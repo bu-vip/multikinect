@@ -10,7 +10,7 @@ import {syncHistoryWithStore, routerMiddleware} from 'react-router-redux';
 
 import App from './App';
 import reducers from './reducers/reducers';
-import ControlPage from './components/pagesv2/control/ControlPage';
+import ControlPage from './components/control/ControlPage';
 
 const middleware = routerMiddleware(browserHistory);
 const store = createStore(
