@@ -1,5 +1,5 @@
 package(
-    default_visibility = ["//src/main/java/edu/bu/vip/multikinect/controller:__subpackages__"],
+    default_visibility = ["//visibility:public"],
 )
 
 java_binary(
@@ -16,15 +16,8 @@ java_binary(
     ],
     deps = [
         ":controller",
-        "//:com_google_guava_guava",
-        "//:com_google_inject_guice",
         "//:org_slf4j_slf4j_api",
         "//:org_slf4j_slf4j_log4j12",
-        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
-        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:manager",
-        "//src/main/java/edu/bu/vip/multikinect/controller/camera:module",
-        "//src/main/java/edu/bu/vip/multikinect/controller/data:sessiondatastore",
-        "//src/main/java/edu/bu/vip/multikinect/controller/realtime:manager",
         "//src/main/java/edu/bu/vip/multikinect/controller/webconsole",
     ],
 )
