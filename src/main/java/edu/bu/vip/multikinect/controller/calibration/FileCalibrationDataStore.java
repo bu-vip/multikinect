@@ -60,10 +60,14 @@ public class FileCalibrationDataStore implements CalibrationDataStore {
   private final File rootDir;
   private final MessageWriter<Key> frameWriter;
 
-  @Inject
   public FileCalibrationDataStore(String rootDirPath) {
+    this(new File(rootDirPath));
+  }
+
+  public FileCalibrationDataStore(File rootDir) {
+    this.rootDir = rootDir;
+
     // Check that the data directory exists
-    this.rootDir = new File(rootDirPath);
     if (!rootDir.exists()) {
       // Try to create parent directories
       try {

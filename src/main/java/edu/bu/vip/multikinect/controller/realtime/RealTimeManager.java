@@ -45,7 +45,7 @@ public class RealTimeManager {
   private FrameCombiner frameCombiner;
 
   @Inject
-  protected RealTimeManager(@FrameBus EventBus frameBus, @SyncedFrameBus EventBus syncedFrameBus,
+  public RealTimeManager(@FrameBus EventBus frameBus, @SyncedFrameBus EventBus syncedFrameBus,
       SessionDataStore sessionDataStore) {
     this.frameBus = frameBus;
     this.syncedFrameBus = syncedFrameBus;
@@ -69,6 +69,10 @@ public class RealTimeManager {
     cameraGraph = null;
     frameCombiner = null;
     frameBus.unregister(this);
+  }
+
+  public EventBus getSyncedFrameBus() {
+    return syncedFrameBus;
   }
 
   @Subscribe

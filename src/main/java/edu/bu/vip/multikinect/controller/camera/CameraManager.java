@@ -31,7 +31,7 @@ public class CameraManager extends CameraManagerImplBase {
   private RecordOptions currentCameraOptions = RecordOptions.newBuilder().build();
 
   @Inject
-  protected CameraManager(@FrameBus EventBus frameBus, @CameraBus EventBus cameraBus) {
+  public CameraManager(@FrameBus EventBus frameBus, @CameraBus EventBus cameraBus) {
     this.frameBus = frameBus;
     this.cameraBus = cameraBus;
   }
