@@ -6,6 +6,7 @@ package(
 java_library(
     name = "webconsole",
     srcs = glob(["**/*.java"]),
+    visibility = ["//visibility:public"],
     exports = [
         "//:io_ratpack_ratpack_guice",
         "//:smartthings_ratpack_protobuf",
