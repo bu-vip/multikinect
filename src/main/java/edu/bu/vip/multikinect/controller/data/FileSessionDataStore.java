@@ -225,6 +225,10 @@ public class FileSessionDataStore implements SessionDataStore {
     return new File(getSessionFolder(sessionId), Long.toString(recordingId));
   }
 
+  private File getRawCameraFolder(long sessionId, long recordingId) {
+    return new File(getRecordingFolder(sessionId, recordingId), RAW_FOLDER);
+  }
+
   private File getRawCameraFile(Key key) {
     return getRawCameraFile(key.getSessionId(), key.getRecordingId(), key.getTypeKey());
   }
@@ -232,7 +236,7 @@ public class FileSessionDataStore implements SessionDataStore {
   private File getRawCameraFile(long sessionId, long recordingId, String cameraId) {
     // TODO(doug) - Sanitize for file name
     String sanitizedId = cameraId + DATA_EXT;
-    return new File(getRecordingFolder(sessionId, recordingId), sanitizedId);
+    return new File(getRawCameraFolder(sessionId, recordingId), sanitizedId);
   }
 
   private File getPluginFolder(long sessionId, long recordingId) {
