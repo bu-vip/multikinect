@@ -1,5 +1,4 @@
 load("@org_pubref_rules_protobuf//java:rules.bzl", "java_proto_library")
-load("@org_pubref_rules_protobuf//csharp:rules.bzl", "csharp_proto_library")
 
 package(
     default_visibility = ["//visibility:public"],

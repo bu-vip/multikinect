@@ -93,6 +93,7 @@ java_library(
     srcs = [
         "CalibrationAlgorithm.java",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//:com_google_guava_guava",
         "//:org_slf4j_slf4j_api",
@@ -106,6 +107,7 @@ java_library(
     srcs = [
         "BruteForceCalibrationAlgorithm.java",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":calibrationalgorithm",
         ":calibrationutils",

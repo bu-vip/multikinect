@@ -6,13 +6,13 @@ import AllSkeletons from "./AllSkeletons";
 import {realTimeFeedSocket} from "../../api/api";
 import {Protos} from "../../api/protos";
 
-const width = window.innerWidth * 2 / 3 ;
-const height = window.innerWidth  * 2 / 3 ;
+const width = window.innerWidth * 0.5 ;
+const height = window.innerHeight  * 0.5 ;
 
 let styles = {
   base: {
-    height: (width + 20),
-    width: (height + 20),
+    width: (width + 20),
+    height: (height + 20),
     borderStyle: 'solid',
     borderColor: 'rgba(100, 100, 100, 0.1)',
     borderWidth: 1

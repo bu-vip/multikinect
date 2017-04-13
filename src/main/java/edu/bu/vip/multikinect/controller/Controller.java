@@ -1,44 +1,30 @@
 package edu.bu.vip.multikinect.controller;
 
 import com.google.common.collect.ImmutableList;
-import com.google.inject.AbstractModule;
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.data.Protos.Recording;
 import edu.bu.vip.kinect.controller.data.Protos.Session;
+import edu.bu.vip.multikinect.controller.calibration.BruteForceCalibrationAlgorithm;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationDataStore;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationManager;
-import edu.bu.vip.multikinect.controller.calibration.CalibrationModule;
 import edu.bu.vip.multikinect.controller.calibration.FileCalibrationDataStore;
 import edu.bu.vip.multikinect.controller.camera.CameraManager;
-import edu.bu.vip.multikinect.controller.camera.CameraModule;
 import edu.bu.vip.multikinect.controller.data.FileSessionDataStore;
 import edu.bu.vip.multikinect.controller.data.SessionDataStore;
 import edu.bu.vip.multikinect.controller.plugin.Plugin;
 import edu.bu.vip.multikinect.controller.realtime.RealTimeManager;
-import edu.bu.vip.multikinect.controller.realtime.RealtimeModule;
-import edu.bu.vip.multikinect.controller.webconsole.ApiHandler;
-import edu.bu.vip.multikinect.controller.webconsole.DevRedirectHandler;
-import edu.bu.vip.multikinect.controller.webconsole.IPHandler;
-import edu.bu.vip.multikinect.controller.webconsole.StateHandler;
-import edu.bu.vip.multikinect.controller.webconsole.TransformedFeedHandler;
 import edu.bu.vip.multikinect.util.TimestampUtils;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import java.util.ArrayList;
+import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ratpack.guice.Guice;
-import ratpack.server.RatpackServer;
-import smartthings.ratpack.protobuf.CacheConfig;
-import smartthings.ratpack.protobuf.ProtobufModule;
-import smartthings.ratpack.protobuf.ProtobufModule.Config;
 
 @Singleton
 public class Controller {
@@ -70,53 +56,18 @@ public class Controller {
   private SessionDataStore sessionDataStore;
   private Map<String, Plugin> plugins = new HashMap<>();
 
-  public static void main(String[] args) throws Exception {
-    RatpackServer server = RatpackServer.start(s -> {
-      s.serverConfig(config -> {
-        config.port(8080);
-      });
-      s.registry(Guice.registry(b -> {
-        b.module(CameraModule.class);
-        b.module(CalibrationModule.class);
-        b.module(RealtimeModule.class);
+  public Controller(String rootDataDir) {
+    File rootData = new File(rootDataDir);
+    EventBus frameBus = new EventBus("frame-bus");
+    EventBus cameraBus = new EventBus("camera-bus");
+    EventBus syncedBus = new EventBus("synced-bus");
 
-        Config protoConfig = new Config();
-        protoConfig.setCache(new CacheConfig());
-        b.moduleConfig(ProtobufModule.class, protoConfig);
-
-        b.module(new AbstractModule() {
-          @Override
-          protected void configure() {
-            bind(ControllerService.class);
-            bind(ApiHandler.class);
-            bind(StateHandler.class);
-            bind(TransformedFeedHandler.class);
-            bind(IPHandler.class);
-            bind(CalibrationModule.class);
-            bind(DevRedirectHandler.class);
-            // TODO(doug) - Make a command line arg
-            bind(CalibrationDataStore.class).toInstance(new FileCalibrationDataStore(
-                "/home/doug/Desktop/multikinect/calibration"));
-            bind(SessionDataStore.class).toInstance(new FileSessionDataStore(
-                "/home/doug/Desktop/multikinect/sessions"));
-          }
-        });
-      }));
-      s.handlers(chain -> {
-        chain.insert(ApiHandler.class);
-        chain.get(StateHandler.URL_PATH, StateHandler.class);
-        chain.get(IPHandler.URL_PATH, IPHandler.class);
-        chain.get(TransformedFeedHandler.URL_PATH, TransformedFeedHandler.class);
-        chain.get("::.*", DevRedirectHandler.class);
-      });
-    });
-
-    System.out.println("Press enter to stop");
-    Scanner scanner = new Scanner(System.in);
-    scanner.nextLine();
-    scanner.close();
-
-    server.stop();
+    this.cameraManager = new CameraManager(frameBus, cameraBus);
+    this.calibrationStore = new FileCalibrationDataStore(new File(rootData, "calibration"));
+    this.calibrationManager = new CalibrationManager(calibrationStore, frameBus, cameraManager,
+        new BruteForceCalibrationAlgorithm());
+    this.sessionDataStore = new FileSessionDataStore(new File(rootData, "sessions"));
+    this.realTimeManager = new RealTimeManager(frameBus, syncedBus, sessionDataStore);
   }
 
   @Inject
@@ -124,10 +75,10 @@ public class Controller {
       CalibrationDataStore calibrationStore, RealTimeManager realTimeManager,
       SessionDataStore sessionDataStore) {
     this.cameraManager = cameraManager;
-    this.calibrationManager = calibrationManager;
     this.calibrationStore = calibrationStore;
-    this.realTimeManager = realTimeManager;
+    this.calibrationManager = calibrationManager;
     this.sessionDataStore = sessionDataStore;
+    this.realTimeManager = realTimeManager;
   }
 
   public void start() throws Exception {
@@ -162,6 +113,30 @@ public class Controller {
       grpcServer.shutdown();
       started = false;
     }
+  }
+
+  public boolean isStarted() {
+    return started;
+  }
+
+  public CameraManager getCameraManager() {
+    return cameraManager;
+  }
+
+  public CalibrationManager getCalibrationManager() {
+    return calibrationManager;
+  }
+
+  public CalibrationDataStore getCalibrationStore() {
+    return calibrationStore;
+  }
+
+  public RealTimeManager getRealTimeManager() {
+    return realTimeManager;
+  }
+
+  public SessionDataStore getSessionDataStore() {
+    return sessionDataStore;
   }
 
   public State getState() {

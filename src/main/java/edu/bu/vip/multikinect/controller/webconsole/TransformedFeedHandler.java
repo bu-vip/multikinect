@@ -5,8 +5,6 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.realtime.Protos.SyncedFrame;
-import edu.bu.vip.multikinect.Protos.Skeleton;
-import edu.bu.vip.multikinect.controller.camera.CameraChangeEvent;
 import edu.bu.vip.multikinect.controller.realtime.SyncedFrameBus;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

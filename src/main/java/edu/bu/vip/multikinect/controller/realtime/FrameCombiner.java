@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class FrameCombiner {
 
-  private static final float MAX_COMBINE_DISTANCE = 0.1f;
+  private static final float MAX_COMBINE_DISTANCE = 0.25f;
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private long idCounter = 0;

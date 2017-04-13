@@ -21,7 +21,7 @@ class AllSkeletons extends Component {
         {this.props.frame.skeletons.map((skeleton) => {
             return (<Skeleton
               key={skeleton.id}
-              skeleton={skeleton} />);
+              skeleton={skeleton.skeleton} />);
           })}
     </group>);
   }

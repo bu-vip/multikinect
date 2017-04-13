@@ -31,7 +31,7 @@ public class CameraManager extends CameraManagerImplBase {
   private RecordOptions currentCameraOptions = RecordOptions.newBuilder().build();
 
   @Inject
-  protected CameraManager(@FrameBus EventBus frameBus, @CameraBus EventBus cameraBus) {
+  public CameraManager(@FrameBus EventBus frameBus, @CameraBus EventBus cameraBus) {
     this.frameBus = frameBus;
     this.cameraBus = cameraBus;
   }
@@ -81,6 +81,14 @@ public class CameraManager extends CameraManagerImplBase {
       responseObserver.onError(e);
     }
 
+  }
+
+  public EventBus getCameraBus() {
+    return cameraBus;
+  }
+
+  public EventBus getFrameBus() {
+    return frameBus;
   }
 
   public ImmutableSet<String> getConnectedCameras() {

@@ -1,6 +1,9 @@
 package edu.bu.vip.multikinect.sync;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import edu.bu.vip.multikinect.Protos.Joint;
+import edu.bu.vip.multikinect.Protos.Joint.JointType;
 import edu.bu.vip.multikinect.Protos.Joint.TrackingState;
 import edu.bu.vip.multikinect.Protos.Position;
 import edu.bu.vip.multikinect.Protos.Skeleton;
@@ -8,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkeletonUtils {
-  
-  public static boolean[] joinJointMasks(boolean[] ...masks) {
+
+  public static boolean[] joinJointMasks(boolean[]... masks) {
     boolean[] joints = new boolean[Joint.JointType.values().length];
-    
+
     for (int i = 0; i < joints.length; i++) {
       boolean value = true;
       for (int j = 0; j < masks.length; j++) {
@@ -22,7 +25,7 @@ public class SkeletonUtils {
       }
       joints[i] = value;
     }
-    
+
     return joints;
   }
 
@@ -63,7 +66,6 @@ public class SkeletonUtils {
       }
     }
 
-
     double[] joints = new double[dataIndex * 3];
     for (Joint joint : skel.getJointsList()) {
       int index = dataMap[joint.getTypeValue()];
@@ -92,6 +94,48 @@ public class SkeletonUtils {
 
   public static Skeleton combine(List<Skeleton> skeletons) {
     // TODO(doug)
-    return null;
+    Table<JointType, Long, Joint> joints = HashBasedTable.create();
+
+    // Sort all skeleton joints
+    skeletons.forEach(skeleton -> {
+      skeleton.getJointsList().forEach(joint -> {
+        joints.put(joint.getType(), skeleton.getId(), joint);
+      });
+    });
+
+    // Combine
+    final Skeleton.Builder builder = Skeleton.newBuilder();
+    joints.rowMap().forEach((type, jointMap) -> {
+      Joint.Builder jointBuilder = Joint.newBuilder();
+      jointBuilder.setType(type);
+
+      // Calculate average position
+      List<Position> positions = new ArrayList<>();
+      List<Position> inferredPositions = new ArrayList<>();
+      jointMap.forEach((skelId, joint) -> {
+        switch (joint.getTrackingState()) {
+          case TRACKED:
+            positions.add(joint.getPosition());
+            break;
+          case INFERRED:
+            inferredPositions.add(joint.getPosition());
+            break;
+          default:
+            break;
+        }
+      });
+      // Prefer tracked over inferred
+      if (positions.size() > 0) {
+        jointBuilder.setPosition(PositionUtils.average(positions));
+      } else {
+        jointBuilder.setPosition(PositionUtils.average(inferredPositions));
+      }
+
+      // TODO(doug) - other fields of joint
+
+      builder.addJoints(jointBuilder.build());
+    });
+
+    return builder.build();
   }
 }

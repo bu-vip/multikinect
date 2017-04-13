@@ -45,10 +45,14 @@ public class FileSessionDataStore implements SessionDataStore {
   private final File rootDir;
   private final MessageWriter<Key> dataWriter;
 
-  @Inject
   public FileSessionDataStore(String rootDirPath) {
+    this(new File(rootDirPath));
+  }
+
+  public FileSessionDataStore(File rootDir) {
+    this.rootDir = rootDir;
+
     // Check that the data directory exists
-    this.rootDir = new File(rootDirPath);
     if (!rootDir.exists()) {
       // Try to create parent directories
       try {
@@ -221,6 +225,10 @@ public class FileSessionDataStore implements SessionDataStore {
     return new File(getSessionFolder(sessionId), Long.toString(recordingId));
   }
 
+  private File getRawCameraFolder(long sessionId, long recordingId) {
+    return new File(getRecordingFolder(sessionId, recordingId), RAW_FOLDER);
+  }
+
   private File getRawCameraFile(Key key) {
     return getRawCameraFile(key.getSessionId(), key.getRecordingId(), key.getTypeKey());
   }
@@ -228,7 +236,7 @@ public class FileSessionDataStore implements SessionDataStore {
   private File getRawCameraFile(long sessionId, long recordingId, String cameraId) {
     // TODO(doug) - Sanitize for file name
     String sanitizedId = cameraId + DATA_EXT;
-    return new File(getRecordingFolder(sessionId, recordingId), sanitizedId);
+    return new File(getRawCameraFolder(sessionId, recordingId), sanitizedId);
   }
 
   private File getPluginFolder(long sessionId, long recordingId) {

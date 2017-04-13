@@ -45,7 +45,7 @@ public class RealTimeManager {
   private FrameCombiner frameCombiner;
 
   @Inject
-  protected RealTimeManager(@FrameBus EventBus frameBus, @SyncedFrameBus EventBus syncedFrameBus,
+  public RealTimeManager(@FrameBus EventBus frameBus, @SyncedFrameBus EventBus syncedFrameBus,
       SessionDataStore sessionDataStore) {
     this.frameBus = frameBus;
     this.syncedFrameBus = syncedFrameBus;
@@ -71,6 +71,10 @@ public class RealTimeManager {
     frameBus.unregister(this);
   }
 
+  public EventBus getSyncedFrameBus() {
+    return syncedFrameBus;
+  }
+
   @Subscribe
   public void onFrameReceivedEvent(FrameReceivedEvent event) {
     // TODO(doug) - Time synchronization
@@ -90,6 +94,7 @@ public class RealTimeManager {
     synchronized (recordingLock) {
       if (recording) {
         sessionDataStore.storeRawFrame(sessionId, recordingId, cameraId, event.getFrame());
+        sessionDataStore.storeSyncFrame(sessionId, recordingId, syncedFrame);
       }
     }
   }
