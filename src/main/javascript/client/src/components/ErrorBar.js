@@ -1,42 +1,31 @@
-import Radium from 'radium';
-import React, {Component, PropTypes} from 'react';
+import React, {Component, PropTypes} from "react";
+import {Panel} from "react-bootstrap";
 
-const PADDING = 16;
-let styles = {
-    base : {
-      background: 'rgba(200, 0, 0, 0.7)',
-      display: 'flex',
-      flexDirection: 'column'
-    },
-    text: {
-      paddingLeft: PADDING,
-      color: 'white'
-    }
-};
-
-@Radium
 class ErrorBar extends Component {
-  constructor(props) { super(props); }
+  constructor(props) {
+    super(props);
+  }
 
   render() {
-    if (this.props.errors == null) {
-      return (<div> </div>);
+    // Check if there are any errors
+    if (this.props.errors === null || this.props.errors.length === 0) {
+      return (<div/>);
     } else {
-      return (<div style={[styles.base]}>
-        {this.props.errors.map((text) => {
-          return <div key={text} style={[styles.text]}> {text} </div>
-        })}
-      </div>);
+      return (
+          <div>
+            <Panel header="Error" bsStyle="danger">
+              {this.props.errors.map((text) => {
+                return <div key={text}> {text} </div>
+              })}
+            </Panel>
+          </div>
+      );
     }
   }
 }
 
-ErrorBar.contextTypes = {
-  router : PropTypes.object
-};
-
 ErrorBar.propTypes = {
-  errors : PropTypes.arrayOf(PropTypes.string)
+  errors: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default ErrorBar;

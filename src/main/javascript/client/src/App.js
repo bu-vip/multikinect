@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Radium from 'radium';
 import {replace} from 'react-router-redux';
+import {Navbar, Nav, NavItem, MenuItem, NavDropdown} from 'react-bootstrap';
 
 import ErrorBar from './components/ErrorBar';
 import {
@@ -82,17 +83,16 @@ class AppView extends Component {
 
   render() {
     return (<div style={[styles.base]}>
-      <div style={[styles.topBar]}>
-        <div style={[styles.topBarTitle]}>multikinect</div>
-        <div style={[styles.linkBar]}>
-          <span style={[styles.linkButton]}
-                key={'linkConsole'}
-                onClick={this.props.handleControlLink}>
-            <div style={[styles.link]}>Control</div>
-          </span>
-        </div>
-        <ErrorBar errors={this.props.error.toArray()}/>
-      </div>
+      <Navbar inverse collapseOnSelect>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <a href="#">multikinect</a>
+          </Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
+      </Navbar>
+      <ErrorBar errors={this.props.error.toArray()}/>
+
       {/*This will be replaced by react router */}
       {this.props.children && React.cloneElement(this.props.children, {})}
     </div>);

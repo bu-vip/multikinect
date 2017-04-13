@@ -1,29 +1,14 @@
-import {connect} from 'react-redux';
+import React, {Component, PropTypes} from "react";
+import DataTable from "../DataTable";
+import {
+  deleteCalibration,
+  newCalibration,
+  selectCalibration
+} from "../../api/api";
+import {Button, ButtonToolbar, Col, Grid, Row} from "react-bootstrap";
+import EditCalibrationDialog from "./EditCalibrationDialog";
+import ToggleDisplay from "react-toggle-display";
 
-import Radium from 'radium';
-import React, {Component, PropTypes} from 'react';
-import DataTable from '../DataTable';
-import IconButton from '../IconButton';
-import GlobalStyles from '../GlobalStyles';
-import DataForm from '../DataForm';
-import {newCalibration, selectCalibration, deleteCalibration} from '../../api/api';
-
-let styles = {
-  base: {
-    padding: GlobalStyles.pagePadding,
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  titleContainer: {
-    display: 'flex',
-    flexDirection: 'row'
-  },
-  title: {
-    flexGrow: 1
-  }
-};
-
-@Radium
 class SelectCalibrationView extends Component {
   constructor(props) {
     super(props);
@@ -67,47 +52,61 @@ class SelectCalibrationView extends Component {
   };
 
   render() {
-    if (this.state.newCalibration) {
-      return (<div style={[styles.base]}>
-        <DataForm
-            title="New Calibration"
-            fields={[{
-              key: "name",
-              title: "Name",
-              type: "text"
-            }]}
-            onSaveClick={this.handleSaveNewCalibration}
-            onCancelClick={this.handleCancelNewCalibration}
-        />
-      </div>);
-    } else {
-      // Create calibration table
-      const header = ["Name", "ID", "Error", "Date Created", ""];
-      const tableKeys = ['name', 'id', 'error', 'dateCreated'];
-      const calibrationTable = (<DataTable
-          header={header}
-          idKey="id"
-          content={this.props.controllerState.calibrations}
-          contentKeys={tableKeys}
-          onRowClick={this.handleSelectCalibration}
-          rightIcon="delete"
-          onRightIconClick={this.handleDeleteCalibration}
-          emptyMessage="No calibrations"
-      />);
+    // Create calibration table
+    const header = ["Name", "ID", "Error", "Date Created", ""];
+    const tableKeys = ['name', 'id', 'error', 'dateCreated'];
+    const calibrationTable = (<DataTable
+        header={header}
+        idKey="id"
+        content={this.props.controllerState.calibrations}
+        contentKeys={tableKeys}
+        onRowClick={this.handleSelectCalibration}
+        rightIcon="delete"
+        onRightIconClick={this.handleDeleteCalibration}
+        emptyMessage="No calibrations"
+    />);
 
-      return (<div style={[styles.base]}>
-        <div style={[styles.titleContainer]}>
-          <div style={[styles.title]}>
-            <h1>Select Calibration</h1>
-            <p>Select a calibration from the list below or create a new one by clicking on the '+' button on the right:</p>
-          </div>
-          <IconButton
-              icon="add"
-              onClick={this.handleNewCalibrationClick} />
+    return (
+        <div>
+          <Grid>
+            <Row className="show-grid">
+              <Col xs={12} md={8}>
+                <h1>Select Calibration</h1>
+              </Col>
+              <Col xs={12} md={4}>
+                <ButtonToolbar>
+                  <Button bsStyle="primary"
+                          onClick={this.handleNewCalibrationClick}>
+                    New Calibration
+                  </Button>
+                </ButtonToolbar>
+              </Col>
+            </Row>
+            <Row className="show-grid">
+              <Col xs={12}>
+                <p>
+                  Select a calibration from the list below or create a new one
+                  by clicking on the '+' button on the right:
+                </p>
+              </Col>
+            </Row>
+            <Row className="show-grid">
+              <Col xs={12}>
+                {calibrationTable}
+              </Col>
+            </Row>
+          </Grid>
+          <ToggleDisplay show={this.state.newCalibration}>
+            <div>
+              <EditCalibrationDialog
+                editing={false}
+                  onSaveClick={this.handleSaveNewCalibration}
+                  onCancelClick={this.handleCancelNewCalibration}
+              />
+            </div>
+          </ToggleDisplay>
         </div>
-        {calibrationTable}
-      </div>);
-    }
+    );
   }
 }
 
