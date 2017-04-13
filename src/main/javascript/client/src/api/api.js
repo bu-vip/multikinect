@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import {checkHttpResponseStatus, createJsonPostRequest} from './http';
 
 const BASE_URL = 'http://' + IP.HOST + '/_';

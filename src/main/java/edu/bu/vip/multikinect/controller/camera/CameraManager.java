@@ -83,6 +83,14 @@ public class CameraManager extends CameraManagerImplBase {
 
   }
 
+  public EventBus getCameraBus() {
+    return cameraBus;
+  }
+
+  public EventBus getFrameBus() {
+    return frameBus;
+  }
+
   public ImmutableSet<String> getConnectedCameras() {
     return ImmutableSet.copyOf(cameras.keySet());
   }

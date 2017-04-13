@@ -94,6 +94,7 @@ public class RealTimeManager {
     synchronized (recordingLock) {
       if (recording) {
         sessionDataStore.storeRawFrame(sessionId, recordingId, cameraId, event.getFrame());
+        sessionDataStore.storeSyncFrame(sessionId, recordingId, syncedFrame);
       }
     }
   }
