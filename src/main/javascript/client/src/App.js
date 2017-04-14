@@ -78,6 +78,7 @@ class AppView extends Component {
     .catch(error => {
       console.error(error);
       this.props.handleErrorGettingControllerState(error);
+      clearInterval(this.timer);
     });
   };
 
@@ -86,7 +87,7 @@ class AppView extends Component {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="#">multikinect</a>
+            <a href="/">multikinect</a>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>

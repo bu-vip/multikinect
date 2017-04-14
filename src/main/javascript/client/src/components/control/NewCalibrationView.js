@@ -139,9 +139,13 @@ class NewCalibrationView extends Component {
           <Col xs={12} md={8}>
             <h1>
               {calibration.name}
+              {
+                /** Editing is not supported on the server
               <IconButton
                   icon="edit"
                   onClick={this.handleEditInfoClick}/>
+                  */
+              }
             </h1>
           </Col>
           <Col xs={12} md={4}>

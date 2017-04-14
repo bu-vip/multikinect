@@ -1,20 +1,11 @@
-import {connect} from 'react-redux';
-
-import Radium from 'radium';
-import React, {Component, PropTypes} from 'react';
-import {push} from 'react-router-redux';
-import {
-  Instant,
-  ZonedDateTime,
-  DateTimeFormatter,
-  ZoneId,
-  Duration
-} from 'js-joda';
-import DataTable from '../DataTable';
-import IconButton from '../IconButton';
-import GlobalStyles from '../GlobalStyles';
-import {stopRecordingRequest} from '../../api/api';
+import Radium from "radium";
+import React, {Component, PropTypes} from "react";
+import {Duration, Instant} from "js-joda";
+import DataTable from "../DataTable";
+import GlobalStyles from "../GlobalStyles";
+import {stopRecordingRequest} from "../../api/api";
 import RealTimeView from "../realtimeview/RealTimeView";
+import {Button, ButtonToolbar, Col, Grid, Row} from "react-bootstrap";
 
 let styles = {
   base: {
@@ -94,34 +85,40 @@ class RecordingView extends Component {
     });
 
     const tableKeys = ['name', 'value'];
-    const statsTable = (<DataTable
-        idKey="id"
-        content={stats}
-        contentKeys={tableKeys}
-        emptyMessage="No stats"
-    />);
 
-    return (<div style={[styles.base]}>
-      <div style={[styles.titleContainer]}>
-        <div style={[styles.title]}>
-          <h1>{this.props.controllerState.recording.name}</h1>
+    return (
+        <div>
+          <Grid>
+            <Row>
+              <Col xs={12} md={8}>
+                <h1>
+                  {this.props.controllerState.recording.name}
+                </h1>
+              </Col>
+              <Col xs={12} md={4}>
+                <ButtonToolbar>
+                  <Button bsStyle="primary"
+                          onClick={this.stopRecording}>
+                    Stop Recording
+                  </Button>
+                </ButtonToolbar>
+              </Col>
+            </Row>
+            <Row>
+              <RealTimeView />
+            </Row>
+            <Row>
+              <h2>Stats</h2>
+              <DataTable
+                  idKey="id"
+                  content={stats}
+                  contentKeys={tableKeys}
+                  emptyMessage="No stats"
+              />
+            </Row>
+          </Grid>
         </div>
-        <IconButton
-            icon="done"
-            onClick={this.stopRecording}/>
-      </div>
-      <div style={[styles.bodyDiv]}>
-
-        <div style={[styles.previewDiv]}>
-          <RealTimeView />
-        </div>
-
-        <div style={[styles.recordingsDiv]}>
-          <h2>Stats</h2>
-          {statsTable}
-        </div>
-      </div>
-    </div>);
+    );
   }
 }
 

@@ -1,66 +1,28 @@
-import Radium from "radium";
 import React, {Component, PropTypes} from "react";
 import DataTable from "../DataTable";
 import IconButton from "../IconButton";
-import GlobalStyles from "../GlobalStyles";
-import DataForm from "../DataForm";
 import {
   createRecordingRequest,
   deleteRecordingRequest,
   finishSessionRequest
 } from "../../api/api";
 import RealTimeView from "../realtimeview/RealTimeView";
+import ToggleDisplay from "react-toggle-display";
+import EditSessionDialog from "./EditSessionDialog";
+import EditRecordingDialog from "./EditRecordingDialog";
+import {Button, ButtonToolbar, Col, Grid, Row} from "react-bootstrap";
 
-
-let styles = {
-  base: {
-    padding: GlobalStyles.pagePadding,
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  titleContainer: {
-    display: 'flex',
-    flexDirection: 'dataRow'
-  },
-  title: {
-    flexGrow: 1
-  },
-  bodyDiv: {
-    display: 'flex',
-    flexDirection: 'row'
-  },
-  previewDiv: {
-    display: 'flex',
-    flexDirection: 'row',
-    flex: 6,
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    paddingRight: GlobalStyles.pagePadding
-  },
-  previewView: {
-    flexGrow: 1,
-    background: 'red'
-  },
-  recordingsDiv: {
-    flex: 4
-  }
-};
-
-@Radium
 class RecordingHomeView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      // Start as editing info because you are creating a new session
-      // TODO(doug) - Check if session info is default values, set false if not
       editingInfo: false,
       newRecording: false
     };
   }
 
   handleEditInfoClick = () => {
-    console.log("Edit info");
     this.setState({
       editingInfo: true
     });
@@ -68,41 +30,34 @@ class RecordingHomeView extends Component {
 
   onSaveInfo = (info) => {
     // TODO(doug) - send info to server
-    console.log("Edit info save");
     this.setState({
       editingInfo: false
     });
   };
 
   onCancelEditInfo = (info) => {
-    console.log("Edit info cancelled");
     this.setState({
       editingInfo: false
     });
   };
 
   onNewRecording = (info) => {
-    console.log("new recording");
     createRecordingRequest(info);
   };
 
   onCancelNewRecording = (info) => {
-    console.log("cancel new recording");
     this.setState({
       newRecording: false
     });
   };
 
   handleNewRecording = () => {
-    // TODO(doug) - implement
-    console.log("New recording clicked");
     this.setState({
       newRecording: true
     });
   };
 
   handleDeleteRecording = (id) => {
-    console.log("Delete recording: " + id);
     deleteRecordingRequest(id);
   };
 
@@ -112,91 +67,77 @@ class RecordingHomeView extends Component {
 
   render() {
     const controllerState = this.props.controllerState;
+    const session = controllerState.session;
+    // Create frames table
+    const header = ["Name", "Id", "Date Created", ""];
+    const tableKeys = ['name', 'id', 'dateCreated'];
 
-    if (controllerState) {
-      const session = controllerState.session;
-      if (this.state.editingInfo) {
-        return (<div style={styles.base}>
-          <DataForm
-              title="Edit Session"
-              initialValues={session}
-              fields={[{
-                key: "name",
-                title: "Name",
-                type: "text"
-              }]}
-              onSaveClick={this.onSaveInfo}
-              onCancelClick={this.onCancelEditInfo}/>
-        </div>);
-      } else if (this.state.newRecording) {
-        return (<div style={styles.base}>
-          <DataForm
-              title="New Recording"
-              fields={[
-                {
-                  key: "name",
-                  title: "Name",
-                  type: "text"
-                }
-              ]
-              }
-              onSaveClick={this.onNewRecording}
-              onCancelClick={this.onCancelNewRecording}/>
-        </div>);
-      } else {
-        // Create frames table
-        const header = ["Name", "Id", "Date Created", ""];
-        const tableKeys = ['name', 'id', 'dateCreated'];
-        const recordingsTable = (<DataTable
-            header={header}
-            idKey="id"
-            content={session.recordings}
-            contentKeys={tableKeys}
-            rightIcon="delete"
-            onRightIconClick={this.handleDeleteRecording}
-            emptyMessage="No recordings"
-        />);
-
-        return (<div style={[styles.base]}>
-          <div style={[styles.titleContainer]}>
-            <IconButton
-                icon="arrow_back"
-                onClick={this.handleBackNavigation}/>
-            <div style={[styles.title]}>
-              <h1>{session.name}
-                <IconButton
-                    icon="edit"
-                    onClick={this.handleEditInfoClick}/>
-              </h1>
-              <p>TODO(doug)</p>
-            </div>
-            <IconButton
-                icon="add"
-                onClick={this.handleNewRecording}/>
-          </div>
-          <div style={[styles.bodyDiv]}>
-
-            <div style={[styles.previewDiv]}>
+    return (
+        <div>
+          <Grid>
+            <Row>
+              <Col xs={12} md={8}>
+                <h1>
+                  {session.name}
+                  {/** Editing session is not implemented on server
+                   <IconButton
+                   icon="edit"
+                   onClick={this.handleEditInfoClick}/>
+                   */}
+                </h1>
+              </Col>
+              <Col xs={12} md={4}>
+                <ButtonToolbar>
+                  <Button bsStyle="primary"
+                          onClick={this.handleNewRecording}>
+                    New Recording
+                  </Button>
+                  <Button bsStyle="warning"
+                          onClick={this.handleBackNavigation}>
+                    Close Session
+                  </Button>
+                </ButtonToolbar>
+              </Col>
+            </Row>
+            <Row>
               <RealTimeView />
-            </div>
-
-            <div style={[styles.recordingsDiv]}>
+            </Row>
+            <Row>
               <h2>Recordings</h2>
-              {recordingsTable}
+              <DataTable
+                  header={header}
+                  idKey="id"
+                  content={session.recordings}
+                  contentKeys={tableKeys}
+                  rightIcon="delete"
+                  onRightIconClick={this.handleDeleteRecording}
+                  emptyMessage="No recordings"
+              />
+            </Row>
+          </Grid>
+          <ToggleDisplay show={this.state.editingInfo}>
+            <div>
+              <EditSessionDialog
+                  editing={true}
+                  initialValues={session}
+                  onSaveClick={this.onSaveInfo}
+                  onCancelClick={this.onCancelEditInfo}
+              />
             </div>
-          </div>
-        </div>);
-      }
-    }
-    else {
-      return (<div>Loading...</div>);
-    }
+          </ToggleDisplay>
+          <ToggleDisplay show={this.state.newRecording}>
+            <div>
+              <EditRecordingDialog
+                  editing={false}
+                  onSaveClick={this.onNewRecording}
+                  onCancelClick={this.onCancelNewRecording}
+              />
+            </div>
+          </ToggleDisplay>
+        </div>
+    );
   }
 }
-
-RecordingHomeView.contextTypes = {
-  router: PropTypes.object
-};
 
 RecordingHomeView.propTypes = {
   controllerState: PropTypes.object.isRequired

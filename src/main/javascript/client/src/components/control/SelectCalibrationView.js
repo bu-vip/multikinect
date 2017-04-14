@@ -8,6 +8,7 @@ import {
 import {Button, ButtonToolbar, Col, Grid, Row} from "react-bootstrap";
 import EditCalibrationDialog from "./EditCalibrationDialog";
 import ToggleDisplay from "react-toggle-display";
+import "react-table/react-table.css";
 
 class SelectCalibrationView extends Component {
   constructor(props) {
@@ -53,23 +54,15 @@ class SelectCalibrationView extends Component {
 
   render() {
     // Create calibration table
-    const header = ["Name", "ID", "Error", "Date Created", ""];
-    const tableKeys = ['name', 'id', 'error', 'dateCreated'];
-    const calibrationTable = (<DataTable
-        header={header}
-        idKey="id"
-        content={this.props.controllerState.calibrations}
-        contentKeys={tableKeys}
-        onRowClick={this.handleSelectCalibration}
-        rightIcon="delete"
-        onRightIconClick={this.handleDeleteCalibration}
-        emptyMessage="No calibrations"
-    />);
+    const header = ["Name", "ID", "Date Created", ""];
+    const tableKeys = ['name', 'id', 'dateCreated'];
 
+    //const formatter = DateTimeFormatter.ofPattern("hh:mm:ss MM-d-yyyy");
+    //formatter.format(ZonedDateTime.parse(props.value))
     return (
         <div>
           <Grid>
-            <Row className="show-grid">
+            <Row>
               <Col xs={12} md={8}>
                 <h1>Select Calibration</h1>
               </Col>
@@ -82,7 +75,7 @@ class SelectCalibrationView extends Component {
                 </ButtonToolbar>
               </Col>
             </Row>
-            <Row className="show-grid">
+            <Row>
               <Col xs={12}>
                 <p>
                   Select a calibration from the list below or create a new one
@@ -90,16 +83,25 @@ class SelectCalibrationView extends Component {
                 </p>
               </Col>
             </Row>
-            <Row className="show-grid">
+            <Row>
               <Col xs={12}>
-                {calibrationTable}
+                <DataTable
+                    header={header}
+                    idKey="id"
+                    content={this.props.controllerState.calibrations}
+                    contentKeys={tableKeys}
+                    onRowClick={this.handleSelectCalibration}
+                    rightIcon="delete"
+                    onRightIconClick={this.handleDeleteCalibration}
+                    emptyMessage="No calibrations"
+                />
               </Col>
             </Row>
           </Grid>
           <ToggleDisplay show={this.state.newCalibration}>
             <div>
               <EditCalibrationDialog
-                editing={false}
+                  editing={false}
                   onSaveClick={this.handleSaveNewCalibration}
                   onCancelClick={this.handleCancelNewCalibration}
               />
