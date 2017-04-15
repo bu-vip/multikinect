@@ -20,6 +20,7 @@ java_library(
         "//:smartthings_ratpack_protobuf",
         "//src/main/java/edu/bu/vip/multikinect/controller",
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
+        "//src/main/java/edu/bu/vip/multikinect/controller/calibration:manager",
         "//src/main/java/edu/bu/vip/multikinect/controller/realtime:syncedframebus",
         "//src/main/proto:calibration",
         "//src/main/proto:realtime",

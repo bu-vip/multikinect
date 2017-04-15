@@ -34,7 +34,8 @@ public class WebConsole {
       s.handlers(chain -> {
         chain.insert(new ApiHandler(controller));
         chain.get(StateHandler.URL_PATH,
-            new StateHandler(controller, controller.getCalibrationStore()));
+            new StateHandler(controller, controller.getCalibrationManager(),
+                controller.getCalibrationStore()));
         chain.get(IPHandler.URL_PATH, new IPHandler());
         chain.get(TransformedFeedHandler.URL_PATH,
             new TransformedFeedHandler(controller.getRealTimeManager().getSyncedFrameBus()));

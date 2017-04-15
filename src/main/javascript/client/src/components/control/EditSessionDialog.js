@@ -8,6 +8,7 @@ import {
 } from "react-bootstrap";
 
 import React, {Component, PropTypes} from "react";
+import ToggleDisplay from "react-toggle-display";
 
 function FieldGroup({id, label, help, ...props}) {
   return (
@@ -51,6 +52,9 @@ class EditSessionDialog extends Component {
     this.props.onCancelClick(this.getFormState());
   };
 
+  handleCreateCalibrationClick = () => {
+  };
+
   handleInputChange = (event) => {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -81,6 +85,18 @@ class EditSessionDialog extends Component {
                     value={this.state.name}
                     onChange={this.handleInputChange}
                 />
+                <FormGroup controlId="calibrationSelect">
+                  <ControlLabel>Calibration</ControlLabel>
+                  <FormControl componentClass="select" placeholder="select">
+                    <option value="select">select</option>
+                    <option value="other">...</option>
+                  </FormControl>
+                </FormGroup>
+                <ToggleDisplay hide={this.props.editing}>
+                  <Button onClick={this.handleCreateCalibrationClick}>
+                    Add Calibration
+                  </Button>
+                </ToggleDisplay>
               </form>
             </Modal.Body>
 
@@ -107,7 +123,8 @@ EditSessionDialog.propTypes = {
   initialValues: PropTypes.object,
   editing: PropTypes.bool.isRequired,
   onSaveClick: PropTypes.func.isRequired,
-  onCancelClick: PropTypes.func.isRequired
+  onCancelClick: PropTypes.func.isRequired,
+  onCreateCalibration: PropTypes.func
 };
 
 export default EditSessionDialog;

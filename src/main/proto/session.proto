@@ -14,6 +14,7 @@ message Session {
   string name = 2;
   google.protobuf.Timestamp date_created = 3;
   repeated Recording recordings = 4;
+  int64 calibration_id = 5;
 }
 
 message Recording {

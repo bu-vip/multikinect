@@ -12,6 +12,7 @@ import edu.bu.vip.kinect.controller.web.Protos.SessionIdleState;
 import edu.bu.vip.kinect.controller.web.Protos.State;
 import edu.bu.vip.multikinect.controller.Controller;
 import edu.bu.vip.multikinect.controller.calibration.CalibrationDataStore;
+import edu.bu.vip.multikinect.controller.calibration.CalibrationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.handling.Context;
@@ -24,31 +25,24 @@ public class StateHandler implements Handler {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private Controller controller;
+  private CalibrationManager calibrationManager;
   private CalibrationDataStore calibrationStore;
 
   @Inject
-  protected StateHandler(Controller controller, CalibrationDataStore calibrationStore) {
+  protected StateHandler(Controller controller, CalibrationManager calibrationManager,
+  CalibrationDataStore calibrationStore) {
     this.controller = controller;
     this.calibrationStore = calibrationStore;
+    this.calibrationManager = calibrationManager;
   }
 
   @Override
   public void handle(Context ctx) throws Exception {
     Message state = null;
     switch (controller.getState()) {
-      case SELECT_CALIBRATION: {
-        // NOTE(doug) - Could do some caching here, if needed
-        SelectCalibrationState.Builder builder = SelectCalibrationState.newBuilder();
-        builder.addAllCalibrations(calibrationStore.getCalibrations());
-        builder.setState(State.SELECT_CALIBRATION);
-        state = builder.build();
-
-        break;
-      }
-
       case NEW_CALIBRATION: {
         NewCalibrationState.Builder builder = NewCalibrationState.newBuilder();
-        builder.setCalibration(controller.getCurrentCalibration());
+        builder.setCalibration(calibrationManager.getCalibration());
         builder.setState(State.NEW_CALIBRATION);
         state = builder.build();
         break;
@@ -56,7 +50,7 @@ public class StateHandler implements Handler {
 
       case NEW_CALIBRATION_FRAME: {
         NewCalibrationFrameState.Builder builder = NewCalibrationFrameState.newBuilder();
-        builder.setCalibration(controller.getCurrentCalibration());
+        builder.setCalibration(calibrationManager.getCalibration());
         builder.setState(State.NEW_CALIBRATION_FRAME);
         state = builder.build();
         break;
@@ -64,7 +58,6 @@ public class StateHandler implements Handler {
 
       case SELECT_SESSION: {
         SelectSessionState.Builder builder = SelectSessionState.newBuilder();
-        builder.setCalibration(controller.getCurrentCalibration());
         builder.addAllSessions(controller.getSessions());
         builder.setState(State.SELECT_SESSION);
         state = builder.build();
@@ -73,7 +66,6 @@ public class StateHandler implements Handler {
 
       case SESSION_IDLE: {
         SessionIdleState.Builder builder = SessionIdleState.newBuilder();
-        builder.setCalibration(controller.getCurrentCalibration());
         builder.setSession(controller.getCurrentSession());
         builder.setState(State.SESSION_IDLE);
         state = builder.build();
@@ -82,7 +74,6 @@ public class StateHandler implements Handler {
 
       case RECORDING_DATA: {
         RecordingDataState.Builder builder = RecordingDataState.newBuilder();
-        builder.setCalibration(controller.getCurrentCalibration());
         builder.setSession(controller.getCurrentSession());
         builder.setRecording(controller.getCurrentRecording());
         builder.setState(State.RECORDING_DATA);

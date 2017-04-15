@@ -85,25 +85,14 @@ public class ApiHandler implements Action<Chain> {
 
     chain.post(CREATE_SESSION_URL, context -> {
       context.parse(Session.class).then(session -> {
-        controller.createSession(session.getName());
+        controller.createSession(session.getName(), session.getCalibrationId());
         context.getResponse().status(Status.OK).send();
       });
-    });
-
-    chain.get(SELECT_SESSION_URL, context -> {
-      long id = Long.parseLong(context.getPathTokens().get("id"));
-      controller.selectSession(id);
-      context.getResponse().status(Status.OK).send();
     });
 
     chain.get(DELETE_SESSION_URL, context -> {
       long id = Long.parseLong(context.getPathTokens().get("id"));
       controller.deleteSession(id);
-      context.getResponse().status(Status.OK).send();
-    });
-
-    chain.post(CANCEL_SELECT_SESSION_URL, context -> {
-      controller.finishSelectSession();
       context.getResponse().status(Status.OK).send();
     });
 

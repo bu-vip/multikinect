@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 public class Controller {
 
   public enum State {
-    SELECT_CALIBRATION,
     NEW_CALIBRATION,
     NEW_CALIBRATION_FRAME,
     SELECT_SESSION,
@@ -42,8 +41,7 @@ public class Controller {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private State state = State.SELECT_CALIBRATION;
-  private long currentCalibration = -1;
+  private State state = State.SELECT_SESSION;
   private long currentSession = -1;
   private Recording newRecording;
 
@@ -147,20 +145,6 @@ public class Controller {
     return calibrationStore.getCalibrations();
   }
 
-  public Calibration getCurrentCalibration() {
-    if (currentCalibration == -1) {
-      return calibrationManager.getCalibration();
-    } else {
-      Optional<Calibration> optCal = calibrationStore.getCalibration(currentCalibration);
-      if (!optCal.isPresent()) {
-        logger.error("Could not retrieve current calibration");
-        throw new RuntimeException("Could not retrieve current calibration");
-      }
-
-      return optCal.get();
-    }
-  }
-
   public ImmutableList<Session> getSessions() {
     return sessionDataStore.getSessions();
   }
@@ -192,7 +176,6 @@ public class Controller {
     // TODO(doug) - Check current state
     // TODO(doug) - Handle calibration not found
     state = State.SELECT_SESSION;
-    currentCalibration = calibrationId;
   }
 
   public void deleteCalibration(long calibrationId) {
@@ -210,7 +193,7 @@ public class Controller {
 
   public void finishNewCalibration() {
     // TODO(doug) - Check current state
-    state = State.SELECT_CALIBRATION;
+    state = State.SELECT_SESSION;
 
     calibrationManager.finish();
   }
@@ -228,7 +211,7 @@ public class Controller {
     calibrationManager.deleteRecording(id);
   }
 
-  public void createSession(String name) {
+  public void createSession(String name, long calibrationId) {
     logger.info("Creating session: {}", name);
     // TODO(doug) - Check current state
     // TODO(doug) - create new session
@@ -236,37 +219,14 @@ public class Controller {
     builder.setId(System.currentTimeMillis());
     builder.setDateCreated(TimestampUtils.now());
     builder.setName(name);
+    builder.setCalibrationId(calibrationId);
     sessionDataStore.createSession(builder.build());
-  }
-
-  public void selectSession(long sessionId) {
-    logger.info("Selecting session: {}", sessionId);
-    // TODO(doug) - Check current state
-    // TODO(doug) - Handle session not found
-
-    Optional<Calibration> optCal = calibrationStore.getCalibration(currentCalibration);
-    if (optCal.isPresent()) {
-      state = State.SESSION_IDLE;
-      currentSession = sessionId;
-      realTimeManager.start(optCal.get());
-    } else {
-      logger.warn("Couldn't get current calibration from store, id: {}", currentCalibration);
-      state = State.SELECT_CALIBRATION;
-    }
   }
 
   public void deleteSession(long sessionId) {
     logger.info("Deleting session: {}", sessionId);
     // TODO(doug) - Check current state
     sessionDataStore.deleteSession(sessionId);
-  }
-
-  public void finishSelectSession() {
-    logger.info("Canceling session selection");
-    // TODO(doug) - Check current state
-    // TODO(doug) - implement
-    state = State.SELECT_CALIBRATION;
-    currentCalibration = -1;
   }
 
   public void newRecording(String name) {

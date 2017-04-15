@@ -49,8 +49,8 @@ class SelectSessionView extends Component {
     event.stopPropagation();
   };
 
-  handleBackNavigation = () => {
-    cancelSelectSessionRequest();
+  handleCreateCalibration = () => {
+    // TODO(doug)
   };
 
   render() {
@@ -62,9 +62,6 @@ class SelectSessionView extends Component {
           <Grid>
             <Row>
               <Col xs={12} md={8}>
-                <IconButton
-                    icon="arrow_back"
-                    onClick={this.handleBackNavigation}/>
                 <h1>Select Session</h1>
               </Col>
               <Col xs={12} md={4}>
@@ -105,6 +102,7 @@ class SelectSessionView extends Component {
                   editing={false}
                   onSaveClick={this.handleSaveNewSession}
                   onCancelClick={this.handleCancelNewSession}
+                  onCreateCalibration={this.handleCreateCalibration}
               />
             </div>
           </ToggleDisplay>

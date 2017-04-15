@@ -96,12 +96,6 @@ export function deleteSessionRequest(id) {
   .then(checkHttpResponseStatus);
 }
 
-const cancelSelectSessionUrl = () => BASE_URL + "/cancelSelectSession";
-export function cancelSelectSessionRequest() {
-  return fetch(cancelSelectSessionUrl(), createJsonPostRequest({}))
-  .then(checkHttpResponseStatus);
-}
-
 const newRecordingUrl = () => BASE_URL + "/newRecording";
 export function createRecordingRequest(recording) {
   return fetch(newRecordingUrl(), createJsonPostRequest(recording))
