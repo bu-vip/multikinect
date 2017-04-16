@@ -171,13 +171,6 @@ public class Controller {
     calibrationManager.start(name, "");
   }
 
-  public void selectCalibration(long calibrationId) {
-    logger.info("Selecting calibration: {}", calibrationId);
-    // TODO(doug) - Check current state
-    // TODO(doug) - Handle calibration not found
-    state = State.SELECT_SESSION;
-  }
-
   public void deleteCalibration(long calibrationId) {
     logger.info("Deleting calibration: {}", calibrationId);
     // TODO(doug) - Check current state
@@ -221,6 +214,27 @@ public class Controller {
     builder.setName(name);
     builder.setCalibrationId(calibrationId);
     sessionDataStore.createSession(builder.build());
+  }
+
+  public void selectSession(long sessionId) {
+    logger.info("Selecting session: {}", sessionId);
+    // TODO(doug) - Check current state
+
+    // Check session exists
+    Optional<Session> optSes = sessionDataStore.getSession(sessionId);
+    if (optSes.isPresent()) {
+      Session session = optSes.get();
+      Optional<Calibration> optCal = calibrationStore.getCalibration(session.getCalibrationId());
+      if (optCal.isPresent()) {
+        state = State.SESSION_IDLE;
+        currentSession = sessionId;
+        realTimeManager.start(optCal.get());
+      } else {
+        logger.warn("Couldn't get calibration {} from store", session.getCalibrationId());
+      }
+    } else {
+      logger.warn("Couldn't get session {} from store", sessionId);
+    }
   }
 
   public void deleteSession(long sessionId) {

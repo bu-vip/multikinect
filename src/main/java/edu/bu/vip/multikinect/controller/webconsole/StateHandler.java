@@ -6,7 +6,6 @@ import com.google.protobuf.Message;
 import edu.bu.vip.kinect.controller.web.Protos.NewCalibrationFrameState;
 import edu.bu.vip.kinect.controller.web.Protos.NewCalibrationState;
 import edu.bu.vip.kinect.controller.web.Protos.RecordingDataState;
-import edu.bu.vip.kinect.controller.web.Protos.SelectCalibrationState;
 import edu.bu.vip.kinect.controller.web.Protos.SelectSessionState;
 import edu.bu.vip.kinect.controller.web.Protos.SessionIdleState;
 import edu.bu.vip.kinect.controller.web.Protos.State;
@@ -30,7 +29,7 @@ public class StateHandler implements Handler {
 
   @Inject
   protected StateHandler(Controller controller, CalibrationManager calibrationManager,
-  CalibrationDataStore calibrationStore) {
+      CalibrationDataStore calibrationStore) {
     this.controller = controller;
     this.calibrationStore = calibrationStore;
     this.calibrationManager = calibrationManager;
@@ -60,6 +59,7 @@ public class StateHandler implements Handler {
         SelectSessionState.Builder builder = SelectSessionState.newBuilder();
         builder.addAllSessions(controller.getSessions());
         builder.setState(State.SELECT_SESSION);
+        builder.addAllCalibrations(calibrationStore.getCalibrations());
         state = builder.build();
         break;
       }
@@ -86,6 +86,10 @@ public class StateHandler implements Handler {
         break;
     }
 
+    // TODO(doug) - This could be handled better
+    ctx.getResponse().getHeaders().set("Access-Control-Allow-Origin", "*");
+    ctx.getResponse().getHeaders()
+        .set("Access-Control-Allow-Headers", "x-requested-with, origin, content-type, accept");
     ctx.render(state);
   }
 }

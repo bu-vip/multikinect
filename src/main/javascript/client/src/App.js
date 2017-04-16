@@ -14,56 +14,13 @@ import {sendGetStateRequest} from './api/api';
 import {push} from 'react-router-redux';
 import ControlPage from './components/control/ControlPage';
 
-const PADDING = 16;
-let styles = {
-  base: {
-    height: '100%',
-    minHeight: 400,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'stretch'
-  },
-  topBar: {
-    background: 'rgba(0, 100, 0, 0.7)'
-  },
-  topBarTitle: {
-    paddingLeft: PADDING,
-    paddingTop: PADDING,
-    paddingRight: PADDING,
-    color: 'white',
-    fontSize: 40
-  },
-  linkBar: {
-    display: 'flex',
-    flexDirection: 'dataRow',
-    height: 32
-  },
-  linkButton: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    paddingLeft: PADDING,
-    paddingRight: PADDING,
-    ':hover': {
-      background: 'rgba(255, 255, 255, 0.1)'
-    }
-  },
-  link: {
-    color: 'white'
-  },
-  error: {
-    color: 'red'
-  }
-};
-
-@Radium
 class AppView extends Component {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    this.timer = setInterval(this.tick, 50);
+    this.timer = setInterval(this.tick, 250);
   }
 
   componentWillUnmount() {
@@ -83,7 +40,8 @@ class AppView extends Component {
   };
 
   render() {
-    return (<div style={[styles.base]}>
+    return (
+        <div>
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
@@ -96,7 +54,8 @@ class AppView extends Component {
 
       {/*This will be replaced by react router */}
       {this.props.children && React.cloneElement(this.props.children, {})}
-    </div>);
+    </div>
+    );
   }
 }
 

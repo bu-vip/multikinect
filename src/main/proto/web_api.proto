@@ -45,6 +45,7 @@ message SelectSessionState {
   bu.vip.kinect.controller.calibration.Calibration calibration = 1;
   repeated bu.vip.kinect.controller.data.Session sessions = 2;
   State state = 3;
+  repeated bu.vip.kinect.controller.calibration.Calibration calibrations = 4;
 }
 
 message SessionIdleState {

@@ -49,12 +49,6 @@ public class ApiHandler implements Action<Chain> {
       });
     });
 
-    chain.get(SELECT_CALIBRATION_URL, (context) -> {
-      long id = Long.parseLong(context.getPathTokens().get("id"));
-      controller.selectCalibration(id);
-      context.getResponse().status(Status.OK).send();
-    });
-
     chain.get(DELETE_CALIBRATION_URL, (context) -> {
       long id = Long.parseLong(context.getPathTokens().get("id"));
       controller.deleteCalibration(id);
@@ -88,6 +82,12 @@ public class ApiHandler implements Action<Chain> {
         controller.createSession(session.getName(), session.getCalibrationId());
         context.getResponse().status(Status.OK).send();
       });
+    });
+
+    chain.get(SELECT_SESSION_URL, context -> {
+      long id = Long.parseLong(context.getPathTokens().get("id"));
+      controller.selectSession(id);
+      context.getResponse().status(Status.OK).send();
     });
 
     chain.get(DELETE_SESSION_URL, context -> {

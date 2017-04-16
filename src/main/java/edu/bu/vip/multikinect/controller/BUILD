@@ -6,6 +6,7 @@ java_binary(
     name = "main",
     srcs = [
         "Main.java",
+        "MainArgs.java",
     ],
     main_class = "edu.bu.vip.multikinect.controller.Main",
     resources = [
@@ -16,6 +17,7 @@ java_binary(
     ],
     deps = [
         ":controller",
+        "//:com_beust_jcommander",
         "//:org_slf4j_slf4j_api",
         "//:org_slf4j_slf4j_log4j12",
         "//src/main/java/edu/bu/vip/multikinect/controller/webconsole",

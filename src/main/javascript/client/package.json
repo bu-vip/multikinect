@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
-    "build": "nwb build-react-app",
+    "build": "nwb build",
     "clean": "nwb clean-app",
     "start": "nwb serve-react-app",
     "test": "nwb test",
@@ -28,11 +28,11 @@
     "react-router": "^2.8.1",
     "react-router-redux": "^4.0.6",
     "react-table": "^5.5.1",
-    "react-three-renderer": "^3.0.2",
+    "react-three-renderer": "^3.1.0",
     "react-toggle-display": "^2.1.1",
     "redux": "^3.6.0",
     "stats.js": "^0.17.0",
-    "three": "^0.82.1"
+    "three": "^0.84.0"
   },
   "devDependencies": {
     "nwb": "0.15.x",

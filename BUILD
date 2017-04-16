@@ -155,3 +155,11 @@ java_library(
         "@org_slf4j_slf4j_log4j12//jar",
     ],
 )
+
+java_library(
+    name = "zip4j",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@net_lingala_zip4j_zip4j//jar",
+    ],
+)

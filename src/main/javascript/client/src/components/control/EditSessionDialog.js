@@ -28,18 +28,23 @@ function getProperty(propName, initial, defaultVal) {
   return result;
 }
 
+const KEY_NAME = "name";
+const KEY_CAL_ID = "calibrationId";
+
 class EditSessionDialog extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      name: getProperty("name", props.initialValues, "")
+      name: getProperty(KEY_NAME, props.initialValues, ""),
+      calibrationId: getProperty(KEY_CAL_ID, props.initialValues, undefined)
     };
   }
 
   getFormState = () => {
     let formState = {
-      name: this.state.name
+      [KEY_NAME]: this.state.name,
+      [KEY_CAL_ID]: this.state.calibrationId
     };
     return formState;
   };
@@ -53,6 +58,7 @@ class EditSessionDialog extends Component {
   };
 
   handleCreateCalibrationClick = () => {
+    this.props.onCreateCalibration(this.getFormState());
   };
 
   handleInputChange = (event) => {
@@ -85,14 +91,27 @@ class EditSessionDialog extends Component {
                     value={this.state.name}
                     onChange={this.handleInputChange}
                 />
-                <FormGroup controlId="calibrationSelect">
-                  <ControlLabel>Calibration</ControlLabel>
-                  <FormControl componentClass="select" placeholder="select">
-                    <option value="select">select</option>
-                    <option value="other">...</option>
-                  </FormControl>
-                </FormGroup>
                 <ToggleDisplay hide={this.props.editing}>
+                  <FormGroup>
+                    <ControlLabel>Calibration</ControlLabel>
+                    <FormControl
+                        id="calibrationId"
+                        onChange={this.handleInputChange}
+                        componentClass="select"
+                        placeholder="select">
+                      <option value="select">Select a Calibration</option>
+                      {this.props.calibrations &&
+                        this.props.calibrations.map(calibration => {
+                        return (
+                            <option
+                                key={calibration.id}
+                                value={calibration.id}>
+                              {calibration.id}:{calibration.name}
+                            </option>
+                        );
+                      })}
+                    </FormControl>
+                  </FormGroup>
                   <Button onClick={this.handleCreateCalibrationClick}>
                     Add Calibration
                   </Button>
@@ -124,7 +143,8 @@ EditSessionDialog.propTypes = {
   editing: PropTypes.bool.isRequired,
   onSaveClick: PropTypes.func.isRequired,
   onCancelClick: PropTypes.func.isRequired,
-  onCreateCalibration: PropTypes.func
+  onCreateCalibration: PropTypes.func,
+  calibrations: PropTypes.array,
 };
 
 export default EditSessionDialog;

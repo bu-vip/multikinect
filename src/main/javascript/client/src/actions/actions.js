@@ -16,3 +16,11 @@ export function errorGettingControllerState(error) {
     error
   };
 };
+
+export const SAVE_NEW_SESSION_FORM_STATE = "SAVE_NEW_SESSION_FORM_STATE";
+export function saveNewSessionFormState(state) {
+  return {
+    type: SAVE_NEW_SESSION_FORM_STATE,
+    state
+  };
+};

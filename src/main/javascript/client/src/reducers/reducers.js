@@ -1,8 +1,8 @@
-import {routerReducer} from 'react-router-redux';
-import {combineReducers} from 'redux';
-import {Map} from 'immutable';
+import {routerReducer} from "react-router-redux";
+import {combineReducers} from "redux";
+import {Map} from "immutable";
 
-import * as ACTIONS from '../actions/actions';
+import * as ACTIONS from "../actions/actions";
 
 function controllerState(state = null, action) {
   let newState = state;
@@ -28,7 +28,8 @@ function error(state = new Map(), action) {
       newState = state.delete(ACTIONS.ERROR_GETTING_CONTROLLER_STATE);
       break;
     case ACTIONS.ERROR_GETTING_CONTROLLER_STATE:
-      newState = state.set(ACTIONS.ERROR_GETTING_CONTROLLER_STATE, action.error.message);
+      newState = state.set(ACTIONS.ERROR_GETTING_CONTROLLER_STATE,
+          action.error.message);
       break;
     default:
       break;
@@ -37,9 +38,23 @@ function error(state = new Map(), action) {
   return newState;
 }
 
+function newSessionForm(state = null, action) {
+  let newState = state;
+  switch (action.type) {
+    case ACTIONS.SAVE_NEW_SESSION_FORM_STATE:
+      newState = action.state;
+      break;
+    default:
+      break;
+  }
+
+  return newState
+}
+
 const reducers = combineReducers({
   controllerState,
   error,
-  routing : routerReducer
+  newSessionForm,
+  routing: routerReducer
 });
 export default reducers;

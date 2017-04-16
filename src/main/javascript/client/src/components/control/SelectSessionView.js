@@ -1,22 +1,24 @@
 import React, {Component, PropTypes} from "react";
 import DateTable from "../DataTable";
-import IconButton from "../IconButton";
 import {
-  cancelSelectSessionRequest,
   createSessionRequest,
   deleteSessionRequest,
+  newCalibration,
   selectSessionRequest
 } from "../../api/api";
 import EditSessionDialog from "./EditSessionDialog";
 import {Button, ButtonToolbar, Col, Grid, Row} from "react-bootstrap";
 import ToggleDisplay from "react-toggle-display";
+import EditCalibrationDialog from "./EditCalibrationDialog";
 
 class SelectSessionView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      newSession: false
+      newSession: (this.props.newSessionForm ? true : false),
+      newCalibration: false,
+      newSessionFormState: this.props.newSessionForm
     };
   }
 
@@ -34,6 +36,7 @@ class SelectSessionView extends Component {
   };
 
   handleCancelNewSession = (info) => {
+    this.props.saveNewSessionState(null);
     this.setState({
       newSession: false
     });
@@ -49,8 +52,22 @@ class SelectSessionView extends Component {
     event.stopPropagation();
   };
 
-  handleCreateCalibration = () => {
-    // TODO(doug)
+  handleCreateCalibration = (info) => {
+    this.setState({
+      newCalibration: true,
+      newSessionFormState: info
+    });
+  };
+
+  handleSaveNewCalibration = (info) => {
+    this.props.saveNewSessionState(this.state.newSessionFormState);
+    newCalibration(info);
+  };
+
+  handleCancelNewCalibration = (info) => {
+    this.setState({
+      newCalibration: false
+    });
   };
 
   render() {
@@ -99,10 +116,21 @@ class SelectSessionView extends Component {
           <ToggleDisplay show={this.state.newSession}>
             <div>
               <EditSessionDialog
+                  initialValues={this.props.newSessionForm}
                   editing={false}
                   onSaveClick={this.handleSaveNewSession}
                   onCancelClick={this.handleCancelNewSession}
                   onCreateCalibration={this.handleCreateCalibration}
+                  calibrations={this.props.controllerState.calibrations}
+              />
+            </div>
+          </ToggleDisplay>
+          <ToggleDisplay show={this.state.newCalibration}>
+            <div>
+              <EditCalibrationDialog
+                  editing={false}
+                  onSaveClick={this.handleSaveNewCalibration}
+                  onCancelClick={this.handleCancelNewCalibration}
               />
             </div>
           </ToggleDisplay>
@@ -112,7 +140,9 @@ class SelectSessionView extends Component {
 }
 
 SelectSessionView.propTypes = {
-  controllerState: PropTypes.object.isRequired
+  controllerState: PropTypes.object.isRequired,
+  newSessionForm: PropTypes.object,
+  saveNewSessionState: PropTypes.func.isRequired
 };
 
 export default SelectSessionView;

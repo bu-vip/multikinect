@@ -6,6 +6,9 @@ package(
 java_library(
     name = "webconsole",
     srcs = glob(["**/*.java"]),
+    resources = [
+        "//src/main/javascript/client",
+    ],
     visibility = ["//visibility:public"],
     exports = [
         "//:io_ratpack_ratpack_guice",
@@ -18,6 +21,7 @@ java_library(
         "//:io_ratpack_ratpack_guice",
         "//:org_slf4j_slf4j_api",
         "//:smartthings_ratpack_protobuf",
+        "//:zip4j",
         "//src/main/java/edu/bu/vip/multikinect/controller",
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:calibrationdatadb",
         "//src/main/java/edu/bu/vip/multikinect/controller/calibration:manager",

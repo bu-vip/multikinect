@@ -58,6 +58,8 @@ maven_jar(name = "org_ejml_simple", artifact = "org.ejml:simple:jar:0.29")
 maven_jar(name = "org_slf4j_slf4j_api", artifact = "org.slf4j:slf4j-api:jar:1.7.21")
 maven_jar(name = "org_slf4j_slf4j_log4j12", artifact = "org.slf4j:slf4j-log4j12:jar:1.7.21")
 maven_jar(name = "org_yaml_snakeyaml", artifact = "org.yaml:snakeyaml:jar:1.15")
+maven_jar(name = "net_lingala_zip4j_zip4j", artifact = "net.lingala.zip4j:zip4j:jar:1.3.2")
+
 
 # GENERATED_DEPENDENCIES end
 

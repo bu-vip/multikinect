@@ -1,20 +1,14 @@
-import {connect} from 'react-redux';
+import {connect} from "react-redux";
 
-import Radium from 'radium';
-import React, {Component, PropTypes} from 'react';
+import React, {Component, PropTypes} from "react";
 
-import SelectCalibrationView from './SelectCalibrationView';
-import NewCalibrationView from './NewCalibrationView';
-import SelectSessionView from './SelectSessionView';
-import RecordingHomeView from './RecordingHomeView';
-import CalibrationRecordingView from './CalibrationRecordingView';
-import RecordingPage from './RecordingView';
+import NewCalibrationView from "./NewCalibrationView";
+import SelectSessionView from "./SelectSessionView";
+import RecordingHomeView from "./RecordingHomeView";
+import CalibrationRecordingView from "./CalibrationRecordingView";
+import RecordingPage from "./RecordingView";
+import {saveNewSessionFormState} from "../../actions/actions";
 
-let styles = {
-  base: {}
-};
-
-@Radium
 class ControlView extends Component {
   constructor(props) {
     super(props);
@@ -31,19 +25,27 @@ class ControlView extends Component {
               controllerState={this.props.controllerState}/>);
           break;
         case 'NEW_CALIBRATION':
-          view = (<NewCalibrationView controllerState={this.props.controllerState}/>);
+          view = (<NewCalibrationView
+              controllerState={this.props.controllerState}/>);
           break;
         case 'SELECT_SESSION':
-          view = (<SelectSessionView controllerState={this.props.controllerState}/>);
+          view = (<SelectSessionView
+              controllerState={this.props.controllerState}
+              newSessionForm={this.props.newSessionForm}
+              saveNewSessionState={this.props.saveNewSessionForm}
+          />);
           break;
         case 'SESSION_IDLE':
-          view = (<RecordingHomeView controllerState={this.props.controllerState}/>);
+          view = (<RecordingHomeView
+              controllerState={this.props.controllerState}/>);
           break;
         case 'RECORDING_DATA':
-          view = (<RecordingPage controllerState={this.props.controllerState}/>);
+          view = (
+              <RecordingPage controllerState={this.props.controllerState}/>);
           break;
         case 'NEW_CALIBRATION_FRAME':
-          view = (<CalibrationRecordingView controllerState={this.props.controllerState}/>);
+          view = (<CalibrationRecordingView
+              controllerState={this.props.controllerState}/>);
           break;
         default:
           console.log("Unknown state: " + this.props.controllerState.state);
@@ -51,9 +53,11 @@ class ControlView extends Component {
           break;
       }
 
-      return (<div style={[styles.base]}>
-        {view}
-      </div>);
+      return (
+          <div>
+            {view}
+          </div>
+      );
     }
     else {
       return (<div>Loading...</div>);
@@ -71,12 +75,16 @@ ControlView.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    controllerState: state.controllerState
+    controllerState: state.controllerState,
+    newSessionForm: state.newSessionForm
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    saveNewSessionForm: (state) => {
+      dispatch(saveNewSessionFormState(state));
+    }
   };
 };
 
