@@ -86,10 +86,6 @@ public class StateHandler implements Handler {
         break;
     }
 
-    // TODO(doug) - This could be handled better
-    ctx.getResponse().getHeaders().set("Access-Control-Allow-Origin", "*");
-    ctx.getResponse().getHeaders()
-        .set("Access-Control-Allow-Headers", "x-requested-with, origin, content-type, accept");
     ctx.render(state);
   }
 }

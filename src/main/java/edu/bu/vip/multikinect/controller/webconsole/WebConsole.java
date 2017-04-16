@@ -63,6 +63,13 @@ public class WebConsole {
         b.moduleConfig(ProtobufModule.class, protoConfig);
       }));
       s.handlers(chain -> {
+        chain.all(handler -> {
+          // TODO(doug) - This could be handled better
+          handler.getResponse().getHeaders().set("Access-Control-Allow-Origin", "*");
+          handler.getResponse().getHeaders()
+              .set("Access-Control-Allow-Headers", "x-requested-with, origin, content-type, accept");
+          handler.next();
+        });
         chain.insert(new ApiHandler(controller));
         chain.get(StateHandler.URL_PATH,
             new StateHandler(controller, controller.getCalibrationManager(),

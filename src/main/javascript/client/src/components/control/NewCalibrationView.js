@@ -7,7 +7,7 @@ import {
   newFrameRequest
 } from "../../api/api";
 import {Bar} from "react-chartjs-2";
-import {Button, ButtonToolbar, Col, Grid, Row} from "react-bootstrap";
+import {Button, ButtonToolbar, Col, Grid, Row, Panel} from "react-bootstrap";
 import ToggleDisplay from "react-toggle-display";
 import EditCalibrationDialog from "./EditCalibrationDialog";
 
@@ -56,8 +56,8 @@ class NewCalibrationView extends Component {
     const controllerState = this.props.controllerState;
     const calibration = controllerState.calibration;
     // Create frames table
-    const header = ["ID", "Error", "Date Created", ""];
-    const tableKeys = ['id', 'error', 'dateCreated'];
+    const header = ["ID", "Date Created", ""];
+    const tableKeys = ['id', 'dateCreated'];
     const recordingsTable = (<DataTable
         header={header}
         idKey="id"
@@ -160,6 +160,11 @@ class NewCalibrationView extends Component {
               </Button>
             </ButtonToolbar>
           </Col>
+        </Row>
+        <Row>
+          <Panel header="Recordings" bsStyle="warning">
+          If you just did a recording, wait for it to appear in the list below before doing anything.
+          </Panel>
         </Row>
         <Row>
           <Col xs={12}>

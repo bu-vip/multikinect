@@ -32,13 +32,6 @@ The controller program connects to each of the cameras and handles transforming 
 
 #### Instructions
 
-Navigate to the root of the repo, then build the web console with:
-```bash
-cd src/main/javascript/client
-npm install
-# TODO(doug) - Build web console for deployment
-```
-
 To build the main controller, run:
 ```bash
 bazel build //src/main/java/edu/bu/vip/multikinect/controller:main
@@ -47,12 +40,11 @@ bazel build //src/main/java/edu/bu/vip/multikinect/controller:main
 To run the controller:
 ```bash
 bazel run //src/main/java/edu/bu/vip/multikinect/controller:main
-# TODO(doug) - Remove when deployment build is complete
-cd src/main/javascript/client
-npm start
 ```
 
-To access the web console, go to [localhost:8080](localhost:8080) in your web browser.
+To access the web console, go to [http://localhost:8080](http://localhost:8080) in your web browser.
+You can also access the web console from other machines if you are on the same network, have the 
+proper firewall rules, etc. configured.
 
 ## Usage
 TODO(doug)

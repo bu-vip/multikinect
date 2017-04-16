@@ -7,7 +7,7 @@ import {
   selectSessionRequest
 } from "../../api/api";
 import EditSessionDialog from "./EditSessionDialog";
-import {Button, ButtonToolbar, Col, Grid, Row} from "react-bootstrap";
+import {Button, ButtonToolbar, Col, Grid, Row, Panel} from "react-bootstrap";
 import ToggleDisplay from "react-toggle-display";
 import EditCalibrationDialog from "./EditCalibrationDialog";
 
@@ -77,6 +77,11 @@ class SelectSessionView extends Component {
     return (
         <div>
           <Grid>
+            <Row>
+              <Panel header="Cameras" bsStyle="warning">
+                Have you connected the cameras? (Note: This message always appears, even if the cameras are connected.)
+              </Panel>
+            </Row>
             <Row>
               <Col xs={12} md={8}>
                 <h1>Select Session</h1>
