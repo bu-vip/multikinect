@@ -13,12 +13,11 @@ Requirements:
 
 Instructions:
 1. Open `src/main/csharp/protos/protolib.sln`
-2. Install all NuGet packages
+2. Go to `Build > Rebuild Solution` to restore NuGet packages
 3. Run `src/main/csharp/protos/build.bat`. This will generate all of the necessary protocol buffer files.
 4. Close the solution
 5. Open `src/main/csharp/camera/Camera.sln`
-6. Install all NuGet packages
-7. Build and run the project
+6. Build and run the project
 
 ### Controller
 > NOTE: Building the Controller on Windows is not currently supported.
