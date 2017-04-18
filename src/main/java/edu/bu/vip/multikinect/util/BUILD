@@ -6,6 +6,6 @@ java_library(
         "TimestampUtils.java",
     ],
     deps = [
-        "//thirdparty/protobuf/google/protobuf:well_known_types",
+        "//:com_google_protobuf_protobuf_java",
     ],
 )

@@ -1,4 +1,5 @@
 load("@org_pubref_rules_protobuf//java:rules.bzl", "java_proto_library")
+load("@org_pubref_rules_protobuf//python:rules.bzl", "py_proto_compile")
 
 package(
     default_visibility = ["//visibility:public"],
@@ -6,9 +7,14 @@ package(
 
 java_proto_library(
     name = "calibration",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
+    ],
     proto_deps = [
         ":frame",
-        "//thirdparty/protobuf/google/protobuf:well_known_types",
     ],
     protos = [
         "calibration.proto",
@@ -16,38 +22,17 @@ java_proto_library(
 )
 
 java_proto_library(
-    name = "skeletonfeed",
-    proto_deps = [
-        ":frame",
-    ],
-    protos = ["skeleton_feed.proto"],
-)
-
-java_proto_library(
-    name = "frame",
-    proto_deps = [
-        "//thirdparty/protobuf/google/protobuf:well_known_types",
-    ],
-    protos = ["frame.proto"],
-)
-
-java_proto_library(
     name = "camera",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
+    ],
     proto_deps = [":frame"],
     protos = ["camera.proto"],
     with_grpc = True,
 )
-
-#csharp_proto_library(
-#    name = "camera_csharp",
-#    proto_deps = [
-#        ":frame",
-#    ],
-#    protos = [
-#        "camera.proto",
-#    ],
-#    with_grpc = True,
-#)
 
 java_proto_library(
     name = "camera_manager",
@@ -56,21 +41,73 @@ java_proto_library(
 )
 
 java_proto_library(
-    name = "web_api",
-    proto_deps = [
-        ":calibration",
-        ":session",
-        "//thirdparty/protobuf/google/protobuf:well_known_types",
+    name = "frame",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
+    ],
+    protos = ["frame.proto"],
+)
+
+py_proto_compile(
+    name = "frame_python",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
     ],
     protos = [
-        "web_api.proto",
+        "frame.proto",
+    ],
+)
+
+java_proto_library(
+    name = "realtime",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
+    ],
+    proto_deps = [
+        ":frame",
+    ],
+    protos = [
+        "realtime.proto",
+    ],
+)
+
+py_proto_compile(
+    name = "realtime_python",
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
+        ":frame",
+    ],
+    protos = [
+        "realtime.proto",
     ],
 )
 
 java_proto_library(
     name = "session",
-    proto_deps = [
-        "//thirdparty/protobuf/google/protobuf:well_known_types",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
+    ],
+    protos = [
+        "session.proto",
+    ],
+)
+
+py_proto_compile(
+    name = "session_python",
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
     ],
     protos = [
         "session.proto",
@@ -78,12 +115,32 @@ java_proto_library(
 )
 
 java_proto_library(
-    name = "realtime",
+    name = "skeletonfeed",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
+    ],
     proto_deps = [
         ":frame",
-        "//thirdparty/protobuf/google/protobuf:well_known_types",
+    ],
+    protos = ["skeleton_feed.proto"],
+)
+
+java_proto_library(
+    name = "web_api",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
+    inputs = [
+        "@com_github_google_protobuf//:well_known_protos",
+    ],
+    proto_deps = [
+        ":calibration",
+        ":session",
     ],
     protos = [
-        "realtime.proto",
+        "web_api.proto",
     ],
 )

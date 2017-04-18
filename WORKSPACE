@@ -87,3 +87,7 @@ java_proto_repositories(
     "com_google_protobuf_protobuf_java_util",
     "com_google_code_gson_gson",
 ])
+
+# Load Python protobuf rules
+load("@org_pubref_rules_protobuf//python:rules.bzl", "py_proto_repositories")
+py_proto_repositories()

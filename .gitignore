@@ -117,3 +117,6 @@ src/main/csharp/protos/protolib/Camera.cs
 src/main/csharp/protos/protolib/CameraGrpc.cs
 src/main/csharp/protos/protolib/CameraManager.cs
 src/main/csharp/protos/protolib/CameraGrpc.cs
+
+srcgen
+
