@@ -29,7 +29,9 @@ java_proto_library(
     inputs = [
         "@com_github_google_protobuf//:well_known_protos",
     ],
-    proto_deps = [":frame"],
+    proto_deps = [
+        ":frame",
+    ],
     protos = ["camera.proto"],
     with_grpc = True,
 )
@@ -82,12 +84,17 @@ java_proto_library(
 
 py_proto_compile(
     name = "realtime_python",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
     inputs = [
         "@com_github_google_protobuf//:well_known_protos",
-        ":frame",
     ],
     protos = [
         "realtime.proto",
+    ],
+    deps = [
+        ":frame_python",
     ],
 )
 
@@ -106,6 +113,9 @@ java_proto_library(
 
 py_proto_compile(
     name = "session_python",
+    imports = [
+        "external/com_github_google_protobuf/src/",
+    ],
     inputs = [
         "@com_github_google_protobuf//:well_known_protos",
     ],
