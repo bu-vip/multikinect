@@ -1,6 +1,6 @@
-# multikinect
+# MultiKinect
 
-multikinect is a system for collecting data using multiple Microsoft Kinect v2 cameras.
+MultiKinect is a system for collecting data using multiple Microsoft Kinect v2 cameras.
 
 ## Building
 ### Camera
