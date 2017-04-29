@@ -1,10 +1,10 @@
 # multikinect
 
-multikinect is a system for collecting data using multiple Microsoft Kinect v2 cameras.
 
+multikinect is a system for collecting data using multiple Microsoft Kinect v2 cameras. Please refer to [multikinect + singlepixellocalization](https://github.com/bu-vip/singlepixellocalization/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect) for instructions on how to collect single pixel sensor data with the multikinect.
 ## Building
 ### Camera
-> NOTE: The camera can only be built and run on Windows, as the Kinect v2 SDK only supports Windows.
+> NOTE: The camera can only be built and run on Windows, as the Kinect v2 SDK only supports Windows. Each Kinect runs from a separate computer, so to run multiple Kinects, make sure to run the camera program run on each computer.
 
 The camera program runs on a Windows machine and serves as the interface between the Kinect and the controller.
 Requirements:
@@ -15,9 +15,9 @@ Instructions:
 1. Open `src/main/csharp/protos/protolib.sln`
 2. Go to `Build > Rebuild Solution` to restore NuGet packages
 3. Run `src/main/csharp/protos/build.bat`. This will generate all of the necessary protocol buffer files.
-4. Close the solution
+4. Close `src/main/csharp/protos/protolib.sln`
 5. Open `src/main/csharp/camera/Camera.sln`
-6. Build and run the project
+6. Build and start the project
 
 ### Controller
 > NOTE: Building the Controller on Windows is not currently supported.
@@ -37,8 +37,9 @@ bazel build //src/main/java/edu/bu/vip/multikinect/controller:main
 ```
 
 To run the controller:
+> NOTE: Make sure your data directory path is an absolute path (ie: /home/user/Desktop/multikinect_data)
 ```bash
-bazel run //src/main/java/edu/bu/vip/multikinect/controller:main
+bazel run //src/main/java/edu/bu/vip/multikinect/controller:main -- --data_dir <directory-path>
 ```
 
 To access the web console, go to [http://localhost:8080](http://localhost:8080) in your web browser.
@@ -46,7 +47,7 @@ You can also access the web console from other machines if you are on the same n
 proper firewall rules, etc. configured.
 
 ## Usage
-TODO(doug)
+Please refer to the [Usage Wiki](https://github.com/bu-vip/multikinect/wiki/Usage)
 
 
 ## Plugins
