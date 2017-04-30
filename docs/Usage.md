@@ -1,4 +1,6 @@
 ## Starting the Controller
+> NOTE: For detailed instructions on building the controller, see the [readme](https://github.com/bu-vip/multikinect/blob/master/README.md)
+
 To run the controller:
 ```bash
 bazel run //src/main/java/edu/bu/vip/multikinect/controller:main
@@ -6,8 +8,7 @@ bazel run //src/main/java/edu/bu/vip/multikinect/controller:main
 
 To access the web console, go to [http://localhost:8080](http://localhost:8080) in your web browser.
 
-You can also access the web console from other machines if you are on the same network, have the 
-proper firewall rules, etc. configured.
+You can also access the web console from other machines if you are on the same network, have the proper firewall rules, etc. configured.
 
 ## Connecting the Cameras
 Once you've started the Camera program. Enter the IP of the controller and configure the camera id.
