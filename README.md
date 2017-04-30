@@ -1,7 +1,11 @@
 # multikinect
 
 
-multikinect is a system for collecting data using multiple Microsoft Kinect v2 cameras. Please refer to [multikinect + singlepixellocalization](https://github.com/bu-vip/singlepixellocalization/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect) for instructions on how to collect single pixel sensor data with the multikinect.
+multikinect is a system for collecting data using multiple Microsoft Kinect v2 cameras. 
+
+> For instructions on using MultiKinect with single pixel sensors, refer to 
+> [multikinect + singlepixellocalization](https://github.com/bu-vip/singlepixellocalization/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect).
+
 ## Building
 ### Camera
 > NOTE: The camera can only be built and run on Windows, as the Kinect v2 SDK only supports Windows. Each Kinect runs from a separate computer, so to run multiple Kinects, make sure to run the camera program run on each computer.
@@ -36,18 +40,8 @@ To build the main controller, run:
 bazel build //src/main/java/edu/bu/vip/multikinect/controller:main
 ```
 
-To run the controller:
-> NOTE: Make sure your data directory path is an absolute path (ie: /home/user/Desktop/multikinect_data)
-```bash
-bazel run //src/main/java/edu/bu/vip/multikinect/controller:main -- --data_dir <directory-path>
-```
-
-To access the web console, go to [http://localhost:8080](http://localhost:8080) in your web browser.
-You can also access the web console from other machines if you are on the same network, have the 
-proper firewall rules, etc. configured.
-
-## Usage
-Please refer to the [Usage Wiki](https://github.com/bu-vip/multikinect/wiki/Usage)
+## Documentation
+For documentation, including usage instructions, see the [docs](docs/).
 
 
 ## Plugins
