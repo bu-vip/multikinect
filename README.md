@@ -1,7 +1,5 @@
-# multikinect
-
-
-multikinect is a system for collecting data using multiple Microsoft Kinect v2 cameras. 
+# MultiKinect
+MultiKinect is a system for collecting data using multiple Microsoft Kinect v2 cameras.
 
 > For instructions on using MultiKinect with single pixel sensors, refer to 
 > [multikinect + singlepixellocalization](https://github.com/bu-vip/singlepixellocalization/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect).
