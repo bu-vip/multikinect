@@ -2,7 +2,7 @@
 MultiKinect is a system for collecting data using multiple Microsoft Kinect v2 cameras.
 
 > For instructions on using MultiKinect with single pixel sensors, refer to 
-> [multikinect + singlepixellocalization](https://github.com/bu-vip/singlepixellocalization/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect).
+> [MultiKinect + SinglePixel](https://github.com/bu-vip/singlepixel/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect).
 
 ## Building
 ### Camera
@@ -48,7 +48,7 @@ To write a plugin, all you have to do is implement the
 [plugin interface](src/main/java/edu/bu/vip/multikinect/controller/plugin/Plugin.java) 
 and add it to the controller.
 You can find a full example of plugin usage 
-[here](https://github.com/bu-vip/singlepixellocalization/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect).
+[here](https://github.com/bu-vip/singlepixel/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect).
 
 ## Developing
 If you want to make changes to the controller, I highly recommend using 
