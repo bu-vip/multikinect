@@ -1,5 +1,8 @@
 package edu.bu.vip.multikinect.sync;
 
+import static edu.bu.vip.multikinect.Protos.Joint.TrackingState.INFERRED;
+import static edu.bu.vip.multikinect.Protos.Joint.TrackingState.TRACKED;
+
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import edu.bu.vip.multikinect.Protos.Joint;
@@ -32,8 +35,8 @@ public class SkeletonUtils {
   public static boolean[] jointMask(Skeleton skel) {
     boolean[] joints = new boolean[Joint.JointType.values().length];
     for (Joint joint : skel.getJointsList()) {
-      joints[joint.getTypeValue()] = joint.getTrackingState() == TrackingState.TRACKED
-          || joint.getTrackingState() == TrackingState.INFERRED;
+      joints[joint.getTypeValue()] = joint.getTrackingState() == TRACKED
+          || joint.getTrackingState() == INFERRED;
     }
 
     return joints;
@@ -82,8 +85,8 @@ public class SkeletonUtils {
   public static Position calculateCenter(Skeleton skeleton, boolean includeInferred) {
     List<Position> positions = new ArrayList<>();
     for (Joint joint : skeleton.getJointsList()) {
-      if (joint.getTrackingState() == TrackingState.TRACKED ||
-          (joint.getTrackingState() == TrackingState.INFERRED && includeInferred)) {
+      if (joint.getTrackingState() == TRACKED ||
+          (joint.getTrackingState() == INFERRED && includeInferred)) {
         Position position = joint.getPosition();
         positions.add(position);
       }
@@ -127,8 +130,10 @@ public class SkeletonUtils {
       // Prefer tracked over inferred
       if (positions.size() > 0) {
         jointBuilder.setPosition(PositionUtils.average(positions));
+        jointBuilder.setTrackingState(TrackingState.TRACKED);
       } else {
         jointBuilder.setPosition(PositionUtils.average(inferredPositions));
+        jointBuilder.setTrackingState(TrackingState.INFERRED);
       }
 
       // TODO(doug) - other fields of joint
