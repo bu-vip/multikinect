@@ -164,6 +164,13 @@ public class Controller {
   }
 
   public void newCalibration(String name) {
+    // Check number of cameras
+    if (cameraManager.getConnectedCameras().size() == 0) {
+      logger.error("No cameras connected");
+      // TODO(doug) - Throw exception, display message to user
+      return;
+    }
+
     // TODO(doug) - Check current state
     state = State.NEW_CALIBRATION;
 
@@ -244,6 +251,13 @@ public class Controller {
   }
 
   public void newRecording(String name) {
+    // Check number of cameras
+    if (cameraManager.getConnectedCameras().size() == 0) {
+      logger.error("No cameras connected");
+      // TODO(doug) - Throw exception, display message to user
+      return;
+    }
+
     logger.info("Creating new recording");
     // TODO(doug) - Check current state
     state = State.RECORDING_DATA;
