@@ -34,8 +34,6 @@ public class RealTimeManager {
   private final EventBus syncedFrameBus;
   private final SessionDataStore sessionDataStore;
   private final Object recordingLock = new Object();
-  // TODO(doug) - Implement
-  private String centralCameraId = "camera1";
   private Calibration calibration;
   private CameraGraph cameraGraph;
   private Map<String, Frame> lastFrames = new HashMap<>();
@@ -81,7 +79,7 @@ public class RealTimeManager {
 
     // Transform frame into central camera's coordinate system
     String cameraId = event.getProps().getId();
-    DenseMatrix64F transform = cameraGraph.calculateTransform(cameraId, centralCameraId);
+    DenseMatrix64F transform = cameraGraph.calculateTransform(cameraId);
     Frame transformedFrame = CoordinateTransform.transformFrame(event.getFrame(), transform);
     lastFrames.put(cameraId, transformedFrame);
 
