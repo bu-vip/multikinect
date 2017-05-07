@@ -3,10 +3,12 @@ package edu.bu.vip.multikinect.controller.calibration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.primitives.Doubles;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.calibration.Protos.CameraPairCalibration;
+import edu.bu.vip.kinect.controller.calibration.Protos.ErrorStats;
 import edu.bu.vip.kinect.controller.calibration.Protos.GroupOfFrames;
 import edu.bu.vip.kinect.controller.calibration.Protos.Recording;
 import edu.bu.vip.multikinect.Protos.Frame;
@@ -24,6 +26,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.ejml.data.DenseMatrix64F;
+import org.ejml.simple.SimpleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +36,13 @@ import org.slf4j.LoggerFactory;
  *
  * The process for creating a new calibration is:
  * <ol>
- *   <li>Start a new calibration</li>
- *   <li>Start recording data</li>
- *   <li>Record data</li>
- *   <li>Stop recording data</li>
- *   <li>Repeat until accuracy is good</li>
- *   <li>Delete bad recordings if necessary</li>
- *   <li>Finish calibration</li>
+ * <li>Start a new calibration</li>
+ * <li>Start recording data</li>
+ * <li>Record data</li>
+ * <li>Stop recording data</li>
+ * <li>Repeat until accuracy is good</li>
+ * <li>Delete bad recordings if necessary</li>
+ * <li>Finish calibration</li>
  * </ol>
  */
 @Singleton
@@ -72,6 +76,7 @@ public class CalibrationManager {
 
   /**
    * Start creating a new calibration. Creates a new calibration in the data store.
+   *
    * @param name - Name for the calibration
    * @param notes - Notes for the calibration
    *
@@ -193,7 +198,6 @@ public class CalibrationManager {
 
   /**
    * Delete a data recording from the new calibration.
-   * @param sessionId
    */
   public void deleteRecording(long sessionId) {
     checkActive();
@@ -217,7 +221,6 @@ public class CalibrationManager {
 
   /**
    * Get the new calibration being created.
-   * @return
    */
   public Calibration getCalibration() {
     checkActive();
@@ -232,7 +235,6 @@ public class CalibrationManager {
 
   /**
    * Finish creating the calibration.
-   * @return
    */
   public Calibration finish() {
     checkActive();
@@ -280,9 +282,9 @@ public class CalibrationManager {
       }
       Calibration calibration = optCal.get();
 
+      // Create camera transforms for each pair of cameras
       List<ImmutableList<String>> pairs = getCameraPairs();
       List<Future<CameraPairCalibration>> tasks = new ArrayList<>();
-      // Create camera transforms for each pair of cameras
       for (List<String> pair : pairs) {
         Callable<CameraPairCalibration> job = new CameraTransform(calibration,
             pair.get(0),
@@ -296,11 +298,20 @@ public class CalibrationManager {
       try {
         Calibration.Builder builder = calibration.toBuilder();
         builder.clearCameraCalibrations();
-        for (Future<CameraPairCalibration> task : tasks) {
-          CameraPairCalibration result = task.get(TRANSFORM_TIMEOUT, TimeUnit.MILLISECONDS);
-          logger.info("Error: {}", result.getError());
-          builder.addCameraCalibrations(result);
+
+        // Check if there is only 1 camera
+        if (pairs.size() == 0) {
+          // Create a pair of itself
+          String cameraId = cameraManager.getConnectedCameras().asList().get(0);
+          builder.addCameraCalibrations(createIdentityPair(cameraId));
+        } else {
+          for (Future<CameraPairCalibration> task : tasks) {
+            CameraPairCalibration result = task.get(TRANSFORM_TIMEOUT, TimeUnit.MILLISECONDS);
+            logger.info("Error: {}", result.getError());
+            builder.addCameraCalibrations(result);
+          }
         }
+
         calibrationDataStore.updateCalibration(builder.build());
       } catch (TimeoutException | InterruptedException | ExecutionException e) {
         // TODO Auto-generated catch block
@@ -318,5 +329,21 @@ public class CalibrationManager {
       }
     }
     return pairs.build();
+  }
+
+  private CameraPairCalibration createIdentityPair(String cameraId) {
+    DenseMatrix64F transform = SimpleMatrix.identity(4).getMatrix();
+
+    CameraPairCalibration.Builder builder = CameraPairCalibration.newBuilder();
+    builder.setCameraA(cameraId);
+    builder.setCameraB(cameraId);
+    builder.addAllTransform(Doubles.asList(transform.data));
+    builder.setError(0);
+
+    ErrorStats.Builder errorBuilder = ErrorStats.newBuilder();
+    errorBuilder.addErrors(0);
+    builder.setErrorStats(errorBuilder.build());
+
+    return builder.build();
   }
 }
