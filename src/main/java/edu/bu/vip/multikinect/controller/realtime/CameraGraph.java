@@ -16,6 +16,8 @@ import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedMultigraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Graph of transforms between pairs of cameras. Each node of the grpah is a camera. Each edge
@@ -23,6 +25,7 @@ import org.jgrapht.graph.DirectedMultigraph;
  */
 public class CameraGraph {
 
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private final DirectedGraph<String, CameraPairEdge> graph = new DirectedMultigraph<>(
       new ClassBasedEdgeFactory<String, CameraPairEdge>(CameraPairEdge.class));
 
@@ -60,13 +63,16 @@ public class CameraGraph {
       graph.addVertex(pair.getCameraA());
       graph.addVertex(pair.getCameraB());
 
-      DenseMatrix64F transform = new DenseMatrix64F(4, 4, true,
-          Doubles.toArray(pair.getTransformList()));
-      graph.addEdge(pair.getCameraA(), pair.getCameraB(),
-          new CameraPairEdge(pair, transform, false));
+      if (!pair.getCameraA().equals(pair.getCameraB())) {
+        DenseMatrix64F transform = new DenseMatrix64F(4, 4, true,
+            Doubles.toArray(pair.getTransformList()));
+        graph.addEdge(pair.getCameraA(), pair.getCameraB(),
+            new CameraPairEdge(pair, transform, false));
 
-      DenseMatrix64F inverse = inverseTransformationMatrix(transform);
-      graph.addEdge(pair.getCameraB(), pair.getCameraA(), new CameraPairEdge(pair, inverse, true));
+        DenseMatrix64F inverse = inverseTransformationMatrix(transform);
+        graph
+            .addEdge(pair.getCameraB(), pair.getCameraA(), new CameraPairEdge(pair, inverse, true));
+      }
     }
     vertices = builder.build();
 
@@ -135,6 +141,15 @@ public class CameraGraph {
    * @param cameraB - Ending camera id
    */
   public DenseMatrix64F calculateTransform(String cameraA, String cameraB) {
+    if (!vertices.contains(cameraA)) {
+      logger.error("Camera {} not in graph", cameraA);
+      throw new RuntimeException(cameraA + " is not in the graph");
+    }
+    if (!vertices.contains(cameraB)) {
+      logger.error("Camera {} not in graph", cameraB);
+      throw new RuntimeException(cameraB + " is not in the graph");
+    }
+
     ImmutableList<String> key = ImmutableList.of(cameraA, cameraB);
 
     // Cache loader doesn't throw exceptions
@@ -143,6 +158,10 @@ public class CameraGraph {
 
   public String getCentralCamera() {
     return centralCamera;
+  }
+
+  public ImmutableSet<String> getVertices() {
+    return vertices;
   }
 
 

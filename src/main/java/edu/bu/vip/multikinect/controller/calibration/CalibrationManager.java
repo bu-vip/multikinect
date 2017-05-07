@@ -27,6 +27,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.ejml.data.DenseMatrix64F;
+import org.ejml.simple.SimpleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -331,7 +332,7 @@ public class CalibrationManager {
   }
 
   private CameraPairCalibration createIdentityPair(String cameraId) {
-    DenseMatrix64F transform = new DenseMatrix64F(4, 4);
+    DenseMatrix64F transform = SimpleMatrix.identity(4).getMatrix();
 
     CameraPairCalibration.Builder builder = CameraPairCalibration.newBuilder();
     builder.setCameraA(cameraId);
@@ -340,6 +341,7 @@ public class CalibrationManager {
     builder.setError(0);
 
     ErrorStats.Builder errorBuilder = ErrorStats.newBuilder();
+    errorBuilder.addErrors(0);
     builder.setErrorStats(errorBuilder.build());
 
     return builder.build();

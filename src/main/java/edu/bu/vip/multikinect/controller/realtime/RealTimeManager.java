@@ -4,13 +4,11 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import edu.bu.vip.kinect.controller.calibration.Protos;
 import edu.bu.vip.kinect.controller.calibration.Protos.Calibration;
 import edu.bu.vip.kinect.controller.data.Protos.Recording;
 import edu.bu.vip.kinect.controller.data.Protos.Session;
 import edu.bu.vip.kinect.controller.realtime.Protos.SyncedFrame;
 import edu.bu.vip.multikinect.Protos.Frame;
-import edu.bu.vip.multikinect.Protos.Skeleton;
 import edu.bu.vip.multikinect.controller.camera.FrameBus;
 import edu.bu.vip.multikinect.controller.camera.FrameReceivedEvent;
 import edu.bu.vip.multikinect.controller.data.SessionDataStore;
@@ -75,25 +73,30 @@ public class RealTimeManager {
 
   @Subscribe
   public void onFrameReceivedEvent(FrameReceivedEvent event) {
-    // TODO(doug) - Time synchronization
+    // Confirm that the camera is in the graph
+    if (cameraGraph.getVertices().contains(event.getProps().getId())) {
+      // TODO(doug) - Time synchronization
 
-    // Transform frame into central camera's coordinate system
-    String cameraId = event.getProps().getId();
-    DenseMatrix64F transform = cameraGraph.calculateTransform(cameraId);
-    Frame transformedFrame = CoordinateTransform.transformFrame(event.getFrame(), transform);
-    lastFrames.put(cameraId, transformedFrame);
+      // Transform frame into central camera's coordinate system
+      String cameraId = event.getProps().getId();
+      DenseMatrix64F transform = cameraGraph.calculateTransform(cameraId);
+      Frame transformedFrame = CoordinateTransform.transformFrame(event.getFrame(), transform);
+      lastFrames.put(cameraId, transformedFrame);
 
-    // Combine skeletons that are close together
-    SyncedFrame syncedFrame = frameCombiner.combineFrames(lastFrames);
+      // Combine skeletons that are close together
+      SyncedFrame syncedFrame = frameCombiner.combineFrames(lastFrames);
 
-    // Send out an new synced frame event
-    syncedFrameBus.post(syncedFrame);
+      // Send out an new synced frame event
+      syncedFrameBus.post(syncedFrame);
 
-    synchronized (recordingLock) {
-      if (recording) {
-        sessionDataStore.storeRawFrame(sessionId, recordingId, cameraId, event.getFrame());
-        sessionDataStore.storeSyncFrame(sessionId, recordingId, syncedFrame);
+      synchronized (recordingLock) {
+        if (recording) {
+          sessionDataStore.storeRawFrame(sessionId, recordingId, cameraId, event.getFrame());
+          sessionDataStore.storeSyncFrame(sessionId, recordingId, syncedFrame);
+        }
       }
+    } else {
+      logger.warn("Camera {} is not in calibration", event.getProps().getId());
     }
   }
 
