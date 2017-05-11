@@ -296,6 +296,7 @@ public class Controller {
     // TODO(doug) - implement
     state = State.SELECT_SESSION;
     currentSession = -1;
+    realTimeManager.stop();
   }
 
   public void stopRecording() {
