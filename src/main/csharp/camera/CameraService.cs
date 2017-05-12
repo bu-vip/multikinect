@@ -6,6 +6,7 @@ using NodaTime;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace Roeper.Bu.Kinect
         private Object accessLock = new object();
         private Body[] bodies = null;
         private NetworkClock ntpClock = NetworkClock.Instance;
+        private Instant lastTime;
 
         public CameraService()
         {
@@ -74,7 +76,16 @@ namespace Roeper.Bu.Kinect
                 // If we received data, add to queue if needed
                 if (dataReceived)
                 {
-                    Frame frame = KinectBodiesToProto.ConvertFrame(frameTime, bodies, ntpClock.Now);
+                    try
+                    {
+                        Instant time = ntpClock.Now;
+                        lastTime = time;
+                    } catch (SocketException e)
+                    {
+
+                    }
+
+                    Frame frame = KinectBodiesToProto.ConvertFrame(frameTime, bodies, lastTime);
                     lock (accessLock)
                     {
                         if (accessing)
