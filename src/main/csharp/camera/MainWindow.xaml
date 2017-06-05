@@ -23,7 +23,7 @@
 
         <StackPanel x:Name="connectControls" Grid.Row="1" Orientation="Horizontal" Visibility="Visible">
             <Label Content="Master IP:" />
-            <TextBox x:Name="masterIP"  Text="128.197.164.98:45555" Width="160" MaxLines="1" />
+            <TextBox x:Name="masterIP"  Text="192.168.1.203:45555" Width="160" MaxLines="1" />
             <Label Content="Camera ID:" />
             <TextBox x:Name="cameraId"  Text="camera1" Width="160" MaxLines="1" />
             <Button x:Name="recordButton" Click="ConnectToMaster" Width="100" Content="Connect"/>
