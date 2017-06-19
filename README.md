@@ -5,11 +5,11 @@ MultiKinect is a system is designed to provide accurate location estimation for 
 > [MultiKinect + SinglePixel](https://github.com/bu-vip/singlepixel/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect).
 
 ## Architecture
-### The multikinect system consists of the following components:
-A Kinect computer
+#### The multikinect system consists of the following components:
+##### A Kinect computer
 For a Kinect camera, there will be a corresponding computer to interface with it. Each of these computers will run the Kinect camera program.
 
-A Host controller
+##### A Host controller
 This controller is run on a central computer which is on the same network as the Kinect computers. Any number of Kinect computers can be connected to the host controller. The controller handles collecting data from all the Kinects and transforming the data into one common coordinate system.
 
 
