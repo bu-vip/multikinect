@@ -1,10 +1,19 @@
 # MultiKinect
-MultiKinect is a system for collecting data using multiple Microsoft Kinect v2 cameras.
+MultiKinect is a system is designed to provide accurate location estimation for occupants in a room. Using multiple Microsoft Kinect v2 cameras, the system will transform their coordinates into one common coordinate system.
 
 > For instructions on using MultiKinect with single pixel sensors, refer to 
 > [MultiKinect + SinglePixel](https://github.com/bu-vip/singlepixel/tree/master/src/main/java/edu/bu/vip/singlepixel/multikinect).
 
-## Building
+## Architecture
+### The multikinect system consists of the following components:
+A Kinect computer
+For a Kinect camera, there will be a corresponding computer to interface with it. Each of these computers will run the Kinect camera program.
+
+A Host controller
+This controller is run on a central computer which is on the same network as the Kinect computers. Any number of Kinect computers can be connected to the host controller. The controller handles collecting data from all the Kinects and transforming the data into one common coordinate system.
+
+
+## Building the System
 ### Camera
 > NOTE: The camera can only be built and run on Windows, as the Kinect v2 SDK only supports Windows. Each Kinect runs from a separate computer, so to run multiple Kinects, make sure to run the camera program run on each computer.
 
@@ -57,6 +66,3 @@ with the [bazel plugin](https://github.com/bazelbuild/intellij).
 
 To add bazel dependencies, you can generate the bazel code using these [scripts](scripts/deps) 
 in combination with this [project](https://github.com/Dig-Doug/bazel-deps).
-
-## About
-TODO(doug)
